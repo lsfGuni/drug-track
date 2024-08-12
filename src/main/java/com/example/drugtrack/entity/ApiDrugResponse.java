@@ -49,7 +49,7 @@ public class ApiDrugResponse {
     @Column(name = "agg_data", nullable = false)
     private String aggData;
 
-    @Column(name = "tx", nullable = false)
+    @Column(name = "tx", length = 500, nullable = false)
     private String tx;
 
     @Column(name = "hash_code", nullable = false)
