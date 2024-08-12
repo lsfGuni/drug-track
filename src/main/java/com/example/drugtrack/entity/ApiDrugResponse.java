@@ -2,55 +2,208 @@ package com.example.drugtrack.entity;
 
 import jakarta.persistence.*;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 
 @Entity
-@Table(name = "api_drug_response")
+@Table(name = "drug_tracking_data")
 public class ApiDrugResponse {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "seq")
+    private Long seq;
 
-    @Column(name = "ITEM_SEQ")
-    private String itemSeq;
+    @Column(name = "barcode_data", nullable = false)
+    private String barcodeData;
 
-    @Column(name = "ITEM_NAME")
-    private String itemName;
+    @Column(name = "company_reg_number")
+    private String companyRegNumber;
 
-    @Column(name = "BAR_CODE")
-    private String barCode;
+    @Column(name = "company_name")
+    private String companyName;
 
+    @Column(name = "delivery_type")
+    private String deliveryType;
+
+    @Column(name = "delivery_date")
+    private String deliveryDate;
+
+    @Column(name = "product_name")
+    private String productName;
+
+    @Column(name = "gs1_code")
+    private String gs1Code;
+
+    @Column(name = "mfn_number")
+    private String mfnNumber;
+
+    @Column(name = "exp_date")
+    private String expDate;
+
+    @Column(name = "serial_number")
+    private String serialNumber;
+
+    @Column(name = "agg_data")
+    private String aggData;
+
+    @Column(name = "tx")
+    private String tx;
+
+    @Column(name = "hash_code")
+    private String hashCode;
+
+    @Column(name = "auth", nullable = false)
+    private String auth;
+
+
+    @PrePersist
+    protected void omCreate(){
+        this.auth = "sys";
+    }
     // Getters and Setters
 
-    public Long getId() {
-        return id;
+
+    public Long getSeq() {
+        return seq;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setSeq(Long seq) {
+        this.seq = seq;
     }
 
-    public String getItemSeq() {
-        return itemSeq;
+    public String getBarcodeData() {
+        return barcodeData;
     }
 
-    public void setItemSeq(String itemSeq) {
-        this.itemSeq = itemSeq;
+    public void setBarcodeData(String barcodeData) {
+        this.barcodeData = barcodeData;
     }
 
-    public String getItemName() {
-        return itemName;
+    public String getCompanyRegNumber() {
+        return companyRegNumber;
     }
 
-    public void setItemName(String itemName) {
-        this.itemName = itemName;
+    public void setCompanyRegNumber(String companyRegNumber) {
+        this.companyRegNumber = companyRegNumber;
     }
 
-    public String getBarCode() {
-        return barCode;
+    public String getCompanyName() {
+        return companyName;
     }
 
-    public void setBarCode(String barCode) {
-        this.barCode = barCode;
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
+
+    public String getDeliveryType() {
+        return deliveryType;
+    }
+
+    public void setDeliveryType(String deliveryType) {
+        this.deliveryType = deliveryType;
+    }
+
+    public String getDeliveryDate() {
+        return deliveryDate;
+    }
+
+    public void setDeliveryDate(String deliveryDate) {
+        this.deliveryDate = deliveryDate;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public String getGs1Code() {
+        return gs1Code;
+    }
+
+    public void setGs1Code(String gs1Code) {
+        this.gs1Code = gs1Code;
+    }
+
+    public String getMfnNumber() {
+        return mfnNumber;
+    }
+
+    public void setMfnNumber(String mfnNumber) {
+        this.mfnNumber = mfnNumber;
+    }
+
+    public String getExpDate() {
+        return expDate;
+    }
+
+    public void setExpDate(String expDate) {
+        this.expDate = expDate;
+    }
+
+    public String getSerialNumber() {
+        return serialNumber;
+    }
+
+    public void setSerialNumber(String serialNumber) {
+        this.serialNumber = serialNumber;
+    }
+
+    public String getAggData() {
+        return aggData;
+    }
+
+    public void setAggData(String aggData) {
+        this.aggData = aggData;
+    }
+
+    public String getTx() {
+        return tx;
+    }
+
+    public void setTx(String tx) {
+        this.tx = tx;
+    }
+
+    public String getHashCode() {
+        return hashCode;
+    }
+
+    public void setHashCode(String hashCode) {
+        this.hashCode = hashCode;
+    }
+
+    public String getAuth() {
+        return auth;
+    }
+
+    public void setAuth(String auth) {
+        this.auth = auth;
+    }
+
+
+    public void generateHashValue() {
+        String combinedData = this.tx;
+
+        if (combinedData == null) {
+            throw new RuntimeException("tx 값이 null입니다. 해시 값을 생성할 수 없습니다.");
+        }
+
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hashBytes = digest.digest(combinedData.getBytes(StandardCharsets.UTF_8));
+            StringBuilder sb = new StringBuilder();
+            for (byte b : hashBytes) {
+                sb.append(String.format("%02x", b));
+            }
+            this.hashCode = sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("해시값 생성이 실패했습니다.", e);
+        }
     }
 }

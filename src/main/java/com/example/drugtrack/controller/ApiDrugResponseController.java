@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/drug-responses")
+@RequestMapping("/medicine-traceability")
 public class ApiDrugResponseController {
 
     @Autowired
@@ -19,18 +19,15 @@ public class ApiDrugResponseController {
         return service.getAllResponses();
     }
 
-    @GetMapping("/{id}")
-    public ApiDrugResponse getResponseById(@PathVariable Long id) {
-        return service.getResponseById(id);
+    @GetMapping("/{barcodeData}")
+    public ApiDrugResponse getResponseById(@PathVariable String barcodeData) {
+        return service.getResponseById(barcodeData);
     }
-
     @PostMapping
     public ApiDrugResponse createResponse(@RequestBody ApiDrugResponse response) {
+        // 서비스 단에서 데이터 저장 및 반환
         return service.saveResponse(response);
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteResponse(@PathVariable Long id) {
-        service.deleteResponse(id);
-    }
+
 }
