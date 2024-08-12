@@ -30,6 +30,7 @@ public class ApiDrugResponseService {
 
     public ApiDrugResponse saveResponse(ApiDrugResponse response) {
         try {
+            ensureNonNullFields(response);
 
             String txValueJson = generateTxValue(response);
             response.setTx(txValueJson);
@@ -41,6 +42,44 @@ public class ApiDrugResponseService {
         return repository.save(response);
     }
 
+    private void ensureNonNullFields(ApiDrugResponse response) {
+        if (response.getBarcodeData() == null) {
+            response.setBarcodeData("");
+        }
+        if (response.getCompanyRegNumber() == null) {
+            response.setCompanyRegNumber("");
+        }
+        if (response.getCompanyName() == null) {
+            response.setCompanyName("Unknown");
+        }
+        if (response.getDeliveryType() == null) {
+            response.setDeliveryType("N/A");
+        }
+        if (response.getDeliveryDate() == null) {
+            response.setDeliveryDate("N/A");
+        }
+        if (response.getProductName() == null) {
+            response.setProductName("Unknown Product");
+        }
+        if (response.getGs1Code() == null) {
+            response.setGs1Code("00000000000000");
+        }
+        if (response.getmfNumber() == null) {
+            response.setmfNumber("N/A");
+        }
+        if (response.getExpDate() == null) {
+            response.setExpDate("N/A");
+        }
+        if (response.getSerialNumber() == null) {
+            response.setSerialNumber("N/A");
+        }
+        if (response.getAggData() == null) {
+            response.setAggData("N/A");
+        }
+        if (response.getHashCode() == null) {
+            response.setHashCode("");
+        }
+    }
 
     private String generateTxValue(ApiDrugResponse response) throws JsonProcessingException {
         Map<String, String> txValueMap = new HashMap<>();
@@ -51,7 +90,7 @@ public class ApiDrugResponseService {
         txValueMap.put("deliveryDate", response.getDeliveryDate());
         txValueMap.put("productName", response.getProductName());
         txValueMap.put("gs1Code", response.getGs1Code());
-        txValueMap.put("mfnNumber", response.getMfnNumber());
+        txValueMap.put("mfNumber", response.getmfNumber());
         txValueMap.put("expDate", response.getExpDate());
         txValueMap.put("serialNumber", response.getSerialNumber());
         txValueMap.put("aggData", response.getAggData());

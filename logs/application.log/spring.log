@@ -1,0 +1,123 @@
+2024-08-12 09:56:51 - Starting DrugTrackApplication using Java 17.0.12 with PID 15760 (C:\Users\ibiz\Desktop\workspace\drug-track\drug-track\build\classes\java\main started by ibiz in C:\Users\ibiz\Desktop\workspace\drug-track\drug-track)
+2024-08-12 09:56:51 - No active profile set, falling back to 1 default profile: "default"
+2024-08-12 09:56:51 - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2024-08-12 09:56:51 - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2024-08-12 09:56:52 - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-08-12 09:56:52 - Finished Spring Data repository scanning in 32 ms. Found 1 JPA repository interface.
+2024-08-12 09:56:52 - Tomcat initialized with port 8080 (http)
+2024-08-12 09:56:52 - Starting service [Tomcat]
+2024-08-12 09:56:52 - Starting Servlet engine: [Apache Tomcat/10.1.26]
+2024-08-12 09:56:52 - Initializing Spring embedded WebApplicationContext
+2024-08-12 09:56:52 - Root WebApplicationContext: initialization completed in 953 ms
+2024-08-12 09:56:53 - HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-08-12 09:56:53 - HHH000412: Hibernate ORM core version 6.5.2.Final
+2024-08-12 09:56:53 - HHH000026: Second-level cache disabled
+2024-08-12 09:56:53 - No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-08-12 09:56:53 - HikariPool-1 - Starting...
+2024-08-12 09:56:53 - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@693adc7f
+2024-08-12 09:56:53 - HikariPool-1 - Start completed.
+2024-08-12 09:56:53 - HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-08-12 09:56:54 - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2024-08-12 09:56:54 - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-08-12 09:56:54 - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2024-08-12 09:56:54 - Cannot find template location: classpath:/templates/ (please add some templates, check your Thymeleaf configuration, or set spring.thymeleaf.check-template-location=false)
+2024-08-12 09:56:54 - LiveReload server is running on port 35729
+2024-08-12 09:56:54 - Tomcat started on port 8080 (http) with context path '/'
+2024-08-12 09:56:54 - Started DrugTrackApplication in 2.972 seconds (process running for 3.46)
+2024-08-12 09:57:05 - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-08-12 09:57:05 - Initializing Servlet 'dispatcherServlet'
+2024-08-12 09:57:05 - Completed initialization in 0 ms
+2024-08-12 09:57:06 - insert into drug_tracking_data (agg_data,auth,barcode_data,company_name,company_reg_number,delivery_date,delivery_type,exp_date,gs1_code,hash_code,mfn_number,product_name,serial_number,tx) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+2024-08-12 09:58:01 - Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification)
+2024-08-12 09:58:01 - Closing JPA EntityManagerFactory for persistence unit 'default'
+2024-08-12 09:58:01 - HikariPool-1 - Shutdown initiated...
+2024-08-12 09:58:01 - HikariPool-1 - Shutdown completed.
+2024-08-12 09:58:01 - Starting DrugTrackApplication using Java 17.0.12 with PID 15760 (C:\Users\ibiz\Desktop\workspace\drug-track\drug-track\build\classes\java\main started by ibiz in C:\Users\ibiz\Desktop\workspace\drug-track\drug-track)
+2024-08-12 09:58:01 - No active profile set, falling back to 1 default profile: "default"
+2024-08-12 09:58:01 - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-08-12 09:58:01 - Finished Spring Data repository scanning in 5 ms. Found 1 JPA repository interface.
+2024-08-12 09:58:01 - Tomcat initialized with port 8080 (http)
+2024-08-12 09:58:01 - Starting service [Tomcat]
+2024-08-12 09:58:01 - Starting Servlet engine: [Apache Tomcat/10.1.26]
+2024-08-12 09:58:01 - Initializing Spring embedded WebApplicationContext
+2024-08-12 09:58:01 - Root WebApplicationContext: initialization completed in 207 ms
+2024-08-12 09:58:01 - HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-08-12 09:58:01 - HHH000026: Second-level cache disabled
+2024-08-12 09:58:01 - No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-08-12 09:58:01 - HikariPool-2 - Starting...
+2024-08-12 09:58:01 - HikariPool-2 - Added connection com.mysql.cj.jdbc.ConnectionImpl@239a78f1
+2024-08-12 09:58:01 - HikariPool-2 - Start completed.
+2024-08-12 09:58:01 - HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-08-12 09:58:01 - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2024-08-12 09:58:01 - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-08-12 09:58:01 - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2024-08-12 09:58:01 - Cannot find template location: classpath:/templates/ (please add some templates, check your Thymeleaf configuration, or set spring.thymeleaf.check-template-location=false)
+2024-08-12 09:58:01 - LiveReload server is running on port 35729
+2024-08-12 09:58:01 - Tomcat started on port 8080 (http) with context path '/'
+2024-08-12 09:58:01 - Started DrugTrackApplication in 0.398 seconds (process running for 70.871)
+2024-08-12 09:58:01 - Condition evaluation unchanged
+2024-08-12 09:58:09 - Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification)
+2024-08-12 09:58:10 - Closing JPA EntityManagerFactory for persistence unit 'default'
+2024-08-12 09:58:10 - HikariPool-2 - Shutdown initiated...
+2024-08-12 09:58:10 - HikariPool-2 - Shutdown completed.
+2024-08-12 09:58:10 - Starting DrugTrackApplication using Java 17.0.12 with PID 15760 (C:\Users\ibiz\Desktop\workspace\drug-track\drug-track\build\classes\java\main started by ibiz in C:\Users\ibiz\Desktop\workspace\drug-track\drug-track)
+2024-08-12 09:58:10 - No active profile set, falling back to 1 default profile: "default"
+2024-08-12 09:58:10 - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-08-12 09:58:10 - Finished Spring Data repository scanning in 4 ms. Found 1 JPA repository interface.
+2024-08-12 09:58:10 - Tomcat initialized with port 8080 (http)
+2024-08-12 09:58:10 - Starting service [Tomcat]
+2024-08-12 09:58:10 - Starting Servlet engine: [Apache Tomcat/10.1.26]
+2024-08-12 09:58:10 - Initializing Spring embedded WebApplicationContext
+2024-08-12 09:58:10 - Root WebApplicationContext: initialization completed in 191 ms
+2024-08-12 09:58:10 - HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-08-12 09:58:10 - HHH000026: Second-level cache disabled
+2024-08-12 09:58:10 - No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-08-12 09:58:10 - HikariPool-3 - Starting...
+2024-08-12 09:58:10 - HikariPool-3 - Added connection com.mysql.cj.jdbc.ConnectionImpl@6fe4dcf8
+2024-08-12 09:58:10 - HikariPool-3 - Start completed.
+2024-08-12 09:58:10 - HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-08-12 09:58:10 - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2024-08-12 09:58:10 - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-08-12 09:58:10 - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2024-08-12 09:58:10 - Cannot find template location: classpath:/templates/ (please add some templates, check your Thymeleaf configuration, or set spring.thymeleaf.check-template-location=false)
+2024-08-12 09:58:10 - LiveReload server is running on port 35729
+2024-08-12 09:58:10 - Tomcat started on port 8080 (http) with context path '/'
+2024-08-12 09:58:10 - Started DrugTrackApplication in 0.363 seconds (process running for 79.369)
+2024-08-12 09:58:10 - Condition evaluation unchanged
+2024-08-12 09:58:30 - Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification)
+2024-08-12 09:58:30 - Closing JPA EntityManagerFactory for persistence unit 'default'
+2024-08-12 09:58:30 - HikariPool-3 - Shutdown initiated...
+2024-08-12 09:58:30 - HikariPool-3 - Shutdown completed.
+2024-08-12 09:58:30 - Starting DrugTrackApplication using Java 17.0.12 with PID 15760 (C:\Users\ibiz\Desktop\workspace\drug-track\drug-track\build\classes\java\main started by ibiz in C:\Users\ibiz\Desktop\workspace\drug-track\drug-track)
+2024-08-12 09:58:30 - No active profile set, falling back to 1 default profile: "default"
+2024-08-12 09:58:30 - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-08-12 09:58:30 - Finished Spring Data repository scanning in 4 ms. Found 1 JPA repository interface.
+2024-08-12 09:58:30 - Tomcat initialized with port 8080 (http)
+2024-08-12 09:58:30 - Starting service [Tomcat]
+2024-08-12 09:58:30 - Starting Servlet engine: [Apache Tomcat/10.1.26]
+2024-08-12 09:58:30 - Initializing Spring embedded WebApplicationContext
+2024-08-12 09:58:30 - Root WebApplicationContext: initialization completed in 186 ms
+2024-08-12 09:58:30 - HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-08-12 09:58:30 - HHH000026: Second-level cache disabled
+2024-08-12 09:58:30 - No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-08-12 09:58:30 - HikariPool-4 - Starting...
+2024-08-12 09:58:30 - HikariPool-4 - Added connection com.mysql.cj.jdbc.ConnectionImpl@5d9f8f32
+2024-08-12 09:58:30 - HikariPool-4 - Start completed.
+2024-08-12 09:58:30 - HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-08-12 09:58:30 - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2024-08-12 09:58:30 - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-08-12 09:58:30 - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2024-08-12 09:58:30 - Cannot find template location: classpath:/templates/ (please add some templates, check your Thymeleaf configuration, or set spring.thymeleaf.check-template-location=false)
+2024-08-12 09:58:30 - LiveReload server is running on port 35729
+2024-08-12 09:58:30 - Tomcat started on port 8080 (http) with context path '/'
+2024-08-12 09:58:30 - Started DrugTrackApplication in 0.349 seconds (process running for 99.789)
+2024-08-12 09:58:30 - Condition evaluation unchanged
+2024-08-12 09:58:37 - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-08-12 09:58:37 - Initializing Servlet 'dispatcherServlet'
+2024-08-12 09:58:37 - Completed initialization in 0 ms
+2024-08-12 09:58:37 - POST 요청 발생 - IP: 192.168.0.30, User-Agent: PostmanRuntime/7.40.0, URI: /medicine-traceability
+2024-08-12 09:58:37 - insert into drug_tracking_data (agg_data,auth,barcode_data,company_name,company_reg_number,delivery_date,delivery_type,exp_date,gs1_code,hash_code,mfn_number,product_name,serial_number,tx) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+2024-08-12 09:59:22 - Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification)
+2024-08-12 09:59:22 - Closing JPA EntityManagerFactory for persistence unit 'default'
+2024-08-12 09:59:22 - HikariPool-4 - Shutdown initiated...
+2024-08-12 09:59:22 - HikariPool-4 - Shutdown completed.

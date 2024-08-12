@@ -19,40 +19,40 @@ public class ApiDrugResponse {
     @Column(name = "barcode_data", nullable = false)
     private String barcodeData;
 
-    @Column(name = "company_reg_number")
+    @Column(name = "company_reg_number" , nullable = false)
     private String companyRegNumber;
 
-    @Column(name = "company_name")
+    @Column(name = "company_name" , nullable = false)
     private String companyName;
 
-    @Column(name = "delivery_type")
+    @Column(name = "delivery_type" , nullable = false)
     private String deliveryType;
 
-    @Column(name = "delivery_date")
+    @Column(name = "delivery_date", nullable = false)
     private String deliveryDate;
 
-    @Column(name = "product_name")
+    @Column(name = "product_name", nullable = false)
     private String productName;
 
-    @Column(name = "gs1_code")
+    @Column(name = "gs1_code", nullable = false)
     private String gs1Code;
 
-    @Column(name = "mfn_number")
-    private String mfnNumber;
+    @Column(name = "mf_number", nullable = false)
+    private String mfNumber;
 
-    @Column(name = "exp_date")
+    @Column(name = "exp_date", nullable = false)
     private String expDate;
 
-    @Column(name = "serial_number")
+    @Column(name = "serial_number", nullable = false)
     private String serialNumber;
 
-    @Column(name = "agg_data")
+    @Column(name = "agg_data", nullable = false)
     private String aggData;
 
-    @Column(name = "tx")
+    @Column(name = "tx", nullable = false)
     private String tx;
 
-    @Column(name = "hash_code")
+    @Column(name = "hash_code", nullable = false)
     private String hashCode;
 
     @Column(name = "auth", nullable = false)
@@ -130,12 +130,12 @@ public class ApiDrugResponse {
         this.gs1Code = gs1Code;
     }
 
-    public String getMfnNumber() {
-        return mfnNumber;
+    public String getmfNumber() {
+        return mfNumber;
     }
 
-    public void setMfnNumber(String mfnNumber) {
-        this.mfnNumber = mfnNumber;
+    public void setmfNumber(String mfNumber) {
+        this.mfNumber = mfNumber;
     }
 
     public String getExpDate() {

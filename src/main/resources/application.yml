@@ -6,14 +6,24 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
     show-sql: true
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+        use_sql_comments: true
+        highlight_sql: true
+        type:
+          binder:
+            log: true
 
 logging:
   level:
     org:
       hibernate:
         SQL: debug
+        type: trace
+    com.example.drugtrack.controller: INFO
+
+
