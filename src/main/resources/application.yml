@@ -17,6 +17,8 @@ spring:
         type:
           binder:
             log: true
+  main:
+    debug: true
 
 logging:
   level:

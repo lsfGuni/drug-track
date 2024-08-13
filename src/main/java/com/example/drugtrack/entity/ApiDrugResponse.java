@@ -63,7 +63,6 @@ public class ApiDrugResponse {
     @Column(name = "auth", nullable = false)
     private String auth;
 
-
     @PrePersist
     protected void omCreate(){
         this.auth = "sys";
@@ -214,4 +213,5 @@ public class ApiDrugResponse {
             throw new RuntimeException("해시값 생성이 실패했습니다.", e);
         }
     }
+
 }

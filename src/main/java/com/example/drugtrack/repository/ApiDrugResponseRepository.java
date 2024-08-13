@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ApiDrugResponseRepository extends JpaRepository<ApiDrugResponse, String> {
+    ApiDrugResponse findByTx(String tx);
 }

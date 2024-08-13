@@ -33,6 +33,7 @@ public class BlockchainService {
         this.dataStorageContract = DataStorage.load("0xD37e7E30443D903A1e04e26076A81D520751a6B0", web3j, transactionManager, contractGasProvider);
     }
 
+
     public String sendDataToBlockchain(ApiDrugResponse response) {
         try {
             // 데이터를 블록체인에 저장
@@ -46,4 +47,7 @@ public class BlockchainService {
             throw new RuntimeException("Error storing data on blockchain", e);
         }
     }
+
+
+
 }
