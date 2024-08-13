@@ -67,6 +67,9 @@ public class ApiDrugResponse {
     @PrePersist
     protected void omCreate(){
         this.auth = "sys";
+        if (this.tx != null) {
+            generateHashValue(); // tx 값이 설정된 후 해시값 생성
+        }
     }
     // Getters and Setters
 
