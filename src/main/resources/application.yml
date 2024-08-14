@@ -26,4 +26,7 @@ logging:
         type: trace
     com.example.drugtrack.controller: INFO
 
+server:
+  port: 8082
+
 

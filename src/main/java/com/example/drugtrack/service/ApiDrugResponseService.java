@@ -20,12 +20,14 @@ public class ApiDrugResponseService {
     @Autowired
     private ObjectMapper objectMapper;
 
+    //모든 의약품정보 조회하는 서비스클래스
     public List<ApiDrugResponse> getAllResponses() {
         return repository.findAll();
     }
 
-    public ApiDrugResponse getResponseById(String barcodeData) {
-        return repository.findById(barcodeData).orElse(null);
+    //사업자번호로 조회하는 서비스클래스
+    public List<ApiDrugResponse> getResponseByCompanyRegNumber(String companyRegNumber) {
+        return repository.findByCompanyRegNumber(companyRegNumber);
     }
 
     public ApiDrugResponse saveResponse(ApiDrugResponse response) {
@@ -64,8 +66,8 @@ public class ApiDrugResponseService {
         if (response.getGs1Code() == null) {
             response.setGs1Code("00000000000000");
         }
-        if (response.getmfNumber() == null) {
-            response.setmfNumber("N/A");
+        if (response.getMfNumber() == null) {
+            response.setMfNumber("N/A");
         }
         if (response.getExpDate() == null) {
             response.setExpDate("N/A");
@@ -90,7 +92,7 @@ public class ApiDrugResponseService {
         txValueMap.put("deliveryDate", response.getDeliveryDate());
         txValueMap.put("productName", response.getProductName());
         txValueMap.put("gs1Code", response.getGs1Code());
-        txValueMap.put("mfNumber", response.getmfNumber());
+        txValueMap.put("mfNumber", response.getMfNumber());
         txValueMap.put("expDate", response.getExpDate());
         txValueMap.put("serialNumber", response.getSerialNumber());
         txValueMap.put("aggData", response.getAggData());

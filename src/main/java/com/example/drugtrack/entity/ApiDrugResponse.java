@@ -1,5 +1,6 @@
 package com.example.drugtrack.entity;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 
 import java.nio.charset.StandardCharsets;
@@ -12,6 +13,7 @@ import java.security.NoSuchAlgorithmException;
 public class ApiDrugResponse {
 
     @Id
+    @Schema(hidden = true)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "seq")
     private Long seq;
@@ -49,12 +51,15 @@ public class ApiDrugResponse {
     @Column(name = "agg_data", nullable = false)
     private String aggData;
 
-    @Column(name = "tx", nullable = false)
+    @Schema(hidden = true)
+    @Column(name = "tx", length = 500, nullable = false)
     private String tx;
 
+    @Schema(hidden = true)
     @Column(name = "hash_code", nullable = false)
     private String hashCode;
 
+    @Schema(hidden = true)
     @Column(name = "auth", nullable = false)
     private String auth;
 
@@ -130,11 +135,11 @@ public class ApiDrugResponse {
         this.gs1Code = gs1Code;
     }
 
-    public String getmfNumber() {
+    public String getMfNumber() {
         return mfNumber;
     }
 
-    public void setmfNumber(String mfNumber) {
+    public void setMfNumber(String mfNumber) {
         this.mfNumber = mfNumber;
     }
 
