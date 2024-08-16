@@ -25,10 +25,6 @@ public class ApiDrugResponseService {
         return repository.findAll();
     }
 
-    //사업자번호로 조회하는 서비스클래스
-    public List<ApiDrugResponse> getResponseByCompanyRegNumber(String companyRegNumber) {
-        return repository.findByCompanyRegNumber(companyRegNumber);
-    }
 
     public ApiDrugResponse saveResponse(ApiDrugResponse response) {
         try {

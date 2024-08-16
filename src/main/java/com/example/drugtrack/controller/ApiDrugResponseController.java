@@ -1,6 +1,5 @@
 package com.example.drugtrack.controller;
 
-import com.example.drugtrack.dto.ApiDrugResponseWrapper;
 import com.example.drugtrack.entity.ApiDrugResponse;
 import com.example.drugtrack.service.ApiDrugResponseService;
 import io.swagger.v3.oas.annotations.Hidden;
@@ -31,14 +30,6 @@ public class ApiDrugResponseController {
     @GetMapping
     public List<ApiDrugResponse> getAllResponses() {
         return service.getAllResponses();
-    }
-
-    @Operation(summary = "사업자번호로 해당 의약품 조회", description = "사업자번호 기준으로 저장된 의약품 리스트를 조회합니다.")
-    @GetMapping("/{companyRegNumber}")
-    public ApiDrugResponseWrapper getResponseByCompanyRegNumber(@PathVariable String companyRegNumber) {
-        List<ApiDrugResponse> responses = service.getResponseByCompanyRegNumber(companyRegNumber);
-        String result = (responses != null && !responses.isEmpty()) ? "Y" : "N";
-        return new ApiDrugResponseWrapper(result, responses);
     }
 
     @Operation(summary = "의약품 등록 post요청", description = "파라미터를 통해 의약품 정보를 등록합니다.")
