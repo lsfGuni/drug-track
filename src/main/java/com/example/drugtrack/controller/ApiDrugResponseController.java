@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 @Tag(name = "의약 이력 API", description = "의약 관련 데이터를 조회하고 저장하는 API")
 @RestController
-@RequestMapping("/medicine-traceability")
+@RequestMapping("/traceability")
 public class ApiDrugResponseController {
 
     private static final Logger logger = LoggerFactory.getLogger(ApiDrugResponseController.class);
@@ -27,7 +27,7 @@ public class ApiDrugResponseController {
 
     @Hidden
     @Operation(summary = "모든 의약품 목록 조회", description = "데이터베이스에 저장된 모든 약물 응답을 조회합니다.")
-    @GetMapping
+    @GetMapping("/list")
     public List<ApiDrugResponse> getAllResponses() {
         return service.getAllResponses();
     }

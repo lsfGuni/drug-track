@@ -1,5 +1,6 @@
 package com.example.drugtrack.search.controller;
 
+import com.example.drugtrack.search.dto.BarcodeWrapper;
 import com.example.drugtrack.search.entity.ApiDrugList;
 import com.example.drugtrack.search.service.BarcodeService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,10 +21,13 @@ public class BarcodeController {
     @Autowired
     private BarcodeService barcodeService;
 
+
     @Operation(summary = "바코드로 의약품 상세정보 조회", description = "바코드 기준으로 의약품 상세정보를 조회합니다.")
     @GetMapping
-    public List<ApiDrugList> getDrugsByBarcode(@RequestParam String barcode) {
-        return barcodeService.getDrugsByBarcode(barcode);
+    public BarcodeWrapper getDrugsByBarcode(@RequestParam String barcode) {
+        List<ApiDrugList> responses = barcodeService.getDrugsByBarcode(barcode);
+        String result = (responses != null && !responses.isEmpty()) ? "Y" : "N";
+        return new BarcodeWrapper(result, responses);
     }
 }
 
