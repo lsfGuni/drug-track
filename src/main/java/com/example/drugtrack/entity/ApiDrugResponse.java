@@ -135,11 +135,11 @@ public class ApiDrugResponse {
         this.gs1Code = gs1Code;
     }
 
-    public String getmfNumber() {
+    public String getMfNumber() {
         return mfNumber;
     }
 
-    public void setmfNumber(String mfNumber) {
+    public void setMfNumber(String mfNumber) {
         this.mfNumber = mfNumber;
     }
 

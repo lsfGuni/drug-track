@@ -15,10 +15,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-@Tag(name = "약물 추적 API", description = "약물 관련 데이터를 조회하고 저장하는 API")
+
+@Tag(name = "의약 이력 API", description = "의약 관련 데이터를 조회하고 저장하는 API")
 
 @RestController
-@RequestMapping("/medicine-traceability")
+@RequestMapping("/traceability")
 public class ApiDrugResponseController {
 
     private static final Logger logger = LoggerFactory.getLogger(ApiDrugResponseController.class);
@@ -27,20 +28,17 @@ public class ApiDrugResponseController {
     private ApiDrugResponseService service;
 
     @Hidden
-    @Operation(summary = "모든 약물 응답 조회", description = "데이터베이스에 저장된 모든 약물 응답을 조회합니다.")
-    @GetMapping
+
+    @Operation(summary = "모든 의약품 목록 조회", description = "데이터베이스에 저장된 모든 약물 응답을 조회합니다.")
+    @GetMapping("/list")
+
     public List<ApiDrugResponse> getAllResponses() {
         return service.getAllResponses();
     }
 
-    @Hidden
-    @GetMapping("/{barcodeData}")
-    public ApiDrugResponse getResponseById(@PathVariable String barcodeData) {
-        return service.getResponseById(barcodeData);
-    }
+    @Operation(summary = "의약품 등록 post요청", description = "파라미터를 통해 의약품 정보를 등록합니다.")
+    @PostMapping("/enrollment")
 
-    @Operation(summary = "의약품 등록 post 요청", description = "post요청을 통해 의약품 정보를 등록합니다.")
-    @PostMapping
     public ResponseEntity<Map<String, String>> createResponse(@RequestBody ApiDrugResponse response, HttpServletRequest request) {
         // 요청자의 IP 주소 및 User-Agent 등 로그 기록
         String clientIp = request.getRemoteAddr();
