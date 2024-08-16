@@ -21,7 +21,15 @@ public class User {
     private String password;
 
     @Column(nullable = false)
-    private String role;  // USER, ADMIN 등의 역할
+    private String role = "USER";  // 기본값을 "USER"로 설정
+
+
+    @PrePersist
+    protected void onCreate() {
+        if (this.role == null) {
+            this.role = "USER";
+        }
+    }
 
     public Long getId() {
         return id;
@@ -54,4 +62,6 @@ public class User {
     public void setRole(String role) {
         this.role = role;
     }
+
+
 }

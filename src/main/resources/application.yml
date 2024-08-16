@@ -29,3 +29,6 @@ logging:
       springframework:
         security=DEBUG:com.example.drugtrack.controller: INFO
 
+jwt:
+  secret: "aVeryLongAndComplexSecretKeyThatIsDefinitelyAtLeast64BytesLongToEnsureHS512IsSecureEnoughAndSafeToUse"  # 64바이트 이상의 비밀 키 사용
+  expirationMs: 86400000  # 토큰 유효기간: 1일 (밀리초)

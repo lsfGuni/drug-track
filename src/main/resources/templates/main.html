@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>메인 페이지</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+<h1>환영합니다!</h1>
+<p th:if="${result == 'Y'}">성공적으로 로그인하였습니다.</p>
+
+<p><strong>JWT 토큰:</strong></p>
+<p th:text="${token}"></p>
+
+<div>
+    <a th:href="@{/logout}">로그아웃</a>
+</div>
+</body>
+</html>
