@@ -1,5 +1,6 @@
 package com.example.drugtrack.security.entity;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -9,6 +10,7 @@ import lombok.Data;
 public class User {
 
     @Id
+    @Schema(hidden = true)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 

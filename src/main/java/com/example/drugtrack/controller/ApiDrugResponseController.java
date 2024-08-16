@@ -28,7 +28,6 @@ public class ApiDrugResponseController {
     private ApiDrugResponseService service;
 
     @Hidden
-
     @Operation(summary = "모든 의약품 목록 조회", description = "데이터베이스에 저장된 모든 약물 응답을 조회합니다.")
     @GetMapping("/list")
 
