@@ -15,6 +15,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,13 +35,15 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
     private final EmailService emailService;  // EmailService 주입받기 위한 필드 추가
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public AuthController(UserService userService, AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, EmailService emailService) {
+    public AuthController(UserService userService, AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, EmailService emailService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
         this.emailService = emailService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Operation(summary = "회원 가입 post요청", description = "데이터베이스에 회원정보를 저장합니다.")
@@ -90,7 +93,7 @@ public class AuthController {
         userService.updatePassword(user, tempPassword);
 
         // 이메일 발송 (EmailService가 있다고 가정)
-        String message = "Your temporary password is: " + tempPassword;
+        String message = "의약품 이력관리 API 임시 비밀번호입니다.: " + tempPassword;
         emailService.sendResetPasswordEmail(user.getEmail(), message);
         System.out.println(message);
         return ResponseEntity.ok(Collections.singletonMap("result", "Y"));
@@ -106,4 +109,6 @@ public class AuthController {
         }
         return tempPassword.toString();
     }
+
+
 }

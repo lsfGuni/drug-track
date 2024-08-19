@@ -38,4 +38,13 @@ public class UserService {
         userRepository.save(user);
     }
 
+    public void deactivateUser(User user) {
+        user.setActive("N");
+        userRepository.save(user);
+    }
+
+    public User findByCompanyRegNumberAndActive(String companyRegNumber, String active) {
+        return userRepository.findByCompanyRegNumberAndActive(companyRegNumber, active).orElse(null);
+    }
+
 }

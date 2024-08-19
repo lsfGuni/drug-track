@@ -38,10 +38,17 @@ public class User {
     @Column
     private String email;
 
+    @Column(nullable = false)
+    @Schema(hidden = true)
+    private String active = "Y";  // "Y" (활성화), "N" (비활성화)
+
     @PrePersist
     protected void onCreate() {
         if (this.role == null) {
             this.role = "USER";
+        }
+        if (this.active == null) {
+            this.active = "Y";
         }
     }
 
@@ -115,5 +122,13 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getActive() {
+        return active;
+    }
+
+    public void setActive(String active) {
+        this.active = active;
     }
 }
