@@ -2,9 +2,9 @@ package com.example.drugtrack.security.dto;
 
 public class LoginRequest {
 
-
-    private String password;
     private String companeyRegNumber;
+    private String password;
+
 
     // Getters and Setters
 

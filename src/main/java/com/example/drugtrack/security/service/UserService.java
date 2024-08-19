@@ -40,11 +40,14 @@ public class UserService {
 
     public void deactivateUser(User user) {
         user.setActive("N");
+        user.setCompanyRegNumber(user.getCompanyRegNumber() + "_deleted");
         userRepository.save(user);
     }
 
     public User findByCompanyRegNumberAndActive(String companyRegNumber, String active) {
         return userRepository.findByCompanyRegNumberAndActive(companyRegNumber, active).orElse(null);
     }
+
+
 
 }
