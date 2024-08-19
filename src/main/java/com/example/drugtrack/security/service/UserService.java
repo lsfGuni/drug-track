@@ -27,4 +27,15 @@ public class UserService {
     public User findByUsername(String username) {
         return userRepository.findByUsername(username).orElse(null);
     }
+
+    //비밀번호 찾기
+    public User findByUsernameAndCompanyType(String username, String companyType) {
+        return userRepository.findByUsernameAndCompanyType(username, companyType).orElse(null);
+    }
+    //비밀번호찾기-비밀번호 자동생성
+    public void updatePassword(User user, String newPassword) {
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+    }
+
 }

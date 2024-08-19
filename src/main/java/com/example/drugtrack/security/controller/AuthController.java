@@ -1,8 +1,10 @@
 package com.example.drugtrack.security.controller;
 
 import com.example.drugtrack.security.dto.LoginRequest;
+import com.example.drugtrack.security.dto.PasswordResetRequest;
 import com.example.drugtrack.security.entity.User;
 import com.example.drugtrack.security.jwt.JwtTokenProvider;
+import com.example.drugtrack.security.service.EmailService;
 import com.example.drugtrack.security.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 @Tag(name = "USER 관련 API", description = "USER정보를 관리하는 API")
 @Controller
@@ -30,12 +33,14 @@ public class AuthController {
     private final UserService userService;
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
+    private final EmailService emailService;  // EmailService 주입받기 위한 필드 추가
 
     @Autowired
-    public AuthController(UserService userService, AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider) {
+    public AuthController(UserService userService, AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, EmailService emailService) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.emailService = emailService;
     }
 
     @Operation(summary = "회원 가입 post요청", description = "데이터베이스에 회원정보를 저장합니다.")
@@ -63,5 +68,42 @@ public class AuthController {
         response.put("result", "Y");
 
         return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "비밀번호 찾기", description = "계정 ID와 사업자구분값을 통해 비밀번호를 찾습니다.")
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestBody PasswordResetRequest request) {
+        String companyRegNumber = request.getCompanyRegNumber();
+        String companyType = request.getCompanyType();
+
+        User user = userService.findByUsernameAndCompanyType(companyRegNumber, companyType);
+
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Collections.singletonMap("result", "N"));
+        }
+
+        // 임시 비밀번호 생성
+        String tempPassword = generateTemporaryPassword();
+
+        // 임시 비밀번호로 비밀번호 업데이트
+        userService.updatePassword(user, tempPassword);
+
+        // 이메일 발송 (EmailService가 있다고 가정)
+        String message = "Your temporary password is: " + tempPassword;
+        emailService.sendResetPasswordEmail(user.getEmail(), message);
+        System.out.println(message);
+        return ResponseEntity.ok(Collections.singletonMap("result", "Y"));
+    }
+
+    private String generateTemporaryPassword() {
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        StringBuilder tempPassword = new StringBuilder();
+        Random rnd = new Random();
+        while (tempPassword.length() < 8) { // 비밀번호 길이 8자리
+            int index = (int) (rnd.nextFloat() * chars.length());
+            tempPassword.append(chars.charAt(index));
+        }
+        return tempPassword.toString();
     }
 }

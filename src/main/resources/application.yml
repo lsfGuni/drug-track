@@ -19,6 +19,21 @@ spring:
           binder:
             log: true
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ibizguni@gmail.com  # 실제 Gmail 주소로 대체
+    password: mlcy mgxo wiop advc  # 실제 Gmail 비밀번호 또는 앱 비밀번호로 대체
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+
 logging:
   level:
     org:
