@@ -7,71 +7,61 @@ import com.example.drugtrack.security.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 @Tag(name = "USER 관련 API", description = "USER정보를 관리하는 API")
 @Controller
+@RequestMapping("/user")
 public class AuthController {
 
     private final UserService userService;
+    private final AuthenticationManager authenticationManager;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Autowired
-    public AuthController(UserService userService) {
+    public AuthController(UserService userService, AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider) {
         this.userService = userService;
+        this.authenticationManager = authenticationManager;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
-
-    @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
 
     @Operation(summary = "회원 가입 post요청", description = "데이터베이스에 회원정보를 저장합니다.")
     @PostMapping("/register")
-    public String registerUser(User user, Model model) {
+    public ResponseEntity<?> registerUser(@RequestBody User user) {
         if (userService.findByUsername(user.getUsername()) != null) {
-            model.addAttribute("error", "Username is already taken.");
-            return "register";
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Collections.singletonMap("error", "Username is already taken."));
         }
         userService.registerUser(user);
-        return "redirect:/login";
+        return ResponseEntity.ok(Collections.singletonMap("result", "Y"));
     }
 
     @Operation(summary = "로그인 API", description = "DB에 저장된 회원정보를 이용하여 로그인합니다.")
     @PostMapping("/login")
-    public String authenticateUser(LoginRequest loginRequest, Model model) {
+    public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+                new UsernamePasswordAuthenticationToken(loginRequest.getCompaneyRegNumber(), loginRequest.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtTokenProvider.generateToken(authentication);
 
-        model.addAttribute("token", jwt);
-        model.addAttribute("result", "Y");  // 로그인 성공 시 result 파라미터에 Y 값 추가
+        Map<String, String> response = new HashMap<>();
+        response.put("token", jwt);
+        response.put("result", "Y");
 
-        return "main"; // JWT 토큰과 함께 메인 페이지로 이동
-    }
-
-    @GetMapping("/register")
-    public String showRegistrationForm(Model model) {
-        model.addAttribute("user", new User());
-        return "register";
-    }
-
-    @GetMapping("/login")
-    public String showLoginForm() {
-        return "login";
-    }
-
-    @GetMapping("/main")
-    public String showMainPage() {
-        return "main";
+        return ResponseEntity.ok(response);
     }
 }
