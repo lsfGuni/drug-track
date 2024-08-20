@@ -3,22 +3,57 @@
 <head>
     <title>로그인</title>
     <meta charset="UTF-8">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- jQuery를 사용하여 AJAX 요청을 보냅니다. -->
 </head>
 <body>
 <h1>로그인</h1>
-<form th:action="@{/login}" method="post">
-    <div>
-        <label for="username">사용자 이름:</label>
-        <input type="text" id="username" name="username" required />
-    </div>
-    <div>
-        <label for="password">비밀번호:</label>
-        <input type="password" id="password" name="password" required />
-    </div>
-    <button type="submit">로그인</button>
-</form>
+
 <div>
-    <a th:href="@{/register}">회원이 아니신가요? 회원가입하기</a>
+    <label for="id">사용자 이름:</label>
+    <input type="text" id="id" required />
 </div>
+<div>
+    <label for="password">비밀번호:</label>
+    <input type="password" id="password" required />
+</div>
+<button id="loginButton">로그인</button>
+
+<div>
+    <a href="/view/register">회원이 아니신가요? 회원가입하기</a>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#loginButton').click(function(event) {
+            event.preventDefault(); // 폼 제출을 막음
+
+            var loginData = {
+                id: $('#id').val(),
+                password: $('#password').val()
+            };
+
+            $.ajax({
+                type: 'POST',
+                url: '/user/login',
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                },
+                contentType: 'application/json',
+                data: JSON.stringify(loginData),
+                success: function(response) {
+                    // JWT 토큰 처리 등 후속 작업
+                    localStorage.setItem('token', response.token);
+                    console.log('로그인 성공:', response);
+                    window.location.href = '/main'; // 로그인 성공 시 /main 페이지로 이동
+                },
+                error: function(xhr, status, error) {
+                    console.error('로그인 실패:', xhr.responseText);
+                    // 로그인 실패 시 처리할 작업 (예: 오류 메시지 표시)
+                    alert('로그인 실패: ' + xhr.responseText);
+                }
+            });
+        });
+    });
+</script>
 </body>
 </html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>관리자 대시보드</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+<h1>관리자 대시보드</h1>
+
+<div th:if="${#authorization.expression('hasRole(\'ADMIN\')')}">
+    <p>관리자 전용 콘텐츠입니다.</p>
+    <!-- 관리자 전용 기능과 내용 -->
+</div>
+<div th:unless="${#authorization.expression('hasRole(\'ADMIN\')')}">
+    <script type="text/javascript">
+        alert("관리자 페이지입니다. 이전 화면으로 이동합니다.");
+        window.history.back();
+    </script>
+</div>
+
+</body>
+</html>

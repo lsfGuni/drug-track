@@ -12,16 +12,18 @@ public class User {
     @Id
     @Schema(hidden = true)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "seq")
+    private Long seq;  // 기존의 seq 필드
 
-    @Column(nullable = false, unique = true)
-    private String username;
+    @Column(name = "id", unique = true, nullable = false)
+    private String id;  // 새로운 클라이언트 ID 필드
 
     @Column(nullable = false)
     private String password;
 
     @Column(nullable = false)
-    private String role = "USER";  // 기본값을 "USER"로 설정
+    @Schema(hidden = true)
+    private String role;  //"USER" (유저), "ADMIN" (관리자)
 
     @Column
     private String companyType;
@@ -40,7 +42,7 @@ public class User {
 
     @Column(nullable = false)
     @Schema(hidden = true)
-    private String active = "Y";  // "Y" (활성화), "N" (비활성화)
+    private String active;  // "Y" (활성화), "N" (비활성화)
 
     @PrePersist
     protected void onCreate() {
@@ -52,20 +54,13 @@ public class User {
         }
     }
 
-    public Long getId() {
+
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public String getPassword() {

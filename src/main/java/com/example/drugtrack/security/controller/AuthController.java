@@ -4,7 +4,6 @@ import com.example.drugtrack.security.dto.DeactivateUserRequest;
 import com.example.drugtrack.security.dto.LoginRequest;
 import com.example.drugtrack.security.dto.PasswordResetRequest;
 import com.example.drugtrack.security.entity.User;
-import com.example.drugtrack.security.jwt.JwtTokenProvider;
 import com.example.drugtrack.security.service.EmailService;
 import com.example.drugtrack.security.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,15 +33,15 @@ public class AuthController {
 
     private final UserService userService;
     private final AuthenticationManager authenticationManager;
-    private final JwtTokenProvider jwtTokenProvider;
+
     private final EmailService emailService;  // EmailService 주입받기 위한 필드 추가
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public AuthController(UserService userService, AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, EmailService emailService, PasswordEncoder passwordEncoder) {
+    public AuthController(UserService userService, AuthenticationManager authenticationManager, EmailService emailService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
-        this.jwtTokenProvider = jwtTokenProvider;
+
         this.emailService = emailService;
         this.passwordEncoder = passwordEncoder;
     }
@@ -50,9 +49,9 @@ public class AuthController {
     @Operation(summary = "회원 가입 post요청", description = "데이터베이스에 회원정보를 저장합니다.")
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody User user) {
-        if (userService.findByUsername(user.getUsername()) != null) {
+        if (userService.findById(user.getId()) != null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Collections.singletonMap("error", "Username is already taken."));
+                    .body(Collections.singletonMap("error", "이미 가입된 아이디가 있습니다."));
         }
         userService.registerUser(user);
         return ResponseEntity.ok(Collections.singletonMap("result", "Y"));
@@ -61,37 +60,45 @@ public class AuthController {
     @Operation(summary = "로그인 API", description = "DB에 저장된 회원정보를 이용하여 로그인합니다.")
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
-        // 'active' 상태가 'Y'인 사용자만 찾도록 함
-        User user = userService.findByCompanyRegNumberAndActive(loginRequest.getCompaneyRegNumber(), "Y");
+        try {
+            // 'active' 상태가 'Y'인 사용자만 찾도록 함
+            User user = userService.findByIdAndActive(loginRequest.getId());
 
-        // 사용자가 null이거나, 사용자가 비활성화 상태인 경우 로그인 거부
-        if (user == null) {
+            // 사용자가 null이거나, 사용자가 비활성화 상태인 경우 로그인 거부
+            if (user == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(Collections.singletonMap("error", "Invalid credentials or account is deactivated."));
+            }
+
+            // 정상적인 로그인 처리
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginRequest.getId(), loginRequest.getPassword()));
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+
+            Map<String, String> response = new HashMap<>();
+
+            response.put("result", "Y");
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            // Error handling for failed authentication
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Collections.singletonMap("error", "Invalid credentials or account is deactivated."));
+                    .body(Collections.singletonMap("error", "Authentication failed: " + e.getMessage()));
         }
-
-        // 정상적인 로그인 처리
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getCompaneyRegNumber(), loginRequest.getPassword()));
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = jwtTokenProvider.generateToken(authentication);
-
-        Map<String, String> response = new HashMap<>();
-        response.put("token", jwt);
-        response.put("result", "Y");
-
-        return ResponseEntity.ok(response);
     }
+
+
 
 
     @Operation(summary = "비밀번호 찾기", description = "계정 ID와 사업자구분값을 통해 비밀번호를 찾습니다.")
     @PostMapping("/forgot-password")
     public ResponseEntity<?> forgotPassword(@RequestBody PasswordResetRequest request) {
-        String companyRegNumber = request.getCompanyRegNumber();
+        String id = request.getId();
         String companyType = request.getCompanyType();
 
-        User user = userService.findByUsernameAndCompanyType(companyRegNumber, companyType);
+        User user = userService.findByIdAndCompanyType(id, companyType);
 
         if (user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -125,7 +132,7 @@ public class AuthController {
     @Operation(summary = "회원 탈퇴", description = "계정과 사업장 정보를 활용해 회원 탈퇴를 처리합니다.")
     @PostMapping("/deactivate")
     public ResponseEntity<?> deactivateUser(@RequestBody DeactivateUserRequest request) {
-        String companyRegNumber = request.getCompanyRegNumber();
+        String companyRegNumber = request.getId();
         String password = request.getPassword();
 
         // 거래처사업장등록번호로 사용자 찾기

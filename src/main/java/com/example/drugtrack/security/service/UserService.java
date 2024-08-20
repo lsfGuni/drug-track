@@ -24,13 +24,18 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User findByUsername(String username) {
-        return userRepository.findByUsername(username).orElse(null);
+    public User findById(String id) {
+        return userRepository.findById(id).orElse(null);
     }
 
+
+    // 로그인 시 활성화 상태 확인
+    public User findByIdAndActive(String id) {
+        return userRepository.findByIdAndActive(id, "Y").orElse(null);
+    }
     //비밀번호 찾기
-    public User findByUsernameAndCompanyType(String username, String companyType) {
-        return userRepository.findByUsernameAndCompanyType(username, companyType).orElse(null);
+    public User findByIdAndCompanyType(String id, String companyType) {
+        return userRepository.findByIdAndCompanyType(id, companyType).orElse(null);
     }
     //비밀번호찾기-비밀번호 자동생성
     public void updatePassword(User user, String newPassword) {
@@ -38,12 +43,14 @@ public class UserService {
         userRepository.save(user);
     }
 
+    //회원탈퇴
     public void deactivateUser(User user) {
         user.setActive("N");
-        user.setCompanyRegNumber(user.getCompanyRegNumber() + "_deleted");
+        user.setId(user.getId() + "_deleted");
         userRepository.save(user);
     }
 
+    //회원탈퇴시 칼럼값 변경
     public User findByCompanyRegNumberAndActive(String companyRegNumber, String active) {
         return userRepository.findByCompanyRegNumberAndActive(companyRegNumber, active).orElse(null);
     }

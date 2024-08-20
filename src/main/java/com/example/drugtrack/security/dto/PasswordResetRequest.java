@@ -6,7 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class PasswordResetRequest {
 
     @Schema(description = "계정 ID", example = "testUser", required = true)
-    private String companyRegNumber;
+    private String id;
 
     @Schema(description = "사업자 구분 값", example = "testCompanyType", required = true)
     private String companyType;
@@ -14,12 +14,12 @@ public class PasswordResetRequest {
     // Getters and Setters
 
 
-    public String getCompanyRegNumber() {
-        return companyRegNumber;
+    public String getId() {
+        return id;
     }
 
-    public void setCompanyRegNumber(String companyRegNumber) {
-        this.companyRegNumber = companyRegNumber;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getCompanyType() {
