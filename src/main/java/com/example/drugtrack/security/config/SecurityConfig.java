@@ -55,6 +55,9 @@ public class SecurityConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // 세션이 없으면 생성
                 );
 
+
         return http.build();
     }
+
+
 }
