@@ -21,7 +21,7 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
+    @Column(name = "ROLE", nullable = false)
     @Schema(hidden = true)
     private String role;  //"USER" (유저), "ADMIN" (관리자)
 

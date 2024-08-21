@@ -31,6 +31,8 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
+                                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll() // Permit access to Swagger UI
+                                .requestMatchers("/traceability/**","/search/**","/user/**").permitAll()
                                 .requestMatchers("/login", "/register", "/favicon.ico", "/css/**", "/js/**", "/images/**").permitAll()  // 정적 리소스와 로그인 페이지 허용
                                 .requestMatchers("/admin/**").hasRole("ADMIN")  // 관리자 페이지 접근 권한 설정
                                 .requestMatchers("/main").authenticated()
