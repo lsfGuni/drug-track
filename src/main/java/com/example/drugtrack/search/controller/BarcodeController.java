@@ -15,7 +15,7 @@ import java.util.List;
 
 @Tag(name = "의약 이력 API", description = "의약 관련 데이터를 조회하고 저장하는 API")
 @RestController
-@RequestMapping("/search/barcode")
+@RequestMapping("/search/getDrugInfo")
 public class BarcodeController {
 
     @Autowired

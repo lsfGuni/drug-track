@@ -36,7 +36,7 @@ public class ApiDrugResponseController {
     }
 
     @Operation(summary = "의약품 등록 post요청", description = "파라미터를 통해 의약품 정보를 등록합니다.")
-    @PostMapping("/enrollment")
+    @PostMapping("/regDrugTracking")
 
     public ResponseEntity<Map<String, String>> createResponse(@RequestBody ApiDrugResponse response, HttpServletRequest request) {
         // 요청자의 IP 주소 및 User-Agent 등 로그 기록
