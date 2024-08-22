@@ -4,6 +4,7 @@ import com.example.drugtrack.security.dto.DeactivateUserRequest;
 import com.example.drugtrack.security.dto.LoginRequest;
 import com.example.drugtrack.security.dto.PasswordResetRequest;
 import com.example.drugtrack.security.entity.User;
+import com.example.drugtrack.security.jwt.JwtTokenProvider;
 import com.example.drugtrack.security.service.EmailService;
 import com.example.drugtrack.security.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -33,15 +34,15 @@ public class AuthController {
 
     private final UserService userService;
     private final AuthenticationManager authenticationManager;
-
+    private final JwtTokenProvider tokenProvider;
     private final EmailService emailService;  // EmailService 주입받기 위한 필드 추가
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public AuthController(UserService userService, AuthenticationManager authenticationManager, EmailService emailService, PasswordEncoder passwordEncoder) {
+    public AuthController(UserService userService, AuthenticationManager authenticationManager, JwtTokenProvider tokenProvider, EmailService emailService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
-
+        this.tokenProvider = tokenProvider;
         this.emailService = emailService;
         this.passwordEncoder = passwordEncoder;
     }
@@ -50,44 +51,81 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody User user) {
         if (userService.findById(user.getId()) != null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Collections.singletonMap("error", "이미 가입된 아이디가 있습니다."));
+            // 이미 가입된 아이디가 있는 경우, result = N과 에러 메시지를 반환
+            Map<String, Object> response = new HashMap<>();
+            response.put("result", "N");
+            response.put("error", "이미 가입된 아이디가 있습니다.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
+
+        // 사용자 등록
         userService.registerUser(user);
-        return ResponseEntity.ok(Collections.singletonMap("result", "Y"));
+
+        // 응답 데이터 구성
+        Map<String, Object> response = new HashMap<>();
+        response.put("result", "Y");
+
+        Map<String, String> data = new HashMap<>();
+        data.put("companyType", user.getCompanyType());
+        data.put("companyName", user.getCompanyName());
+        data.put("companyRegNumber", user.getCompanyRegNumber());
+        data.put("phoneNumber", user.getPhoneNumber());
+        data.put("email", user.getEmail());
+        data.put("username", user.getUsername());
+        data.put("role", user.getRole());
+
+        response.put("data", data);
+
+
+
+        return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "로그인 API", description = "DB에 저장된 회원정보를 이용하여 로그인합니다.")
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
         try {
-            // 'active' 상태가 'Y'인 사용자만 찾도록 함
+            // 사용자 정보 조회
             User user = userService.findByIdAndActive(loginRequest.getId());
-
-            // 사용자가 null이거나, 사용자가 비활성화 상태인 경우 로그인 거부
             if (user == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body(Collections.singletonMap("error", "Invalid credentials or account is deactivated."));
             }
 
-            // 정상적인 로그인 처리
+            // 인증 시도
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginRequest.getId(), loginRequest.getPassword()));
-
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
+            String jwt = tokenProvider.generateToken(authentication); // JWT 생성
 
-            Map<String, String> response = new HashMap<>();
-
+            // 인증 성공 시 반환할 데이터 구성
+            Map<String, Object> response = new HashMap<>();
             response.put("result", "Y");
+            response.put("token", jwt); // JWT 토큰 반환
+
+            Map<String, String> data = new HashMap<>();
+            data.put("companyType", user.getCompanyType());
+            data.put("companyName", user.getCompanyName());
+            data.put("companyRegNumber", user.getCompanyRegNumber());
+            data.put("phoneNumber", user.getPhoneNumber());
+            data.put("email", user.getEmail());
+
+            // 추가 파라미터 추가
+            data.put("username", user.getUsername());
+            data.put("role", user.getRole());
+
+            response.put("data", data);
 
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            // Error handling for failed authentication
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Collections.singletonMap("error", "Authentication failed: " + e.getMessage()));
         }
     }
+
+
+
 
 
 

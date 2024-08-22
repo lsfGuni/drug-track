@@ -1,5 +1,7 @@
 package com.example.drugtrack.security.config;
 
+import com.example.drugtrack.security.jwt.JwtAuthEntryPoint;
+import com.example.drugtrack.security.jwt.JwtAuthFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -10,10 +12,19 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    private final JwtAuthFilter jwtAuthFilter;
+    private final JwtAuthEntryPoint unauthorizedHandler;
+
+    public SecurityConfig(JwtAuthFilter jwtAuthFilter, JwtAuthEntryPoint unauthorizedHandler) {
+        this.jwtAuthFilter = jwtAuthFilter;
+        this.unauthorizedHandler = unauthorizedHandler;
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -29,35 +40,21 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
+                .exceptionHandling(exceptionHandling ->
+                        exceptionHandling.authenticationEntryPoint(unauthorizedHandler))
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll() // Permit access to Swagger UI
-                                .requestMatchers("/traceability/**","/search/**","/user/**").permitAll()
-                                .requestMatchers("/login", "/register", "/favicon.ico", "/css/**", "/js/**", "/images/**").permitAll()  // 정적 리소스와 로그인 페이지 허용
-                                .requestMatchers("/admin/**").hasRole("ADMIN")  // 관리자 페이지 접근 권한 설정
-                                .requestMatchers("/main").authenticated()
-                                .anyRequest().authenticated()  // 그 외 모든 요청은 인증 필요
-                )
-                .formLogin(formLogin ->
-                        formLogin
-                                .loginPage("/view/login")
-                                .loginProcessingUrl("/user/login")
-                                .defaultSuccessUrl("/main", true)
-                                .permitAll()
-                )
-                .logout(logout ->
-                        logout
-                                .logoutUrl("/logout")
-                                .logoutSuccessUrl("/view/login?logout")
-                                .permitAll()
-                )
-                .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // 세션이 없으면 생성
+                                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll()
+                                .requestMatchers("/user/register", "/user/login").permitAll()
+                                .requestMatchers("/traceability/**", "/search/**").permitAll()
+                                .anyRequest().authenticated()
                 );
 
+        // JWT 필터 추가
+        http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
-
-
 }

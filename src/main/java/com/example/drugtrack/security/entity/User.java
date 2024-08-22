@@ -44,6 +44,11 @@ public class User {
     @Schema(hidden = true)
     private String active;  // "Y" (활성화), "N" (비활성화)
 
+
+    // username 필드 추가
+    @Column(nullable = false, unique = true)
+    private String username;
+
     @PrePersist
     protected void onCreate() {
         if (this.role == null) {
@@ -51,6 +56,9 @@ public class User {
         }
         if (this.active == null) {
             this.active = "Y";
+        }
+        if (this.username == null) {
+            this.username = this.id; // id와 동일하게 설정하거나 적절한 기본값 설정
         }
     }
 
@@ -125,5 +133,21 @@ public class User {
 
     public void setActive(String active) {
         this.active = active;
+    }
+
+    public Long getSeq() {
+        return seq;
+    }
+
+    public void setSeq(Long seq) {
+        this.seq = seq;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }
