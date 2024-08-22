@@ -9,6 +9,8 @@ import com.example.drugtrack.security.service.EmailService;
 import com.example.drugtrack.security.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +34,8 @@ import java.util.Random;
 @RequestMapping("/user")
 public class AuthController {
 
+    private static final Logger log = LoggerFactory.getLogger(AuthController.class);
+
     private final UserService userService;
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider tokenProvider;
@@ -50,46 +54,59 @@ public class AuthController {
     @Operation(summary = "회원 가입 post요청", description = "데이터베이스에 회원정보를 저장합니다.")
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody User user) {
+        Map<String, Object> response = new HashMap<>();
+
         if (userService.findById(user.getId()) != null) {
-            // 이미 가입된 아이디가 있는 경우, result = N과 에러 메시지를 반환
-            Map<String, Object> response = new HashMap<>();
+            log.error("이미 가입된 아이디 요청: {}", user.getId());
+
             response.put("result", "N");
             response.put("error", "이미 가입된 아이디가 있습니다.");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        } else {
+            // 사용자 등록
+            log.info("회원가입 성공: ID = {}", user.getId());
+            userService.registerUser(user);
+
+            response.put("result", "Y");
+            response.put("error", "");
         }
 
-        // 사용자 등록
-        userService.registerUser(user);
-
-        // 응답 데이터 구성
-        Map<String, Object> response = new HashMap<>();
-        response.put("result", "Y");
-
         Map<String, String> data = new HashMap<>();
+        data.put("id", user.getId());
         data.put("companyType", user.getCompanyType());
         data.put("companyName", user.getCompanyName());
         data.put("companyRegNumber", user.getCompanyRegNumber());
         data.put("phoneNumber", user.getPhoneNumber());
         data.put("email", user.getEmail());
-        data.put("username", user.getUsername());
-        data.put("role", user.getRole());
 
         response.put("data", data);
-        response.put("error", null);
 
-        System.out.println("Register Request Parameters: " + response);
         return ResponseEntity.ok(response);
     }
+
 
     @Operation(summary = "로그인 API", description = "DB에 저장된 회원정보를 이용하여 로그인합니다.")
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
+
+        // 요청 본문 출력
+        log.info("Received login request with data: {}", loginRequest);
+        Map<String, Object> response = new HashMap<>();
+
         try {
             // 사용자 정보 조회
+
+
             User user = userService.findByIdAndActive(loginRequest.getId());
             if (user == null) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                        .body(Collections.singletonMap("error", "Invalid credentials or account is deactivated."));
+                response.put("result", "N");
+                response.put("error", "존재하지 않거나 비활성화 된 계정입니다.");
+
+                Map<String, String> data = new HashMap<>();
+                data.put("id", loginRequest.getId());
+                response.put("data", data);
+
+                // 여기서는 200 OK를 반환하며, result 값으로 실패를 나타냅니다.
+                return ResponseEntity.ok(response);
             }
 
             // 인증 시도
@@ -97,34 +114,39 @@ public class AuthController {
                     new UsernamePasswordAuthenticationToken(loginRequest.getId(), loginRequest.getPassword()));
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            String jwt = tokenProvider.generateToken(authentication); // JWT 생성
-
+            //String jwt = tokenProvider.generateToken(authentication); // JWT 생성
+            String jwt = "S29oZ3lMcHpBbnRnVW1KbXhZNHJlNzFPdk1KTjdTdXZaZmpySzZhS3Z3RHB6WFlvMFFqY3lCd2RhQ1hwYW5MY0t4QkN4L1lvZFlr";
             // 인증 성공 시 반환할 데이터 구성
-            Map<String, Object> response = new HashMap<>();
             response.put("result", "Y");
             response.put("token", jwt); // JWT 토큰 반환
 
             Map<String, String> data = new HashMap<>();
+            data.put("id", user.getId());
             data.put("companyType", user.getCompanyType());
             data.put("companyName", user.getCompanyName());
             data.put("companyRegNumber", user.getCompanyRegNumber());
             data.put("phoneNumber", user.getPhoneNumber());
             data.put("email", user.getEmail());
 
-            // 추가 파라미터 추가
-            data.put("username", user.getUsername());
-            data.put("role", user.getRole());
-
             response.put("data", data);
-            response.put("error", null);
+            response.put("error", "");
 
             System.out.println("login Request Parameters: " + response);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Collections.singletonMap("error", "Authentication failed: " + e.getMessage()));
+            response.put("result", "N");
+            response.put("error", "Authentication failed: " + e.getMessage());
+
+            Map<String, String> data = new HashMap<>();
+            data.put("id", loginRequest.getId());
+            response.put("data", data);
+
+            // 여기서도 200 OK를 반환하며, result 값으로 실패를 나타냅니다.
+            return ResponseEntity.ok(response);
         }
     }
+
+
 
 
 

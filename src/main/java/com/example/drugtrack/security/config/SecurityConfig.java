@@ -49,6 +49,7 @@ public class SecurityConfig {
                                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll()
                                 .requestMatchers("/user/register", "/user/login").permitAll()
                                 .requestMatchers("/traceability/**", "/search/**").permitAll()
+                                .requestMatchers("/favicon.ico").permitAll()
                                 .anyRequest().authenticated()
                 );
 

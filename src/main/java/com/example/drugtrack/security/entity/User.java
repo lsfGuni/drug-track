@@ -47,6 +47,7 @@ public class User {
 
     // username 필드 추가
     @Column( unique = true)
+    @Schema(hidden = true)
     private String username;
 
     @PrePersist
