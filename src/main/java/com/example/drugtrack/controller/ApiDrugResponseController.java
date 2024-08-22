@@ -53,8 +53,10 @@ public class ApiDrugResponseController {
         Map<String, String> responseMap = new HashMap<>();
         if (savedResponse != null) {
             responseMap.put("result", "Y");
+            responseMap.put("error", null);
         } else {
             responseMap.put("result", "N");
+            responseMap.put("error", "등록이 실패했습니다.");
         }
 
         return ResponseEntity.ok(responseMap);

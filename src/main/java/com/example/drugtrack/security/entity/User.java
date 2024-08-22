@@ -31,7 +31,7 @@ public class User {
     @Column
     private String companyName;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
     private String companyRegNumber;
 
     @Column
@@ -46,7 +46,7 @@ public class User {
 
 
     // username 필드 추가
-    @Column(nullable = false, unique = true)
+    @Column( unique = true)
     private String username;
 
     @PrePersist

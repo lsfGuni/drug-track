@@ -27,6 +27,7 @@ public class BarcodeController {
     public BarcodeWrapper getDrugsByBarcode(@RequestParam String barcode) {
         List<ApiDrugList> responses = barcodeService.getDrugsByBarcode(barcode);
         String result = (responses != null && !responses.isEmpty()) ? "Y" : "N";
+
         return new BarcodeWrapper(result, responses);
     }
 }

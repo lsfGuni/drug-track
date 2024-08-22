@@ -75,9 +75,9 @@ public class AuthController {
         data.put("role", user.getRole());
 
         response.put("data", data);
+        response.put("error", null);
 
-
-
+        System.out.println("Register Request Parameters: " + response);
         return ResponseEntity.ok(response);
     }
 
@@ -116,7 +116,9 @@ public class AuthController {
             data.put("role", user.getRole());
 
             response.put("data", data);
+            response.put("error", null);
 
+            System.out.println("login Request Parameters: " + response);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
