@@ -6,7 +6,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+
 @Repository
-public interface ApiDrugResponseRepository extends JpaRepository<ApiDrugResponse, String> {
-    List<ApiDrugResponse> findByCompanyRegNumber(String companyRegNumber);
+public interface ApiDrugResponseRepository extends JpaRepository<ApiDrugResponse, Long> {
+    List<ApiDrugResponse> findByStartCompanyRegNumber(String startCompanyRegNumber);
 }
+

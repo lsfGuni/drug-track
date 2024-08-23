@@ -51,7 +51,7 @@ logging:
 
 app:
   jwtSecret: "S29oZ3lMcHpBbnRnVW1KbXhZNHJlNzFPdk1KTjdTdXZaZmpySzZhS3Z3RHB6WFlvMFFqY3lCd2RhQ1hwYW5MY0t4QkN4L1lvZFlr"
-  jwtExpirationMs: 3600000
+  jwtExpirationMs: 1200
 
 
 

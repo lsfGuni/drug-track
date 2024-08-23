@@ -44,11 +44,17 @@ public class ApiDrugResponseService {
         if (response.getBarcodeData() == null) {
             response.setBarcodeData("");
         }
-        if (response.getCompanyRegNumber() == null) {
-            response.setCompanyRegNumber("");
+        if (response.getStartCompanyRegNumber() == null) {
+            response.setStartCompanyRegNumber("");
         }
-        if (response.getCompanyName() == null) {
-            response.setCompanyName("Unknown");
+        if (response.getStartCompanyName() == null) {
+            response.setStartCompanyName("Unknown");
+        }
+        if (response.getEndCompanyRegNumber() == null) {
+            response.setEndCompanyRegNumber("");
+        }
+        if (response.getEndCompanyName() == null) {
+            response.setEndCompanyName("Unknown");
         }
         if (response.getDeliveryType() == null) {
             response.setDeliveryType("N/A");
@@ -82,8 +88,10 @@ public class ApiDrugResponseService {
     private String generateTxValue(ApiDrugResponse response) throws JsonProcessingException {
         Map<String, String> txValueMap = new HashMap<>();
         txValueMap.put("barcodeData", response.getBarcodeData());
-        txValueMap.put("companyRegNumber", response.getCompanyRegNumber());
-        txValueMap.put("companyName", response.getCompanyName());
+        txValueMap.put("StartCompanyRegNumber", response.getStartCompanyRegNumber());
+        txValueMap.put("StartCompanyName", response.getStartCompanyName());
+        txValueMap.put("endCompanyRegNumber", response.getEndCompanyRegNumber());
+        txValueMap.put("endCompanyName", response.getEndCompanyName());
         txValueMap.put("deliveryType", response.getDeliveryType());
         txValueMap.put("deliveryDate", response.getDeliveryDate());
         txValueMap.put("productName", response.getProductName());

@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface CompanyRegRepository extends JpaRepository<ApiDrugResponse, Long> {
-    List<ApiDrugResponse> findByCompanyRegNumber(String companyRegNumber);
+    List<ApiDrugResponse> findByStartCompanyRegNumber(String startCompanyRegNumber);
 }

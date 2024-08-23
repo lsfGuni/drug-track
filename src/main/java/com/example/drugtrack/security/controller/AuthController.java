@@ -114,8 +114,8 @@ public class AuthController {
                     new UsernamePasswordAuthenticationToken(loginRequest.getId(), loginRequest.getPassword()));
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            //String jwt = tokenProvider.generateToken(authentication); // JWT 생성
-            String jwt = "S29oZ3lMcHpBbnRnVW1KbXhZNHJlNzFPdk1KTjdTdXZaZmpySzZhS3Z3RHB6WFlvMFFqY3lCd2RhQ1hwYW5MY0t4QkN4L1lvZFlr";
+            String jwt = tokenProvider.generateToken(authentication); // JWT 생성
+            //String jwt = "S29oZ3lMcHpBbnRnVW1KbXhZNHJlNzFPdk1KTjdTdXZaZmpySzZhS3Z3RHB6WFlvMFFqY3lCd2RhQ1hwYW5MY0t4QkN4L1lvZFlr";
             // 인증 성공 시 반환할 데이터 구성
             response.put("result", "Y");
             response.put("token", jwt); // JWT 토큰 반환

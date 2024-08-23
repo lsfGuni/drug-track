@@ -13,7 +13,7 @@ public class CompanyRegService {
     @Autowired
     private CompanyRegRepository repository;
 
-    public List<ApiDrugResponse> getResponseByCompanyRegNumber(String companyRegNumber) {
-        return repository.findByCompanyRegNumber(companyRegNumber);
+    public List<ApiDrugResponse> getResponseByCompanyRegNumber(String startCompanyRegNumber) {
+        return repository.findByStartCompanyRegNumber(startCompanyRegNumber);
     }
 }

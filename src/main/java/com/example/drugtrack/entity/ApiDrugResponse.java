@@ -21,11 +21,19 @@ public class ApiDrugResponse {
     @Column(name = "barcode_data", nullable = false)
     private String barcodeData;
 
-    @Column(name = "company_reg_number" , nullable = false)
-    private String companyRegNumber;
+    @Column(name = "start_company_reg_number" , nullable = false)
+    private String startCompanyRegNumber;
 
-    @Column(name = "company_name" , nullable = false)
-    private String companyName;
+    @Column(name = "start_company_name", nullable = false)
+    private String startCompanyName = "DEFAULT_VALUE"; // 기본값 설정
+
+
+    @Column(name = "end_company_reg_number" , nullable = false)
+    private String endCompanyRegNumber;
+
+    @Column(name = "end_company_name", nullable = false)
+    private String endCompanyName = "DEFAULT_VALUE"; // 기본값 설정
+
 
     @Column(name = "delivery_type" , nullable = false)
     private String deliveryType;
@@ -87,20 +95,36 @@ public class ApiDrugResponse {
         this.barcodeData = barcodeData;
     }
 
-    public String getCompanyRegNumber() {
-        return companyRegNumber;
+    public String getStartCompanyRegNumber() {
+        return startCompanyRegNumber;
     }
 
-    public void setCompanyRegNumber(String companyRegNumber) {
-        this.companyRegNumber = companyRegNumber;
+    public void setStartCompanyRegNumber(String startCompanyRegNumber) {
+        this.startCompanyRegNumber = startCompanyRegNumber;
     }
 
-    public String getCompanyName() {
-        return companyName;
+    public String getStartCompanyName() {
+        return startCompanyName;
     }
 
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
+    public void setStartCompanyName(String startCompanyName) {
+        this.startCompanyName = startCompanyName;
+    }
+
+    public String getEndCompanyRegNumber() {
+        return endCompanyRegNumber;
+    }
+
+    public void setEndCompanyRegNumber(String endCompanyRegNumber) {
+        this.endCompanyRegNumber = endCompanyRegNumber;
+    }
+
+    public String getEndCompanyName() {
+        return endCompanyName;
+    }
+
+    public void setEndCompanyName(String endCompanyName) {
+        this.endCompanyName = endCompanyName;
     }
 
     public String getDeliveryType() {

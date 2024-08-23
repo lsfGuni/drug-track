@@ -17,6 +17,6 @@ public class JwtAuthEntryPoint implements AuthenticationEntryPoint {
                          HttpServletResponse response,
                          AuthenticationException authException) throws IOException, ServletException {
         // 인증되지 않은 사용자가 보호된 리소스에 접근할 때 401 응답 반환
-        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Error: Unauthorized");
+        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Error: 토큰에 인증정보가 없습니다.");
     }
 }
