@@ -48,12 +48,16 @@ public class SecurityConfig {
                         authorizeRequests
                                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll()
                                 .requestMatchers("/user/register", "/user/login").permitAll()
+                                .requestMatchers("/view/**").permitAll()
                                 .requestMatchers("/traceability/**").permitAll()
                                 .requestMatchers("/search/**").permitAll()
                                 //.requestMatchers("/search/**").authenticated()  // 보호된 엔드포인트로 설정
                                 .requestMatchers("/favicon.ico").permitAll()
+                                .requestMatchers("/admin/**").hasRole("ADMIN")
                                 .anyRequest().authenticated()
                 );
+
+
 
         // JWT 필터 추가
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

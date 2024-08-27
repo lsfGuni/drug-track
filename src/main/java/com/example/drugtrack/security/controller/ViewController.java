@@ -25,4 +25,7 @@ public class ViewController {
     public String showAuthenticatedMainPage() {
         return "main"; // 로그인 성공 시 main.html 템플릿을 반환
     }
+
 }
+
+

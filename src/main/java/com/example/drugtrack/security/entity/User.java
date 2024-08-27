@@ -53,7 +53,7 @@ public class User {
     @PrePersist
     protected void onCreate() {
         if (this.role == null) {
-            this.role = "USER";
+            this.role = "ROLE_USER";
         }
         if (this.active == null) {
             this.active = "Y";

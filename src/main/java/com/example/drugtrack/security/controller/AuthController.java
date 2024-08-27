@@ -23,6 +23,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -31,6 +32,7 @@ import java.util.Random;
 
 @Tag(name = "USER 관련 API", description = "USER정보를 관리하는 API")
 @Controller
+@ResponseBody
 @RequestMapping("/user")
 public class AuthController {
 
