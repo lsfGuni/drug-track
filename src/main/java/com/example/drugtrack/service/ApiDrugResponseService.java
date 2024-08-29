@@ -25,7 +25,7 @@ public class ApiDrugResponseService {
         return repository.findAll();
     }
 
-
+    // 단일 의약품 정보 저장
     public ApiDrugResponse saveResponse(ApiDrugResponse response) {
         try {
             ensureNonNullFields(response);
@@ -39,6 +39,22 @@ public class ApiDrugResponseService {
         }
         return repository.save(response);
     }
+
+    // 다중 의약품 정보 저장
+    public List<ApiDrugResponse> saveResponseBatch(List<ApiDrugResponse> responseList) {
+        responseList.forEach(response -> {
+            try {
+                ensureNonNullFields(response);
+                String txValueJson = generateTxValue(response);
+                response.setTx(txValueJson);
+                response.generateHashValue();
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException("Error processing JSON for tx", e);
+            }
+        });
+        return repository.saveAll(responseList);
+    }
+
 
     private void ensureNonNullFields(ApiDrugResponse response) {
         if (response.getBarcodeData() == null) {

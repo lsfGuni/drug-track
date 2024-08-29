@@ -1,5 +1,7 @@
 package com.example.drugtrack.controller;
 
+import com.example.drugtrack.dto.ApiDrugResponseWrapper;
+import com.example.drugtrack.dto.DrugTrackingListRequest;
 import com.example.drugtrack.entity.ApiDrugResponse;
 import com.example.drugtrack.service.ApiDrugResponseService;
 import io.swagger.v3.oas.annotations.Hidden;
@@ -60,6 +62,31 @@ public class ApiDrugResponseController {
         }
 
         return ResponseEntity.ok(responseMap);
+    }
+
+    @Operation(summary = "다중 의약품 등록", description = "다수의 파라미터를 통해 의약품 정보를 한 번에 등록합니다.")
+    @PostMapping("/regDrugTracking-list")
+    public ResponseEntity<ApiDrugResponseWrapper> createResponseBatch(@RequestBody DrugTrackingListRequest request, HttpServletRequest httpServletRequest) {
+        String clientIp = httpServletRequest.getRemoteAddr();
+        String userAgent = httpServletRequest.getHeader("User-Agent");
+        String requestUri = httpServletRequest.getRequestURI();
+
+        logger.info("POST 배치 요청 발생 - IP: {}, User-Agent: {}, URI: {}", clientIp, userAgent, requestUri);
+
+        // drugTrackingList 필드에서 데이터를 추출합니다.
+        List<ApiDrugResponse> responseList = request.getDrugTrackingList();
+
+        if (responseList == null || responseList.isEmpty()) {
+            logger.error("drugTrackingList가 null 또는 비어 있습니다.");
+            return ResponseEntity.badRequest().body(new ApiDrugResponseWrapper("N", null));
+        }
+
+        // 서비스 레이어에서 데이터 저장
+        List<ApiDrugResponse> savedResponses = service.saveResponseBatch(responseList);
+
+        // 응답 생성
+        ApiDrugResponseWrapper responseWrapper = new ApiDrugResponseWrapper("Y", savedResponses);
+        return ResponseEntity.ok(responseWrapper);
     }
 
 
