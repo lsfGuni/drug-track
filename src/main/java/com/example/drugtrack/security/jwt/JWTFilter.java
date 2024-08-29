@@ -5,7 +5,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -25,13 +24,24 @@ public class JWTFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        String token = jwtUtil.getJwtFromRequest(request);
 
+        String path = request.getRequestURI();
+
+        System.out.println("Request path: " + path); // 요청 경로 로그
+
+        // Skip JWT validation for permitAll endpoints
+        if (isPermitAllEndpoint(path)) {
+            System.out.println("Bypassing JWT validation for path: " + path);
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        String token = jwtUtil.getJwtFromRequest(request);
+        System.out.println("JWT Token extracted: " + token);
+
+        // 관리자 페이지에 대한 인증
         if (token != null && jwtUtil.validateToken(token)) {
             String username = jwtUtil.getUsername(token);
-            boolean isValid = jwtUtil.validateToken(token);
-            System.out.println("Token validation result: " + isValid);
-
             List<GrantedAuthority> authorities = jwtUtil.getAuthorities(token)
                     .stream()
                     .collect(Collectors.toList());
@@ -39,19 +49,19 @@ public class JWTFilter extends OncePerRequestFilter {
             UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(username, null, authorities);
             SecurityContextHolder.getContext().setAuthentication(authentication);
-
-            System.out.println("Authenticated user: " + username);
-            System.out.println("Authorities: " + authorities);
+        } else if (path.startsWith("/admin")) {
+            // 관리자 페이지 접근 시 인증 실패 로그
+            System.out.println("Admin page access denied. Invalid or missing JWT token.");
         }
-
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth != null) {
-            System.out.println("Current Authentication: " + auth.getName());
-            System.out.println("Authorities: " + auth.getAuthorities());
-        } else {
-            System.out.println("No Authentication set in SecurityContextHolder.");
-        }
-
         filterChain.doFilter(request, response);
+    }
+
+
+    private boolean isPermitAllEndpoint(String path) {
+        return path.equals("/user/get-user-list") ||
+                path.startsWith("/css/") ||
+                path.startsWith("/js/") ||
+                path.startsWith("/images/") ||
+                path.equals("/favicon.ico");
     }
 }

@@ -44,6 +44,8 @@ spring:
 logging:
   level:
     org.springframework.security: DEBUG
+    org.springframework.security.web.access.ExceptionTranslationFilter: TRACE
+    org.springframework.security.web.access.intercept.FilterSecurityInterceptor: TRACE
     org:
       hibernate:
         SQL: debug

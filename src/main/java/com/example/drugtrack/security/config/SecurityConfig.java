@@ -2,7 +2,6 @@ package com.example.drugtrack.security.config;
 
 import com.example.drugtrack.security.jwt.JWTFilter;
 import com.example.drugtrack.security.jwt.JWTUtil;
-import com.example.drugtrack.security.jwt.LoginFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,10 +21,8 @@ public class SecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JWTUtil jwtUtil;
 
-
     public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JWTUtil jwtUtil) {
         this.authenticationConfiguration = authenticationConfiguration;
-
         this.jwtUtil = jwtUtil;
     }
 
@@ -44,37 +41,29 @@ public class SecurityConfig {
         return new JWTFilter(jwtUtil);
     }
 
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf((auth) -> {
-            auth.disable();
-        });
-        http.formLogin((auth) -> {
-            auth.disable();
-        });
-        http.httpBasic((auth) -> {
-            auth.disable();
-        });
-        http.authorizeHttpRequests((auth) -> {
+        http.csrf(csrf -> csrf.disable());
+        http.formLogin(formLogin -> formLogin.disable());
+        http.httpBasic(httpBasic -> httpBasic.disable());
+
+        http.authorizeHttpRequests(auth -> {
             auth
+                    .requestMatchers("/admin/**").hasRole("ADMIN")
+                    .requestMatchers("/user/get-user-list").permitAll()
                     .requestMatchers("/css/**", "/js/**", "/images/**", "/favicon.ico").permitAll()
                     .requestMatchers("/user/**", "/", "/view/**").permitAll()
-                    .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll()  // Swagger 관련 경로 허용
-                    .requestMatchers("/admin/**").hasRole("ADMIN")
+                    .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll()
                     .anyRequest().authenticated();
         });
-        http.sessionManagement((session) -> {
-            session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
-        });
-        // LoginFilter는 인증 시 JWT를 발급하는 필터
-        http.addFilterAt(new LoginFilter(this.authenticationManager(this.authenticationConfiguration), this.jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
-        // JWTFilter는 모든 요청에 대해 JWT 검증을 수행하는 필터
-        http.addFilterBefore(new JWTFilter(this.jwtUtil), UsernamePasswordAuthenticationFilter.class);
+        http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED));
+
+        http.addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
+
+        http.anonymous(auth -> auth.disable());
 
         return http.build();
     }
-
 
 }
