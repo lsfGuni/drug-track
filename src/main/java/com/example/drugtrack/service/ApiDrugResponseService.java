@@ -1,5 +1,6 @@
 package com.example.drugtrack.service;
 
+import com.example.drugtrack.dto.DrugTrackingRequestDTO;
 import com.example.drugtrack.entity.ApiDrugResponse;
 import com.example.drugtrack.repository.ApiDrugResponseRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -40,21 +41,38 @@ public class ApiDrugResponseService {
         return repository.save(response);
     }
 
-    // 다중 의약품 정보 저장
-    public List<ApiDrugResponse> saveResponseBatch(List<ApiDrugResponse> responseList) {
-        responseList.forEach(response -> {
-            try {
-                ensureNonNullFields(response);
-                String txValueJson = generateTxValue(response);
-                response.setTx(txValueJson);
-                response.generateHashValue();
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException("Error processing JSON for tx", e);
-            }
-        });
-        return repository.saveAll(responseList);
-    }
 
+    // 다중 의약품 정보 저장
+    public void saveResponseBatch(List<DrugTrackingRequestDTO> trackingRequests) {
+        for (DrugTrackingRequestDTO trackingRequest : trackingRequests) {
+            for (var serialNumber : trackingRequest.getSerialNumbers()) {
+                ApiDrugResponse response = new ApiDrugResponse();
+                response.setStartCompanyRegNumber(trackingRequest.getStartCompanyRegNumber());
+                response.setStartCompanyName(trackingRequest.getStartCompanyName());
+                response.setEndCompanyRegNumber(trackingRequest.getEndCompanyRegNumber());
+                response.setEndCompanyName(trackingRequest.getEndCompanyName());
+                response.setDeliveryType(trackingRequest.getDeliveryType());
+                response.setDeliveryDate(trackingRequest.getDeliveryDate());
+                response.setProductName(trackingRequest.getProductName());
+                response.setGs1Code(trackingRequest.getGs1Code());
+                response.setMfNumber(trackingRequest.getMfNumber());
+                response.setExpDate(trackingRequest.getExpDate());
+                response.setBarcodeData(serialNumber.getBarcodeData());
+                response.setSerialNumber(serialNumber.getSerialNumber());
+                response.setAggData(serialNumber.getAggData());
+
+                try {
+                    String txValueJson = generateTxValue(response);
+                    response.setTx(txValueJson);
+                    response.generateHashValue();
+                } catch (JsonProcessingException e) {
+                    throw new RuntimeException("Error processing JSON for tx", e);
+                }
+
+                repository.save(response);
+            }
+        }
+    }
 
     private void ensureNonNullFields(ApiDrugResponse response) {
         if (response.getBarcodeData() == null) {

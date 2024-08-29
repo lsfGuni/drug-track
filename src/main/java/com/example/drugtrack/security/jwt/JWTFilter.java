@@ -62,6 +62,10 @@ public class JWTFilter extends OncePerRequestFilter {
                 path.startsWith("/css/") ||
                 path.startsWith("/js/") ||
                 path.startsWith("/images/") ||
-                path.equals("/favicon.ico");
+                path.equals("/favicon.ico") ||
+                path.startsWith("/swagger-ui/") ||          // Swagger UI 경로
+                path.startsWith("/v3/api-docs/") ||         // Swagger API 문서 경로
+                path.startsWith("/swagger-resources/") ||   // Swagger 리소스 경로
+                path.startsWith("/webjars/");               // Swagger 웹자르 리소스 경로
     }
 }
