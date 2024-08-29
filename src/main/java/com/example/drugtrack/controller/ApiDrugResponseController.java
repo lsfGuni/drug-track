@@ -1,7 +1,6 @@
 package com.example.drugtrack.controller;
 
-import com.example.drugtrack.dto.ApiDrugResponseWrapper;
-import com.example.drugtrack.dto.DrugTrackingListRequest;
+import com.example.drugtrack.dto.DrugTrackingListRequestDTO;
 import com.example.drugtrack.entity.ApiDrugResponse;
 import com.example.drugtrack.service.ApiDrugResponseService;
 import io.swagger.v3.oas.annotations.Hidden;
@@ -64,29 +63,39 @@ public class ApiDrugResponseController {
         return ResponseEntity.ok(responseMap);
     }
 
+
     @Operation(summary = "다중 의약품 등록", description = "다수의 파라미터를 통해 의약품 정보를 한 번에 등록합니다.")
     @PostMapping("/regDrugTracking-list")
-    public ResponseEntity<ApiDrugResponseWrapper> createResponseBatch(@RequestBody DrugTrackingListRequest request, HttpServletRequest httpServletRequest) {
+    public ResponseEntity<Map<String, String>> createResponseBatch(@RequestBody DrugTrackingListRequestDTO request, HttpServletRequest httpServletRequest) {
         String clientIp = httpServletRequest.getRemoteAddr();
         String userAgent = httpServletRequest.getHeader("User-Agent");
         String requestUri = httpServletRequest.getRequestURI();
 
         logger.info("POST 배치 요청 발생 - IP: {}, User-Agent: {}, URI: {}", clientIp, userAgent, requestUri);
 
-        // drugTrackingList 필드에서 데이터를 추출합니다.
-        List<ApiDrugResponse> responseList = request.getDrugTrackingList();
+        // 응답 객체 생성
+        Map<String, String> responseMap = new HashMap<>();
 
-        if (responseList == null || responseList.isEmpty()) {
-            logger.error("drugTrackingList가 null 또는 비어 있습니다.");
-            return ResponseEntity.badRequest().body(new ApiDrugResponseWrapper("N", null));
+        try {
+            if (request.getDrugTrackingList() == null || request.getDrugTrackingList().isEmpty()) {
+                logger.error("drugTrackingList가 null 또는 비어 있습니다.");
+                responseMap.put("result", "N");
+                responseMap.put("error", "drugTrackingList가 null 또는 비어 있습니다.");
+                return ResponseEntity.badRequest().body(responseMap);
+            }
+
+            // 서비스 레이어에서 데이터 저장
+            service.saveResponseBatch(request.getDrugTrackingList());
+
+            responseMap.put("result", "Y");
+            responseMap.put("error", "");
+        } catch (Exception e) {
+            logger.error("데이터 처리 중 오류 발생", e);
+            responseMap.put("result", "N");
+            responseMap.put("error", "데이터 처리 중 오류 발생: " + e.getMessage());
         }
 
-        // 서비스 레이어에서 데이터 저장
-        List<ApiDrugResponse> savedResponses = service.saveResponseBatch(responseList);
-
-        // 응답 생성
-        ApiDrugResponseWrapper responseWrapper = new ApiDrugResponseWrapper("Y", savedResponses);
-        return ResponseEntity.ok(responseWrapper);
+        return ResponseEntity.ok(responseMap);
     }
 
 

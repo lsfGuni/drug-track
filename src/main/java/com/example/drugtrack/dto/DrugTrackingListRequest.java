@@ -3,6 +3,7 @@ package com.example.drugtrack.dto;
 import com.example.drugtrack.entity.ApiDrugResponse;
 import java.util.List;
 
+
 public class DrugTrackingListRequest {
 
     private List<ApiDrugResponse> drugTrackingList;
