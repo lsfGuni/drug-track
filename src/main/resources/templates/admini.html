@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+</head>
+<body>
+<h1>Admin Dashboard</h1>
+<p>Enter your JWT token:</p>
+<input type="text" id="tokenInput" placeholder="Enter JWT Token">
+<button onclick="fetchDashboard()">Fetch Dashboard</button>
+
+<div id="result"></div>
+
+<script>
+    function fetchDashboard() {
+        const token = document.getElementById('tokenInput').value;
+
+        fetch('/admin/dashboard', {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.text(); // Assuming response is plain text
+            })
+            .then(data => {
+                document.getElementById('result').innerText = data;
+            })
+            .catch(error => {
+                document.getElementById('result').innerText = 'Error: ' + error.message;
+            });
+    }
+</script>
+</body>
+</html>

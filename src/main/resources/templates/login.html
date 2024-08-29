@@ -21,8 +21,15 @@
 <div>
     <a href="/view/register">회원이 아니신가요? 회원가입하기</a>
 </div>
-
 <script type="text/javascript">
+    function loginSuccess(token) {
+        // 토큰을 쿠키에 저장
+        document.cookie = "token=" + token + "; path=/";
+        console.log("JWT 토큰이 쿠키에 저장되었습니다.");
+        // 원하는 페이지로 리디렉션
+        window.location.href = '/admin/dashboard';
+    }
+
     $(document).ready(function() {
         $('#loginButton').click(function(event) {
             event.preventDefault(); // 폼 제출을 막음
@@ -35,25 +42,48 @@
             $.ajax({
                 type: 'POST',
                 url: '/user/login',
-                headers: {
-                    'Authorization': 'Bearer ' + localStorage.getItem('token')
-                },
                 contentType: 'application/json',
                 data: JSON.stringify(loginData),
                 success: function(response) {
-                    // JWT 토큰 처리 등 후속 작업
-                    localStorage.setItem('token', response.token);
-                    console.log('로그인 성공:', response);
-                    window.location.href = '/main'; // 로그인 성공 시 /main 페이지로 이동
+                    // 로그인 성공 여부를 확인
+                    if (response.token) {
+                        // JWT 토큰 저장
+                        localStorage.setItem('token', response.token);
+                        console.log('로그인 성공:', response);
+                        loginSuccess(response.token);
+                        // JWT 토큰을 포함하여 메인 페이지로 이동하는 요청 보내기
+                        var token = localStorage.getItem('token');
+
+                        $.ajax({
+                            type: 'GET',
+                            url: '/view/main',
+                            headers: {
+                                'Authorization': 'Bearer ' + token
+                            },
+                            success: function(mainResponse) {
+                                // 메인 페이지가 성공적으로 로드되었을 때
+                                console.log('메인 페이지 로드 성공:', mainResponse);
+                                window.location.href = '/view/main'; // 페이지 이동
+                            },
+                            error: function(xhr, status, error) {
+                                console.error('메인 페이지 로드 실패:', xhr.responseText);
+                                alert('메인 페이지 로드 실패: ' + xhr.responseText);
+                            }
+                        });
+                    } else {
+                        // 로그인 실패 시 처리
+                        console.error('로그인 실패: 토큰이 없습니다.');
+                        alert('로그인 실패: 토큰이 없습니다.');
+                    }
                 },
                 error: function(xhr, status, error) {
                     console.error('로그인 실패:', xhr.responseText);
-                    // 로그인 실패 시 처리할 작업 (예: 오류 메시지 표시)
                     alert('로그인 실패: ' + xhr.responseText);
                 }
             });
         });
     });
 </script>
+
 </body>
 </html>

@@ -4,7 +4,7 @@ import com.example.drugtrack.security.dto.DeactivateUserRequest;
 import com.example.drugtrack.security.dto.LoginRequest;
 import com.example.drugtrack.security.dto.PasswordResetRequest;
 import com.example.drugtrack.security.entity.User;
-import com.example.drugtrack.security.jwt.JwtTokenProvider;
+import com.example.drugtrack.security.jwt.JWTUtil;
 import com.example.drugtrack.security.service.EmailService;
 import com.example.drugtrack.security.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -40,15 +40,15 @@ public class AuthController {
 
     private final UserService userService;
     private final AuthenticationManager authenticationManager;
-    private final JwtTokenProvider tokenProvider;
+    private final JWTUtil jwtUtil;
     private final EmailService emailService;  // EmailService 주입받기 위한 필드 추가
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public AuthController(UserService userService, AuthenticationManager authenticationManager, JwtTokenProvider tokenProvider, EmailService emailService, PasswordEncoder passwordEncoder) {
+    public AuthController(UserService userService, AuthenticationManager authenticationManager, EmailService emailService, PasswordEncoder passwordEncoder, JWTUtil jwtUtil) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
-        this.tokenProvider = tokenProvider;
+        this.jwtUtil = jwtUtil;
         this.emailService = emailService;
         this.passwordEncoder = passwordEncoder;
     }
@@ -78,6 +78,7 @@ public class AuthController {
         data.put("companyName", user.getCompanyName());
         data.put("companyRegNumber", user.getCompanyRegNumber());
         data.put("phoneNumber", user.getPhoneNumber());
+
         data.put("email", user.getEmail());
 
         response.put("data", data);
@@ -116,11 +117,13 @@ public class AuthController {
                     new UsernamePasswordAuthenticationToken(loginRequest.getId(), loginRequest.getPassword()));
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            String jwt = tokenProvider.generateToken(authentication); // JWT 생성
+            String jwt = jwtUtil.createJwt(user.getId(), user.getRole(), 3600000L); // 1시간 유효한 토큰 생성
+
+
             //String jwt = "S29oZ3lMcHpBbnRnVW1KbXhZNHJlNzFPdk1KTjdTdXZaZmpySzZhS3Z3RHB6WFlvMFFqY3lCd2RhQ1hwYW5MY0t4QkN4L1lvZFlr";
             // 인증 성공 시 반환할 데이터 구성
             response.put("result", "Y");
-            response.put("token", jwt); // JWT 토큰 반환
+            response.put("token", jwt); // JWT 토큰을 응답에 포함
 
             Map<String, String> data = new HashMap<>();
             data.put("id", user.getId());

@@ -1,20 +1,65 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html>
 <head>
     <title>메인 페이지</title>
     <meta charset="UTF-8">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- jQuery를 사용하여 AJAX 요청을 보냅니다. -->
 </head>
 <body>
-<h1>환영합니다!</h1>
-<p th:if="${result == 'Y'}">성공적으로 로그인하였습니다.</p>
-
+<h1>메인 페이지</h1>
 
 <div>
-    <a th:href="@{/logout}">로그아웃</a>
+    <button onclick="window.location.href='/view/register'">회원가입</button>
+    <button onclick="window.location.href='/view/login'">로그인</button>
+    <button id="adminButton">관리자 페이지 이동</button> <!-- 관리자 페이지 이동 버튼 -->
 </div>
-<div>
-    <a th:href="@{/admin/dashboard}">관리자페이지이동</a>
-</div>
+
+<!-- 토큰 값을 표시할 요소 추가 -->
+<div id="tokenDisplay" style="margin-top: 20px; color: blue;"></div>
+<script type="text/javascript">
+
+   $(document).ready(function() {
+
+
+       $('#adminButton').click(function(event) {
+           event.preventDefault(); // 기본 동작을 막음
+
+           var token = localStorage.getItem('token'); // 로컬 스토리지에서 토큰 가져오기
+           console.log("Stored token: ", token); // 토큰 로그 출력
+
+           if (!token) {
+               alert('로그인이 필요합니다.');
+               window.location.href = '/view/login'; // 토큰이 없으면 로그인 페이지로 이동
+               return;
+           }
+
+           $.ajax({
+               type: 'GET',
+               url: '/admin/dashboard', // 관리자 페이지 URL
+               headers: {
+                   'Authorization': 'Bearer ' + token, // JWT 토큰을 Authorization 헤더에 포함
+                   'Content-Type': 'application/json'
+               },
+               success: function(response) {
+
+                    console.log("ok");
+
+                   window.location.href = '/admin/dashboard'; // 전체 HTML을 응답으로 교체
+
+               },
+               error: function(xhr, status, error) {
+                   console.error('관리자 페이지 접근 실패:', xhr.responseText);
+                   alert('접근 권한이 없습니다. 로그인 후 다시 시도해주세요.');
+                   window.location.href = '/view/login';
+               }
+           });
+       });
+   });
+
+
+
+</script>
+
 
 </body>
 </html>

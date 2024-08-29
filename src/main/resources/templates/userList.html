@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>User List</title>
+</head>
+<body>
+<h1>User List</h1>
+<table border="1">
+    <thead>
+    <tr>
+        <th>Seq</th>
+        <th>ID</th>
+        <th>Username</th>
+        <th>Role</th>
+        <th>Company Type</th>
+        <th>Company Name</th>
+        <th>Company Reg Number</th>
+        <th>Phone Number</th>
+        <th>Email</th>
+        <th>Active</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="user : ${users}">
+        <td th:text="${user.seq}"></td>
+        <td th:text="${user.id}"></td>
+        <td th:text="${user.username}"></td>
+        <td th:text="${user.role}"></td>
+        <td th:text="${user.companyType}"></td>
+        <td th:text="${user.companyName}"></td>
+        <td th:text="${user.companyRegNumber}"></td>
+        <td th:text="${user.phoneNumber}"></td>
+        <td th:text="${user.email}"></td>
+        <td th:text="${user.active}"></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

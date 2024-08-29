@@ -21,11 +21,15 @@ public class ViewController {
         return "main"; // main.html 템플릿을 반환
     }
 
-    @GetMapping("/main")
+    @GetMapping("/")
     public String showAuthenticatedMainPage() {
         return "main"; // 로그인 성공 시 main.html 템플릿을 반환
     }
 
+    @GetMapping("view/test")
+    public String showAdminTestPage() {
+        return "admini";  // HTML 파일의 이름 (admin.html)
+    }
 }
 
 

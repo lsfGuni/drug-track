@@ -41,7 +41,7 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority(role));
+        return Collections.singletonList(new SimpleGrantedAuthority(this.role));
     }
 
     @Override
@@ -72,5 +72,29 @@ public class UserPrincipal implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setSeq(Long seq) {
+        this.seq = seq;
     }
 }

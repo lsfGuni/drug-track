@@ -3,6 +3,9 @@
  # port: 8080
 
 spring:
+  jwt:
+    secret: vmfhaltmskdlstkfkdgodyroqkfwkdbalroqkfwkdbalaaaaaaaaaaaaaaaabbbbb  # JWT 서명에 사용할 비밀 키
+
   datasource:
     url: jdbc:mysql://localhost:3306/api-batch?allowPublicKeyRetrieval=true&useSSL=false
     username: root
@@ -49,9 +52,6 @@ logging:
       springframework:
         security=DEBUG:com.example.drugtrack.controller: INFO
 
-app:
-  jwtSecret: "S29oZ3lMcHpBbnRnVW1KbXhZNHJlNzFPdk1KTjdTdXZaZmpySzZhS3Z3RHB6WFlvMFFqY3lCd2RhQ1hwYW5MY0t4QkN4L1lvZFlr"
-  jwtExpirationMs: 3600000
 
 
 
