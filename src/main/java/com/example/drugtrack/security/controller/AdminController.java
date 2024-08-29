@@ -1,11 +1,14 @@
 package com.example.drugtrack.security.controller;
 
+import com.example.drugtrack.security.dto.UpdateUserDTO;
 import com.example.drugtrack.security.dto.UserListDTO;
+import com.example.drugtrack.security.entity.User;
+import com.example.drugtrack.security.service.UpdateUserService;
 import com.example.drugtrack.security.service.UserListService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -36,6 +39,15 @@ public class AdminController {
         return response;
     }
 
+
+    @Autowired
+    private UpdateUserService updateUserService;
+
+    @PutMapping("/user/update/{seq}")
+    public ResponseEntity<User> updateUser(@PathVariable Long seq, @RequestBody UpdateUserDTO updateUserDTO) {
+        User updatedUser = updateUserService.updateUser(seq, updateUserDTO);
+        return ResponseEntity.ok(updatedUser);
+    }
 
 }
 
