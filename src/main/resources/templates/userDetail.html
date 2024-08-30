@@ -20,6 +20,7 @@
     <label><strong>Username:</strong> <input type="text" id="userName"></label><br>
 </div>
 <button id="saveChangesBtn">변경사항 저장</button>
+<button id="forgotPasswordBtn">비밀번호 찾기</button>
 
 <script>
     $(document).ready(function() {
@@ -75,6 +76,36 @@
                 alert('변경이 취소되었습니다.');
             }
         });
+
+        // 비밀번호 찾기 버튼 클릭 시 API 호출
+        $('#forgotPasswordBtn').click(function() {
+            var id = $('#userId').text();
+            var companyType = $('#userCompanyType').val();
+
+            var requestData = {
+                id: id,
+                companyType: companyType
+            };
+
+            $.ajax({
+                url: '/user/forgot-password',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(requestData),
+                success: function(response) {
+                    if (response.result === "Y") {
+                        alert('임시 비밀번호가 이메일로 발송되었습니다.');
+                    } else {
+                        alert('해당 정보로 사용자를 찾을 수 없습니다.');
+                    }
+                },
+                error: function(error) {
+                    console.error('Error sending password reset request', error);
+                    alert('비밀번호 찾기 요청에 실패했습니다.');
+                }
+            });
+        });
+
     });
 </script>
 </body>
