@@ -10,5 +10,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByIdAndCompanyType(String id, String companyType);
     Optional<User> findByCompanyRegNumberAndActive(String companyRegNumber, String active);
     Optional<User> findByIdAndActive(String id, String active);
+    Optional<User> findBySeq(Long seq);
 }
 

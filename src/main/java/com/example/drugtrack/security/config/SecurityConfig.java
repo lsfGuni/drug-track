@@ -50,7 +50,8 @@ public class SecurityConfig {
         http.authorizeHttpRequests(auth -> {
             auth
                     .requestMatchers("/admin/**").hasRole("ADMIN")
-                    .requestMatchers("/user/get-user-list").permitAll()
+                    .requestMatchers("/user/details/**").permitAll() // Corrected typo
+                    .requestMatchers("/user/update/**").permitAll()
                     .requestMatchers("/css/**", "/js/**", "/images/**", "/favicon.ico").permitAll()
                     .requestMatchers("/user/**", "/", "/view/**").permitAll()
                     .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll()

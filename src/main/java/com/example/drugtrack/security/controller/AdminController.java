@@ -13,15 +13,19 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Controller
 @RequestMapping
 public class AdminController {
 
     private final UserListService userListService;
+    private final UpdateUserService updateUserService;
 
-    public AdminController(UserListService userListService) {
+    @Autowired
+    public AdminController(UserListService userListService,  UpdateUserService updateUserService) {
         this.userListService = userListService;
+        this.updateUserService = updateUserService;
     }
 
     @GetMapping("/admin/dashboard")
@@ -39,9 +43,12 @@ public class AdminController {
         return response;
     }
 
+    @GetMapping("/user/details/{seq}")
+    public ResponseEntity<User> getUserDetails(@PathVariable Long seq) {
+        Optional<User> user = userListService.getUserBySeq(seq);
+        return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
 
-    @Autowired
-    private UpdateUserService updateUserService;
 
     @PutMapping("/user/update/{seq}")
     public ResponseEntity<User> updateUser(@PathVariable Long seq, @RequestBody UpdateUserDTO updateUserDTO) {

@@ -6,6 +6,7 @@ import com.example.drugtrack.security.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,5 +34,11 @@ public class UserListService {
                         user.getActive()
                 ))
                 .collect(Collectors.toList());
+    }
+
+
+    //유저 상세정보 조회
+    public Optional<User> getUserBySeq(Long seq) {
+        return userRepository.findBySeq(seq); // Call the repository method to find user by sequence number
     }
 }

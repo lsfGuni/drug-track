@@ -6,6 +6,7 @@
     <title>User List</title>
     <!-- jQuery 추가 (필요시) -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 </head>
 <body>
 <h1>User List</h1>
@@ -13,13 +14,14 @@
     <thead>
     <tr>
         <th>ID</th>
-
+        <th style="display:none;">seq</th> <!-- seq 값은 hidden -->
         <th>Role</th>
         <th>Company Type</th>
         <th>Company Name</th>
         <th>Company Reg Number</th>
         <th>Phone Number</th>
         <th>Email</th>
+        <th>Actions</th>
     </tr>
     </thead>
     <tbody>
@@ -42,13 +44,14 @@
                 userList.forEach(function(user) {
                     var row = '<tr>' +
                         '<td>' + user.id + '</td>' +
-
+                        '<td style="display:none;">' + user.seq + '</td>' + // seq 값 hidden 처리
                         '<td>' + user.role + '</td>' +
                         '<td>' + user.companyType + '</td>' +
                         '<td>' + user.companyName + '</td>' +
                         '<td>' + user.companyRegNumber + '</td>' +
                         '<td>' + user.phoneNumber + '</td>' +
                         '<td>' + user.email + '</td>' +
+                        '<td><button onclick="showUserDetail(' + user.seq + ')">상세정보 보기</button></td>' +
                         '</tr>';
                     userTableBody.append(row);
                 });
