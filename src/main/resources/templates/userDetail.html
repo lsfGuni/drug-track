@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Detail</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<h1>User Detail</h1>
+<div>
+    <p><strong>ID:</strong> <span id="userId"></span></p>
+    <p><strong>Role:</strong> <span id="userRole"></span></p>
+    <p><strong>Company Type:</strong> <span id="userCompanyType"></span></p>
+    <p><strong>Company Name:</strong> <span id="userCompanyName"></span></p>
+    <p><strong>Company Reg Number:</strong> <span id="userCompanyRegNumber"></span></p>
+    <p><strong>Phone Number:</strong> <span id="userPhoneNumber"></span></p>
+    <p><strong>Email:</strong> <span id="userEmail"></span></p>
+    <p><strong>Active:</strong> <span id="userActive"></span></p>
+    <p><strong>Username:</strong> <span id="userName"></span></p>
+</div>
+
+<script>
+    $(document).ready(function() {
+        var userDetail = JSON.parse(sessionStorage.getItem('userDetail'));
+
+        if (userDetail) {
+            $('#userId').text(userDetail.id);
+            $('#userRole').text(userDetail.role);
+            $('#userCompanyType').text(userDetail.companyType);
+            $('#userCompanyName').text(userDetail.companyName);
+            $('#userCompanyRegNumber').text(userDetail.companyRegNumber);
+            $('#userPhoneNumber').text(userDetail.phoneNumber);
+            $('#userEmail').text(userDetail.email);
+            $('#userActive').text(userDetail.active);
+            $('#userName').text(userDetail.username);
+        } else {
+            alert('No user data found');
+        }
+    });
+</script>
+</body>
+</html>

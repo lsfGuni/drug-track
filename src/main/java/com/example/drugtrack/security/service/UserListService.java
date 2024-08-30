@@ -39,6 +39,7 @@ public class UserListService {
 
     //유저 상세정보 조회
     public Optional<User> getUserBySeq(Long seq) {
+        System.out.println("Entering getUserBySeq with seq: " + seq);
         return userRepository.findBySeq(seq); // Call the repository method to find user by sequence number
     }
 }

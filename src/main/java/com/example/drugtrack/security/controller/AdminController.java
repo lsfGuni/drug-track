@@ -1,6 +1,7 @@
 package com.example.drugtrack.security.controller;
 
 import com.example.drugtrack.security.dto.UpdateUserDTO;
+import com.example.drugtrack.security.dto.UserDetailDTO;
 import com.example.drugtrack.security.dto.UserListDTO;
 import com.example.drugtrack.security.entity.User;
 import com.example.drugtrack.security.service.UpdateUserService;
@@ -43,10 +44,31 @@ public class AdminController {
         return response;
     }
 
-    @GetMapping("/user/details/{seq}")
-    public ResponseEntity<User> getUserDetails(@PathVariable Long seq) {
-        Optional<User> user = userListService.getUserBySeq(seq);
-        return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    @GetMapping("user/details/{seq}")
+    public ResponseEntity<UserDetailDTO> getUserDetails(@PathVariable Long seq) {
+        System.out.println("Entering getUserDetails with seq: " + seq); // 메서드 진입 로그
+
+        Optional<User> userOpt = userListService.getUserBySeq(seq);
+        return userOpt.map(user -> {
+            System.out.println("User found: " + user.getId()); // 사용자 정보가 조회되었을 때의 로그
+
+            UserDetailDTO userDetailDTO = new UserDetailDTO(
+                    user.getSeq(),
+                    user.getId(),
+                    user.getRole(),
+                    user.getCompanyType(),
+                    user.getCompanyName(),
+                    user.getCompanyRegNumber(),
+                    user.getPhoneNumber(),
+                    user.getEmail(),
+                    user.getActive(),
+                    user.getUsername()
+            );
+            return ResponseEntity.ok(userDetailDTO);
+        }).orElseGet(() -> {
+            System.out.println("User not found for seq: " + seq); // 사용자 정보가 없을 때의 로그
+            return ResponseEntity.notFound().build();
+        });
     }
 
 

@@ -30,6 +30,11 @@ public class ViewController {
     public String showAdminTestPage() {
         return "admini";  // HTML 파일의 이름 (admin.html)
     }
+
+    @GetMapping("/view/user-detail")
+    public String showUserDetailPage() {
+        return "userDetail";  // userDetail.html 템플릿을 반환
+    }
 }
 
 
