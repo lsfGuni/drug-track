@@ -9,34 +9,72 @@
 <body>
 <h1>User Detail</h1>
 <div>
-    <p><strong>ID:</strong> <span id="userId"></span></p>
-    <p><strong>Role:</strong> <span id="userRole"></span></p>
-    <p><strong>Company Type:</strong> <span id="userCompanyType"></span></p>
-    <p><strong>Company Name:</strong> <span id="userCompanyName"></span></p>
-    <p><strong>Company Reg Number:</strong> <span id="userCompanyRegNumber"></span></p>
-    <p><strong>Phone Number:</strong> <span id="userPhoneNumber"></span></p>
-    <p><strong>Email:</strong> <span id="userEmail"></span></p>
-    <p><strong>Active:</strong> <span id="userActive"></span></p>
-    <p><strong>Username:</strong> <span id="userName"></span></p>
+    <label><strong>ID:</strong> <span id="userId"></span></label><br>
+    <label><strong>Role:</strong> <span id="userRole"></span></label><br>
+    <label><strong>Company Type:</strong> <input type="text" id="userCompanyType"></label><br>
+    <label><strong>Company Name:</strong> <input type="text" id="userCompanyName"></label><br>
+    <label><strong>Company Reg Number:</strong> <input type="text" id="userCompanyRegNumber"></label><br>
+    <label><strong>Phone Number:</strong> <input type="text" id="userPhoneNumber"></label><br>
+    <label><strong>Email:</strong> <input type="text" id="userEmail"></label><br>
+    <label><strong>Active:</strong> <input type="text" id="userActive"></label><br>
+    <label><strong>Username:</strong> <input type="text" id="userName"></label><br>
 </div>
+<button id="saveChangesBtn">변경사항 저장</button>
 
 <script>
     $(document).ready(function() {
+        // userDetail에서 저장된 정보를 불러와 폼에 채워 넣음
         var userDetail = JSON.parse(sessionStorage.getItem('userDetail'));
+        var seq = userDetail.seq; // seq 값을 별도로 저장
 
         if (userDetail) {
             $('#userId').text(userDetail.id);
             $('#userRole').text(userDetail.role);
-            $('#userCompanyType').text(userDetail.companyType);
-            $('#userCompanyName').text(userDetail.companyName);
-            $('#userCompanyRegNumber').text(userDetail.companyRegNumber);
-            $('#userPhoneNumber').text(userDetail.phoneNumber);
-            $('#userEmail').text(userDetail.email);
-            $('#userActive').text(userDetail.active);
-            $('#userName').text(userDetail.username);
+            $('#userCompanyType').val(userDetail.companyType);
+            $('#userCompanyName').val(userDetail.companyName);
+            $('#userCompanyRegNumber').val(userDetail.companyRegNumber);
+            $('#userPhoneNumber').val(userDetail.phoneNumber);
+            $('#userEmail').val(userDetail.email);
+            $('#userActive').val(userDetail.active);
+            $('#userName').val(userDetail.username);
         } else {
             alert('No user data found');
         }
+
+        // [변경사항 저장] 버튼 클릭 시 확인 팝업 추가 및 업데이트 API 호출
+        $('#saveChangesBtn').click(function() {
+            var confirmation = confirm("회원정보를 변경합니다. 진행합니까?");
+
+            if (confirmation) {
+                var updateData = {
+                    companyType: $('#userCompanyType').val(),
+                    companyName: $('#userCompanyName').val(),
+                    companyRegNumber: $('#userCompanyRegNumber').val(),
+                    phoneNumber: $('#userPhoneNumber').val(),
+                    email: $('#userEmail').val(),
+                    active: $('#userActive').val(),
+                    username: $('#userName').val()
+                };
+
+                $.ajax({
+                    url: '/user/update/' + seq,
+                    type: 'PUT',
+                    contentType: 'application/json',
+                    data: JSON.stringify(updateData),
+                    success: function(response) {
+                        alert('회원정보가 수정되었습니다.');
+                        console.log('Updated User:', response);
+                        // 필요 시 페이지 새로고침 또는 다른 작업 수행
+                    },
+                    error: function(error) {
+                        console.error('Error updating user details', error);
+                        alert('Failed to update user details');
+                    }
+                });
+            } else {
+                alert('변경이 취소되었습니다.');
+            }
+        });
     });
 </script>
 </body>
