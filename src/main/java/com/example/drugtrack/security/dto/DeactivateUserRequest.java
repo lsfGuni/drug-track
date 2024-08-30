@@ -6,18 +6,18 @@ import lombok.Data;
 @Data
 public class DeactivateUserRequest {
 
-    @Schema(description = "아이디", example = "ibiz", required = true)
-    private String id;
+    @Schema(description = "사업자등록번호", example = "1234567890", required = true)
+    private String companyRegNumber;
 
     @Schema(description = "비밀번호", example = "password123", required = true)
     private String password;
 
-    public String getId() {
-        return id;
+    public String getCompanyRegNumber() {
+        return companyRegNumber;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setCompanyRegNumber(String companyRegNumber) {
+        this.companyRegNumber = companyRegNumber;
     }
 
     public String getPassword() {

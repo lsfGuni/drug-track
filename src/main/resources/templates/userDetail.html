@@ -21,6 +21,7 @@
 </div>
 <button id="saveChangesBtn">변경사항 저장</button>
 <button id="forgotPasswordBtn">비밀번호 찾기</button>
+<button id="deactivateUserBtn">회원탈퇴</button>
 
 <script>
     $(document).ready(function() {
@@ -104,6 +105,40 @@
                     alert('비밀번호 찾기 요청에 실패했습니다.');
                 }
             });
+        });
+
+        // 회원탈퇴 버튼 클릭 시 API 호출
+        $('#deactivateUserBtn').click(function() {
+            var companyRegNumber = $('#userCompanyRegNumber').val();
+            var password = prompt("비밀번호를 입력하세요:");
+
+            if (password) {
+                var requestData = {
+                    companyRegNumber: companyRegNumber,
+                    password: password
+                };
+
+                $.ajax({
+                    url: '/user/deactivate',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(requestData),
+                    success: function(response) {
+                        if (response.result === "Y") {
+                            alert('회원 탈퇴가 완료되었습니다.');
+                            // 필요시 로그아웃 또는 리다이렉트 처리
+                        } else {
+                            alert('회원 탈퇴에 실패했습니다. 비밀번호를 확인하세요.');
+                        }
+                    },
+                    error: function(error) {
+                        console.error('Error during user deactivation', error);
+                        alert('회원 탈퇴 요청에 실패했습니다.');
+                    }
+                });
+            } else {
+                alert('비밀번호가 입력되지 않았습니다. 회원탈퇴를 취소합니다.');
+            }
         });
 
     });

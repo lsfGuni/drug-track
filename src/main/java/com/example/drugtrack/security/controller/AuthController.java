@@ -179,7 +179,7 @@ public class AuthController {
         userService.updatePassword(user, tempPassword);
 
         // 이메일 발송 (EmailService가 있다고 가정)
-        String message = "의약품 이력관리 API 임시 비밀번호입니다.: " + tempPassword;
+        String message = "의약품 이력관리 API 계정 비밀번호입니다.: " + tempPassword;
         emailService.sendResetPasswordEmail(user.getEmail(), message);
         System.out.println(message);
         return ResponseEntity.ok(Collections.singletonMap("result", "Y"));
@@ -199,20 +199,21 @@ public class AuthController {
     @Operation(summary = "회원 탈퇴", description = "계정과 사업장 정보를 활용해 회원 탈퇴를 처리합니다.")
     @PostMapping("/deactivate")
     public ResponseEntity<?> deactivateUser(@RequestBody DeactivateUserRequest request) {
-        String companyRegNumber = request.getId();
+        String companyRegNumber = request.getCompanyRegNumber();
         String password = request.getPassword();
 
         // 거래처사업장등록번호로 사용자 찾기
         User user = userService.findByCompanyRegNumberAndActive(companyRegNumber, "Y");
         if (user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(Collections.singletonMap("result", "N")); // 사용자를 찾을 수 없음
+
+                    .body(Collections.singletonMap("result", "사용자 못찾음 N")); // 사용자를 찾을 수 없음
         }
 
         // 비밀번호 검증
         if (!passwordEncoder.matches(password, user.getPassword())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Collections.singletonMap("result", "N")); // 비밀번호가 일치하지 않음
+                    .body(Collections.singletonMap("result", "비밀번호 불일치 N")); // 비밀번호가 일치하지 않음
         }
 
         // 사용자 비활성화 (회원 탈퇴 처리)
