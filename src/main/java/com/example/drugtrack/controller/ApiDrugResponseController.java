@@ -71,7 +71,7 @@ public class ApiDrugResponseController {
         String userAgent = httpServletRequest.getHeader("User-Agent");
         String requestUri = httpServletRequest.getRequestURI();
 
-        logger.info("POST 배치 요청 발생 - IP: {}, User-Agent: {}, URI: {}", clientIp, userAgent, requestUri);
+        logger.info("다중 의약품 등록 요청 발생 - IP: {}, User-Agent: {}, URI: {}", clientIp, userAgent, requestUri);
 
         // 응답 객체 생성
         Map<String, String> responseMap = new HashMap<>();

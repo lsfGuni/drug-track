@@ -55,7 +55,7 @@ public class SecurityConfig {
                     .requestMatchers("/css/**", "/js/**", "/images/**", "/favicon.ico").permitAll()
                     .requestMatchers("/user/**", "/", "/view/**").permitAll()
                     .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll()
-                    .requestMatchers("/traceability/**", "/search/**").permitAll()
+                    .requestMatchers("/traceability/**", "/search/**","/api/**").permitAll()
                     .anyRequest().authenticated();
         });
 
