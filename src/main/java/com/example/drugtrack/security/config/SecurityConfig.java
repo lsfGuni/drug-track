@@ -50,11 +50,13 @@ public class SecurityConfig {
         http.authorizeHttpRequests(auth -> {
             auth
                     .requestMatchers("/admin/**").hasRole("ADMIN")
+                    .requestMatchers("/api/files-upload", "/error").permitAll()
                     .requestMatchers("/user/details/**").permitAll() // Corrected typo
                     .requestMatchers("/user/update/**").permitAll()
-                    .requestMatchers("/css/**", "/js/**", "/images/**", "/favicon.ico").permitAll()
+                    .requestMatchers("/css/**", "/js/**", "/img/**", "/favicon.ico", "/fonts/**").permitAll()
                     .requestMatchers("/user/**", "/", "/view/**").permitAll()
                     .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll()
+                    .requestMatchers("/api/files-upload").permitAll()
                     .requestMatchers("/traceability/**", "/search/**","/api/**").permitAll()
                     .anyRequest().authenticated();
         });

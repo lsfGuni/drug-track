@@ -1,10 +1,11 @@
 server:
 
- port: 8082
+ port: 8080
 
 spring:
   servlet:
     multipart:
+      enabled: true
       max-file-size: 60MB  # 파일당 최대 크기
       max-request-size: 60MB  # 요청당 최대 크기 (여러 파일 포함)
   jwt:

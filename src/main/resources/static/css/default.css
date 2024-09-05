@@ -1,0 +1,453 @@
+@charset "utf-8";
+ 
+
+
+ /****** 투명이미지 처리 ie6에서 적용 ******/
+ .png24 {  tmp:expression(setPng24(this)); }
+
+ *{margin:0;padding:0;}
+html,body {height:100%; padding:0px; margin:0px; font-size: 12px;}
+body, textarea, select, input, td {font-size: 12px;}
+select, input {vertical-align: middle; font-family: NanumGothic;}
+table {border-collapse: collapse; border: 0;}
+ul, li, ol {list-style-type : none;	margin:0; padding: 0;}
+img, input.type-image {	border: 0 none;}
+span.button, img.button, a.button {cursor: pointer;}
+
+
+form {margin: 0; padding: 0;}
+hr {display: none;}
+p, th, div, td, span {
+	font-family: NanumGothic;   
+	font-size: 12px;
+}
+b {font-weight:bold;}
+a:link, a:visited, a:active {text-decoration: none;}
+a:hover {text-decoration: none;}
+a, input {	selector-dummy: expression(this.hideFocus=true);} 
+
+caption{visibility:hidden; width:0; height:0; margin:0; padding:0; font-size:0; line-height:0}
+
+input{
+	display: inline-block; 
+	border:solid 1px #cccccc; 
+	padding:1px 3px 2px 3px; 
+	background: #fff; 
+	color: #666; 
+	font-size: 12px;
+	height: 15px; /* <-- height: 19px; */
+	-webkit-border-radius: 2px; -moz-border-radius: 2px; border-radius: 2px;
+}
+
+
+input.basic {
+	height:14px;
+	padding:1px;
+	border: 1px solid #c8c8c8;
+	background-color: #fff;
+}
+
+
+input.pg{
+	display: inline-block; 
+	border:solid 1px #c8c8c8; 
+	padding:2px 3px 2px 3px; 
+	background: #fff; 
+	color: #555; 
+	font-size: 13px;
+	height: 14px;
+	width: 25px;
+	text-align: center;
+}
+
+input.layout_menu_sch{
+	display: inline-block; 
+	border:solid 0px #c8c8c8; 
+	padding:2px 3px 2px 0px; 
+	color: #333333;
+	font-family:dotum;
+	font-size: 12px;
+	height: 14px;
+	width: 60px;
+	text-align: left;
+	background: url();
+}
+
+
+select{
+	padding:1px;
+	border:solid 1px #cccccc; 
+	font-size: 12px;	
+	height: 20px; /* <-- 24px */
+	line-height: 20px; /* <-- 24px */
+	-webkit-border-radius: 2px; -moz-border-radius: 2px; border-radius: 2px;
+	color: #666; 
+}
+
+select.off{
+	height: 20px;
+	line-height: 20px; 
+	-webkit-border-radius: 2px; -moz-border-radius: 2px; border-radius: 2px;
+	padding: 1px;
+	border:solid 1px #abadb3; 
+	font-size: 12px;
+	background: #e1e1e1; 
+	color: #999999;
+
+}
+
+input.type-radio{width:14px; height:14px;}
+*.irt {	/* Image Replacement Technic */
+	display: none;
+}
+.radio {margin: 0 -3px 0 -5px; border: none !important; border: 0; background-color: transparent;}
+:root .radio {margin: -2px 0 0 0;}
+.check {margin: -1px 0 0 -5px; border: none !important; border: 0; background-color: transparent;}
+:root .check {margin:  -1px 0 0 0;}
+
+
+textarea {
+	padding:2px 3px 3px 3px; 
+	border:solid 1px #cccccc; 
+	background-color: #fff;
+	overflow:auto;
+	scrollbar-face-color:white;
+	scrollbar-highlight-color:#BFBFBF;
+	scrollbar-3dlight-color:white;
+	scrollbar-shadow-color:#BFBFBF;
+	scrollbar-darkshadow-color:white;
+	scrollbar-arrow-color:#BFBFBF;
+	scrollbar-track-color:white;
+	color: #666; 
+	font-size: 12px;
+	font-family: NanumGothic;
+	-webkit-border-radius: 2px; -moz-border-radius: 2px; border-radius: 2px;
+}
+textarea.off{background: #e1e1e1; color: #999999;border: 1px solid #abadb3;} 
+
+textarea.name_s01p{width: 98%; border: 1px solid #abadb3;}
+textarea.name_s02p{width: 95%; border: 1px solid #abadb3;}
+
+radio{width:14px; height:12px;}
+
+.space70 {height:70px; font-size:1px; clear: both;}
+.space65 {height:65px; font-size:1px; clear: both;}
+.space60 {height:60px; font-size:1px; clear: both;}
+.space55 {height:55px; font-size:1px; clear: both;}
+.space50 {height:50px; font-size:1px; clear: both;}
+.space45 {height:45px; font-size:1px; clear: both;}
+.space40 {height:40px; font-size:1px; clear: both;}
+.space35 {height:35px; font-size:1px; clear: both;}
+.space32 {height:32px; font-size:1px; clear: both;}
+.space30 {height:30px; font-size:1px; clear: both;}
+.space25 {height:25px; font-size:1px; clear: both;}
+.space24 {height:24px; font-size:1px; clear: both;}
+.space23 {height:23px; font-size:1px; clear: both;}
+.space22 {height:22px; font-size:1px; clear: both;}
+.space21 {height:21px; font-size:1px; clear: both;}
+.space20 {height:20px; font-size:1px; clear: both;}
+.space19 {height:19px; font-size:1px; clear: both;}
+.space18 {height:18px; font-size:1px; clear: both;}
+.space17 {height:17px; font-size:1px; clear: both;}
+.space16 {height:16px; font-size:1px; clear: both;}
+.space15 {height:15px; font-size:1px; clear: both;}
+.space14 {height:14px; font-size:1px; clear: both;}
+.space13 {height:13px; font-size:1px; clear: both;}
+.space12 {height:12px; font-size:1px; clear: both;}
+.space11 {height:11px; font-size:1px; clear: both;}
+.space10 {height:10px; font-size:1px; clear: both;}
+.space9 {height:9px; font-size:1px; clear: both;}
+.space8 {height:8px; font-size:1px; clear: both;}
+.space7 {height:7px; font-size:1px; clear: both;}
+.space6 {height:6px; font-size:1px; clear: both;}
+.space5 {height:5px; font-size:1px; clear: both;}
+.space4 {height:4px; font-size:1px; clear: both;}
+.space3 {height:3px; font-size:1px; clear: both;}
+.space2 {height:2px; font-size:1px; clear: both;}
+.space1 {height:1px; font-size:1px; clear: both;}
+.space0 {height:0px; font-size:0px; clear: both;}
+.frc {text-align: center;}
+
+
+
+
+.font-color-red {color: #df0000;}
+.font-color-blue {color: #003366;}
+.font-color-blue2 {color: #0000cc;}
+.font-color-bgray {color: #333333;}
+.font-color-ygray {color: #999999;}
+
+.font-type {font-family: dotum;}
+.font-type-bold {font-weight: bold;}
+
+.font-nanum {font-family: NanumGothic;  }/* 기본 사용 폰트*/ 
+.font-nanumbold {font-family: NanumGothicB; font-weight: bold;}/* 기본 사용 폰트 굵음*/
+
+.padding-left-50 {padding-left: 50px;}
+.padding-left-20 {padding-left: 20px;}
+.padding-top-5 {padding-top: 5px;}
+.padding-top-10 {padding-top: 10px;}
+.padding-bottom-5 {padding-bottom: 5px;}
+.padding-left-10 {padding-left: 10px;}
+.padding-lr-5 {padding: 0px 5px;}
+.padding-right-20 {padding-right: 20px;}
+.padding-left-15 {padding-left: 15px;} 
+
+
+.padding-top-8-border {padding-top: 8px; border-top: 1px solid #ccc; margin-top: 10px;}
+
+.margin-top-3 {margin-top: 3px;} 
+.margin-top-5 {margin-top: 5px;}
+.margin-top-8 {margin-top: 8px;}
+.margin-left-5 {margin-left: 5px;}
+.margin-left-10 {margin-left: 10px;}
+.margin-left-20 {margin-left: 20px;}
+.margin-right-20 {margin-right: 20px;} 
+.margin-right-5 {margin-right: 5px;} 
+.margin-right-10 {margin-right: 10px;} 
+
+.height-120 {height: 120px;}
+.height-125 {height: 125px;}
+.height-130 {height: 130px;}
+.height-135 {height: 135px;}
+.height-250 {height: 250px;}
+.height-260 {height: 260px;}
+.height-300 {height: 300px;}
+
+.min-height-300 {min-height: 300px; display:block;}
+.height-195 {height: 195px; display:block;overflow:auto;}
+
+.vertical-top {vertical-align:top}
+
+
+.info_text_s {float: left; padding-top: 6px;}
+
+/* grid높이 추가분 */
+div.grid_height_298 {height: 298px;}
+
+span.data_in {width: 100px;}
+.text-right {text-align: right;}
+.text-left {text-align: left;}
+
+.txt_info_single{color: #333333; padding-top: 8px;}
+.attach_sign{background:url(../img/contents/re.gif) top left no-repeat; padding-left: 9px; }
+
+span.btn_no {display:inline-block;padding:0px 0px 0px 10px; margin-top: 3px;}
+
+.font-size-16{font-size: 16px}
+.font-size-14{font-size: 14px}
+.font-size-30{font-size: 30px}
+.font-size-40{font-size: 40px}
+.font-size-11{font-size: 11px}
+.font-name-arial {	font-family: arial;}
+
+
+/* time-list 방송용 일회성 */
+table.tbl_timeList {width:100%; border-top:solid 1px #dadada;border-left:solid 1px #dadada;border-bottom:solid 1px #dadada;}
+table.tbl_timeList th {border-right:solid 1px #dadada;background: #f4f4f4;line-height:1.3em;color: #222222; white-space: nowrap; padding:2px 4px; vertical-align: middle; height: 30px; font-size: 14px; }
+table.tbl_timeList td {border-right:solid 1px #dadada;background: #ffffff;color: #666666; padding: 2px 4px;text-align:center;line-height:1.3em; white-space: nowrap; vertical-align: middle; height: 65px; font-weight: bold;}
+
+
+/* 테이블 col color  */
+table.tbl_List .color_01 {background: #f3b9ff;}
+table.tbl_List .color_02 {background: #e6f7c6;}
+table.tbl_List .color_03 {background: #f7e7c6;}
+table.tbl_List .color_04 {background: #c6e4f7;}
+table.tbl_List .color_05 {background: #ffc3b9;}
+
+.font-type-light{font-weight: lighter;}
+
+.four-padding-leftright {padding: 0 15px;}
+.four-padding-left-0 {padding: 0 15px 0 0;}
+.four-padding-right-0 {padding: 0 0 0 15px;}
+
+
+/** 인풋에서 한영 모드 고정  **/
+input.han {ime-mode:active;} /** 한글이 기본 Default **/
+input.eng {ime-mode:inactive;} /** 영문이 기본 Default **/
+input.eng_only {ime-mode:disable;} /** 영문만 사용 **/
+
+
+/* input 
+input[type="checkbox"] {
+    position:absolute;
+    top:-500px;
+    left:-500px;
+}
+input[type="checkbox"] + label span {
+    display:inline-block;
+    width:17px;
+    height:17px;
+    vertical-align:middle;
+    background:url(../img/check/checkbox_off.png) left top no-repeat;
+    cursor:pointer;
+}
+input[type="checkbox"]:checked + label span {
+    background:url(../img/check/checkbox_on.png) left top no-repeat;
+}
+label.checkbox_checked span {
+    background:url(../img/check/checkbox_on.png) left top no-repeat !important;
+}
+
+input[type="radio"] {
+    position:absolute;
+    top:-500px;
+    left:-500px;
+}
+input[type="radio"] + label span {
+    display:inline-block;
+    width:17px;
+    height:17px;
+    vertical-align:middle;
+    background:url(../img/check/radio_off.png) left top no-repeat;
+    cursor:pointer;
+}
+input[type="radio"]:checked + label span {
+    background:url(../img/check/radio_on.png) left top no-repeat;
+}
+label.radio_checked span {
+    background:url(../img/check/radio_on.png) left top no-repeat !important;
+}
+*/
+
+input[type="checkbox"] {
+	border: 0px;
+	background: url();
+}
+input[type="radio"] {
+	border: 0px;
+	background: url();
+}
+
+
+.float-left{float: left}
+.display-inlineblock{display: inline-block;}
+.float-right{float: right}
+.line-height-1p6{line-height: 1.6em}
+.line-height-2p0{line-height: 2.0em; font-family: NanumGothic;}
+.line-height-2p2{line-height: 2.2em; font-family: NanumGothic;}
+
+.display-block-width100{display: block;width: 100%; height: 100%;}
+.absolute-r0-t0 {position:absolute; right:0; top: 0;}
+.absolute-r5-t5 {position:absolute; right:5px; top: 5px;} 
+.display-block{display: block;}
+.display-none{display: none;}
+
+
+
+/** input 사용시 사이즈 적용 **/
+input.date{width: 68px;}
+input.date_s{width: 43px;}
+input.code{width: 100px;} /* name과 동일하세 사용 */
+input.name{width: 100px; }
+input.code_s{width: 46px;}
+input.name_s{width: 60px;}
+input.name_ss{width: 35px;}
+input.name_se{width: 80px;}
+input.name_s01{width: 164px;}
+input.name_s02{width: 400px;}
+input.name_s03{width: 120px;}
+input.name_s04{width: 192px;}
+input.name_s05{width: 250px;}
+input.name_s340{width: 340px;}
+input.time{width: 60px;text-align:center;}
+input.value{width: 90px;text-align: right;}
+input.mm{width: 40px;text-align:center;}
+input.num{width: 100px; }
+input.num_s{width: 50px;}
+input.num_l{width: 120px; }
+input.sort{width: 100px;}
+input.id{width: 120px;}
+input.id_s{width: 45px;}
+input.id_m{width: 80px;}
+input.pass{width: 120px;}
+input.pass_s{width: 80px;}
+input.value_s{width: 56px; text-align: right;}
+input.datentime{width: 120px;text-align:center;}
+input.code_b{width: 120px;}
+input.phone{width: 50px;} 
+input.phone_s{width: 28px;} 
+input.phone_a{width: 120px;} 
+input.email{width: 150px;} 
+input.email_l{width: 200px;} 
+input.post{width: 50px;} 
+input.post_s{width: 35px;} 
+input.visit{width: 50px; text-align:center;}
+input.detail {width: 170px;}
+input.coordi-value {width: 50px; text-align:center;}
+
+input.sbox{width: 20px;} 
+input.num_xs{width: 30px;}
+input.ssbox{width: 16px;} 
+
+input.name_s01p{width: 94%;}
+input.name_s02p{width: 50%;}
+input.name_s03p{width: 98%;}
+input.name_s04p{width: 40%;} 
+input.name_s05p{width: 30%;} 
+input.name_s06p{width: 60%;} 
+input.name_s07p{width: 70%;} 
+input.name_s08p{width: 80%;}
+input.name_s85p{width: 85%;}  
+input.name_s09p{width: 90%;} 
+input.name_s99p{width: 99%;} 
+input.name_s78p{width: 78%;}
+input.name_s45p{width: 45%;}
+input.name_s58p{width: 58%;} 
+input.name_s67p{width: 67%;} 
+input.off{background: #e1e1e1; color: #999999;border: 1px solid #abadb3;}
+input.help{background: #60cd84; color: #999999;border: 1px solid #60cd84;}
+input.help_pr{background: #d0f294; color: #999999;border: 1px solid #afcf76;} 
+input.text-right{text-align: right;}
+input.text-cen{text-align: center;}
+
+
+
+input.date_bix{width: 100px; font-size: 16px; padding: 2px;}
+
+input.talk_90p{width: 90%; margin-left: 10px; margin-top: 6px;	height:17px; padding:1px; color: #619dc3;} 
+
+
+
+
+/** input외 select, textarea등 사이즈 적용 **/
+.size-15 {width:15px; clear: both;}
+.size-20 {width:20px; clear: both;}
+.size-30 {width:30px; clear: both;}
+.size-35 {width:35px; clear: both;}
+.size-40 {width:40px; clear: both;}
+.size-45 {width:45px; clear: both;}
+.size-50 {width:50px; clear: both;}
+.size-70 {width:70px; clear: both;}
+.size-80 {width:80px; clear: both;}
+.size-90 {width:90px; clear: both;}
+.size-100 {width:100px; clear: both;}
+.size-110 {width:110px; clear: both;}
+.size-120 {width:120px; clear: both;}
+.size-130 {width:130px; clear: both;}
+.size-140 {width:140px; clear: both;}
+.size-150 {width:150px; clear: both;}
+.size-160 {width:160px; clear: both;}
+.size-170 {width:170px; clear: both;}
+.size-180 {width:180px; clear: both;}
+.size-190 {width:190px; clear: both;}
+.size-200 {width:200px; clear: both;}
+.size-300 {width:300px; clear: both;}
+.size-400 {width:400px; clear: both;}
+.size-500 {width:500px; clear: both;}
+.size-600 {width:600px; clear: both;}
+.size-700 {width:700px; clear: both;}
+.size-90p {width:90%; clear: both;}
+.size-95p {width:95%; clear: both;}
+.size-93p {width:93%; clear: both;}
+.size-98p {width:98%; clear: both;}
+.size-40p {width:40%; clear: both;}
+.size-60p {width:60%; clear: both;}
+.size-56p {width:56%; clear: both;} 
+.size-50p {width:50%; clear: both;}
+.size-70p {width:70%; clear: both;}
+.size-20p {width:20%; clear: both;}
+.size-25p {width:25%; clear: both;}
+.size-27p {width:27%; clear: both;}
+.size-80p {width:80%; clear: both;}
+.size-100p {width:100%; clear: both;}

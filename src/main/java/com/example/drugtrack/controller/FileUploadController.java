@@ -1,8 +1,11 @@
 package com.example.drugtrack.controller;
 
 import com.example.drugtrack.service.CsvDataService;
+import com.example.drugtrack.service.DataLoadService;
 import com.example.drugtrack.service.ExcelDataService;
 import com.example.drugtrack.service.FileDBService;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.http.HttpStatus;
@@ -14,7 +17,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -23,19 +28,32 @@ public class FileUploadController {
     private final CsvDataService csvDataService;  // CSV 데이터 관리 서비스
     private final ExcelDataService excelDataService;  // Excel 데이터 관리 서비스
     private final FileDBService fileDBService;
+    private final DataLoadService dataLoadService;
 
-    public FileUploadController(CsvDataService csvDataService, ExcelDataService excelDataService, FileDBService fileDBService) {
+    public FileUploadController(CsvDataService csvDataService, ExcelDataService excelDataService, FileDBService fileDBService
+    , DataLoadService dataLoadService) {
         this.csvDataService = csvDataService;
         this.excelDataService = excelDataService;
         this.fileDBService = fileDBService;
+        this.dataLoadService = dataLoadService;
     }
 
+
     @PostMapping("/files-upload")
-    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<Map<String, String>> uploadFile(
+            @RequestParam("file") @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    content = @Content(mediaType = "multipart/form-data",
+                            schema = @Schema(type = "string", format = "binary")))
+            MultipartFile file) {
+
+        Map<String, String> response = new HashMap<>();
+
         // 파일이 비어 있는지 확인
         if (file.isEmpty()) {
             System.out.println("업로드된 파일이 비어 있습니다.");
-            return new ResponseEntity<>("파일이 비어 있습니다.", HttpStatus.BAD_REQUEST);
+            response.put("result", "N");
+            response.put("msg", "파일이 비어 있습니다.");
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
 
         // 파일의 확장자 추출
@@ -44,7 +62,9 @@ public class FileUploadController {
 
         if (filename == null || (!filename.endsWith(".csv") && !filename.endsWith(".xlsx"))) {
             System.out.println("지원되지 않는 파일 형식: " + filename);
-            return new ResponseEntity<>("지원되지 않는 파일 형식입니다. CSV 또는 XLSX 파일만 가능합니다.", HttpStatus.BAD_REQUEST);
+            response.put("result", "N");
+            response.put("msg", "지원되지 않는 파일 형식입니다. CSV 또는 XLSX 파일만 가능합니다.");
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
 
         try {
@@ -55,7 +75,9 @@ public class FileUploadController {
                 csvData.forEach(row -> System.out.println(String.join(", ", row)));  // CSV 데이터를 콘솔에 출력
 
                 csvDataService.storeCsvData(csvData);  // CSV 데이터를 서비스에 저장
-                return new ResponseEntity<>("CSV 파일이 성공적으로 처리되었습니다.", HttpStatus.OK);
+                response.put("result", "Y");
+                response.put("msg", "CSV 파일이 성공적으로 처리되었습니다.");
+                return new ResponseEntity<>(response, HttpStatus.OK);
 
                 // XLSX 파일 처리
             } else if (filename.endsWith(".xlsx")) {
@@ -64,17 +86,23 @@ public class FileUploadController {
                 excelData.forEach(row -> System.out.println(String.join(", ", row)));  // 엑셀 데이터를 콘솔에 출력
 
                 // 파싱한 엑셀 데이터를 메모리에 저장
-                excelDataService.storeExcelData(excelData);  // 수정된 부분: 데이터를 메모리에 저장
+                excelDataService.storeExcelData(excelData);
 
-                return new ResponseEntity<>("XLSX 파일이 성공적으로 처리되었습니다.", HttpStatus.OK);
+                response.put("result", "Y");
+                response.put("msg", "XLSX 파일이 성공적으로 처리되었습니다.");
+                return new ResponseEntity<>(response, HttpStatus.OK);
             }
 
         } catch (IOException e) {
             e.printStackTrace();
-            return new ResponseEntity<>("파일 처리 중 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
+            response.put("result", "N");
+            response.put("msg", "파일 처리 중 오류가 발생했습니다.");
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return new ResponseEntity<>("파일 처리에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
+        response.put("result", "N");
+        response.put("msg", "파일 처리에 실패했습니다.");
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     // CSV 파일 파싱 로직

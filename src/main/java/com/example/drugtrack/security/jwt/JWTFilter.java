@@ -69,7 +69,8 @@ public class JWTFilter extends OncePerRequestFilter {
                 path.startsWith("/webjars/") ||
                 path.startsWith("/user/update/") || // Corrected path for update
                 path.startsWith("/user/details/") || // Corrected path for update
-                path.startsWith("/api/**"); // Corrected path for details
+                path.startsWith("/api/**") || // Corrected path for update
+                path.startsWith("/api/files-upload");  // Corrected path for details
 
     }
 

@@ -1,26 +1,71 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>로그인</title>
     <meta charset="UTF-8">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- jQuery를 사용하여 AJAX 요청을 보냅니다. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>NIPA 로그인</title>
+
+    <!-- Linking CSS -->
+    <link th:href="@{/css/layout.css}" rel="stylesheet" type="text/css" />
+    <link th:href="@{/css/contents.css}" rel="stylesheet" type="text/css" />
+
+    <!-- jQuery and JavaScript -->
+    <script th:src="@{/js/jquery.js}"></script> <!-- Updated to match the file in the project -->
+
+
 </head>
-<body>
-<h1>로그인</h1>
 
-<div>
-    <label for="id">사용자 이름:</label>
-    <input type="text" id="id" required />
-</div>
-<div>
-    <label for="password">비밀번호:</label>
-    <input type="password" id="password" required />
-</div>
-<button id="loginButton">로그인</button>
+<body class="login-bg">
+<div class="login-right">
+    <div class="right-wrap"></div>
+    <h3>
+        <!-- Logo image path fix -->
+        <img th:src="@{/img/common/nipa_logo.png}" alt="로고">
+    </h3>
+    <h4>의약품 이력관리 시스템</h4>
+    <fieldset class="login-form">
+        <div class="id-area focus">
+            <div class="input-row">
+					<span class="input-box">
+						<label for="id" class="txt">아이디</label>
+						<input type="text" id="id" placeholder="아이디 입력" maxlength="" class="int-id">
+					</span>
+            </div>
+        </div>
+        <div class="pw-area">
+            <div class="input-row">
+					<span class="input-box">
+						<label for="password" class="txt">비밀번호</label>
+						<input type="password" id="password" placeholder="비밀번호 입력" maxlength="" class="int-pw">
+					</span>
+            </div>
+        </div>
 
-<div>
-    <a href="/view/register">회원이 아니신가요? 회원가입하기</a>
+        <!-- 에러메세지 -->
+        <!--
+        <p class="txt-error">아이디 또는 비밀번호가 잘못 입력 되었습니다. </p>
+        <p class="txt-error">아이디와 비밀번호를 정확히 입력해 주세요. </p>
+        -->
+        <div class="login-check">
+				<span class="login-check-box">
+					<input type="checkbox" name="" id="checkbox1" class="checkbox checkbox-form" checked>
+					<label for="checkbox1" class="checkbox-label checkbox-form-label">아이디 저장</label>
+				</span>
+        </div>
+
+        <div class="login-btn-wrap">
+            <button class="login-btn" id="loginButton">
+                로그인
+            </button>
+        </div>
+    </fieldset>
 </div>
+<ul class="add-info">
+    <li>Copyright © 2024 NIPA All Right Reserved.</li>
+</ul>
+
+
 <script type="text/javascript">
     function loginSuccess(token) {
         // 토큰을 쿠키에 저장
@@ -31,57 +76,55 @@
     }
 
     $(document).ready(function() {
+        // When the login button is clicked
         $('#loginButton').click(function(event) {
-            event.preventDefault(); // 폼 제출을 막음
+            event.preventDefault();  // Prevent the default form submission
 
+            // Get the input values
             var loginData = {
                 id: $('#id').val(),
                 password: $('#password').val()
             };
 
+            // Clear any previous error message
+            $('#error-msg').hide();
+
+            // Send the AJAX POST request
             $.ajax({
                 type: 'POST',
-                url: '/user/login',
+                url: '/user/login',  // The API endpoint
                 contentType: 'application/json',
                 data: JSON.stringify(loginData),
                 success: function(response) {
-                    // 로그인 성공 여부를 확인
+                    // Check if the login was successful
                     if (response.token) {
-                        // JWT 토큰 저장
+                        // Store the JWT token in localStorage
                         localStorage.setItem('token', response.token);
                         console.log('로그인 성공:', response);
-                        loginSuccess(response.token);
-                        // JWT 토큰을 포함하여 메인 페이지로 이동하는 요청 보내기
-                        var token = localStorage.getItem('token');
 
-                        $.ajax({
-                            type: 'GET',
-                            url: '/view/main',
-                            headers: {
-                                'Authorization': 'Bearer ' + token
-                            },
-                            success: function(mainResponse) {
-                                // 메인 페이지가 성공적으로 로드되었을 때
-                                console.log('메인 페이지 로드 성공:', mainResponse);
-                                window.location.href = '/view/main'; // 페이지 이동
-                            },
-                            error: function(xhr, status, error) {
-                                console.error('메인 페이지 로드 실패:', xhr.responseText);
-                                alert('메인 페이지 로드 실패: ' + xhr.responseText);
-                            }
-                        });
+                        localStorage.setItem('userId', response.data.id);
+                        $('#user-name').text(response.data.id);
+                        // Redirect to the main page or the dashboard
+                        window.location.href = '/view/main';  // Change this to your desired URL
                     } else {
-                        // 로그인 실패 시 처리
-                        console.error('로그인 실패: 토큰이 없습니다.');
-                        alert('로그인 실패: 토큰이 없습니다.');
+                        // Show an error message if the login failed
+                        $('#error-msg').text('로그인 실패: 토큰이 없습니다.').show();
                     }
                 },
                 error: function(xhr, status, error) {
+                    // Display an error message if the request failed
+                    $('#error-msg').text('로그인 실패: 아이디 또는 비밀번호가 잘못 입력되었습니다.').show();
                     console.error('로그인 실패:', xhr.responseText);
-                    alert('로그인 실패: ' + xhr.responseText);
                 }
             });
         });
+
+        // On page load, check if the user is already logged in
+        var storedUserId = localStorage.getItem('userId');
+        if (storedUserId) {
+            $('#user-name').text(storedUserId);  // 페이지 로드시 저장된 userId를 표시
+        }
+
     });
 </script>
 

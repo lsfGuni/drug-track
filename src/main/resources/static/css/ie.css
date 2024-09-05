@@ -1,0 +1,42 @@
+/* layout.css */
+.bookmark-layer, .helpsearch-result-layer {
+	top:28px;
+}
+.bookmark-btn-box button.add { margin-left:29px; }
+.bookmark-btn-box button.del {
+	position:absolute; top:4px; right:28px;
+}
+
+/* contents.css */
+/* 섹션 */
+/* div.section { padding-top:8px; } */
+
+.board-paging { display:block; width:240px; text-align:center; }
+.board-paging li { float:left; }
+
+.contents-tab { height:34px; }
+.contents-tab li { float:left; display:block; }
+
+
+/* login page [*/
+.login-form dt, .login-form dd { display:block; float:left; }
+.login-form dt { padding-top:7px; }
+/*] login page */
+
+.popupbtnbox {
+	padding:0 0 30px 0;
+}
+
+
+
+
+/* main.css */
+/* 최근사용목록 */
+.summary ul.lately button.right{	
+	margin: 0 0px 7px 5px;
+}
+
+
+
+/* 첫번째 타이틀 */
+div.section h3 { background:url('../img/contents/subtitle_bl.gif') no-repeat left 9px; color:#4a4a4a;padding:8px 0 0px 20px; height:16px; font-family:dotum, arial; margin-bottom: 4px;}

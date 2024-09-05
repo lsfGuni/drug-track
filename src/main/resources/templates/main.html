@@ -1,65 +1,199 @@
 <!DOCTYPE html>
-<html>
+<html lang="kr">
 <head>
-    <title>메인 페이지</title>
-    <meta charset="UTF-8">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- jQuery를 사용하여 AJAX 요청을 보냅니다. -->
-</head>
-<body>
-<h1>메인 페이지</h1>
+    <title>Main</title>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <link th:href="@{/css/layout.css}" rel="stylesheet" type="text/css" />
+    <link th:href="@{/css/contents.css}" rel="stylesheet" type="text/css" />
+    <!--[if lte IE 7]>
+    <link th:href="@{/css/ie.css}" rel="stylesheet" type="text/css" />
+    <![endif]-->
 
-<div>
-    <button onclick="window.location.href='/view/register'">회원가입</button>
-    <button onclick="window.location.href='/view/login'">로그인</button>
-    <button id="adminButton">관리자 페이지 이동</button> <!-- 관리자 페이지 이동 버튼 -->
+</head>
+
+<body>
+<div class="total_wrap iamdistribution">
+    <!-- Header Section -->
+    <div class="header">
+        <div class="header_logo" style="display: flex; width:376px;">
+            <a href="#">
+                <img src="../img/common/nipa_logo.png" alt="NIPA Logo">
+            </a>
+            <b style="font-size: 24px; margin-left: 10px; margin-top: 18px;">의약품 이력관리 시스템</b>
+        </div>
+        <div class="util_wrap">
+            <ul>
+                <li class="fir_name">
+                    <span class="f-light" id="user-name">사용자</span><span>님</span>
+                </li>
+                <li><a href="#" id="logout-button" class="logout">로그아웃</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Main Navigation -->
+    <div class="sitenav">
+        <ul class="sitemenu2nd">
+            <li class="sitemenu2nd-list on">
+                <div class="sitemenu2nd-txtwrap">
+                    <span class="sitemenu2nd-title">회원관리</span>
+                    <span class="sitemenu2nd-arrow-up"></span>
+                </div>
+                <ul class="sitemenu3rd">
+                    <li class="sitemenu3rd-list">
+                        고객정보변경
+                        <span class="right-arrow"></span>
+                        <ul class="sitemenu4th">
+                            <li class="sitemenu4th-list">
+                                <a href="고객관리_고객관리_고객정보변경.html" target="iFrame">고객정보변경</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="sitemenu3rd-list">
+                        고객유형관리
+                        <span class="right-arrow"></span>
+                        <ul class="sitemenu4th">
+                            <li class="sitemenu4th-list">
+                                <a href="고객관리_고객유형관리_휴먼고객관리.html" target="iFrame">휴먼고객관리</a>
+                            </li>
+                            <li class="sitemenu4th-list">
+                                <a href="고객관리_고객유형관리_탈퇴고객관리.html" target="iFrame">탈퇴고객관리</a>
+                            </li>
+                            <li class="sitemenu4th-list">
+                                <a href="고객관리_고객유형관리_약관동의관리.html" target="iFrame">약관동의관리</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li class="sitemenu2nd-list">
+                <div class="sitemenu2nd-txtwrap">
+                    <span class="sitemenu2nd-title">시스템관리</span>
+                    <span class="sitemenu2nd-arrow-up"></span>
+                </div>
+                <ul class="sitemenu3rd">
+                    <li class="sitemenu3rd-list">
+                        SR/주문건수
+                        <span class="right-arrow"></span>
+                        <ul class="sitemenu4th">
+                            <li class="sitemenu4th-list">
+                                <a href="#">SR 상태</a>
+                            </li>
+                            <li class="sitemenu4th-list">
+                                <a href="#">SR 상태</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Content Area with iframe -->
+    <div class="contents">
+        <iframe src="고객관리_고객관리_고객정보변경.html" style="border:0" frameborder="0" width="100%" height="600px;" id="iFrame" name="iFrame"></iframe>
+    </div>
+
+    <!-- Footer Section -->
+    <div class="footer">
+        <div class="frametab-box">
+            <div class="frametab">
+                <span class="frametab-title">사용자관리</span>
+                <button class="frametab-close"><span class="alttxt">close tab</span></button>
+            </div>
+            <div class="frametab tab-on">
+                <span class="frametab-title color-w">고객정보변경</span>
+                <button class="frametab-close"><span class="alttxt">close tab</span></button>
+            </div>
+        </div>
+        <div class="tabpage-box">
+            <button class="tabpage-btn left">
+                <span class=""><span class="alttxt">tab page prev</span></span>
+            </button>
+            <button class="tabpage-btn right">
+                <span class=""><span class="alttxt">tab page next</span></span>
+            </button>
+        </div>
+    </div>
+
 </div>
 
-<!-- 토큰 값을 표시할 요소 추가 -->
-<div id="tokenDisplay" style="margin-top: 20px; color: blue;"></div>
+<!-- Layer Popup -->
+<div class="layerpopwrap ac none">
+    <div class="layer-header">레이어 팝업</div>
+    <div class="contents">
+        <iframe class="contecnts-frame" src="pattern_00.html"></iframe>
+    </div>
+    <br/>
+    <span class="btn_basic close-layerpop"><a href="#">닫기</a></span>
+</div>
+
+<!-- Scripts -->
+
+<script th:src="@{/js/jquery.js}"></script>
+<script th:src="@{/js/hana.js}"></script>
 <script type="text/javascript">
+    $(document).ready(function () {
+        // Display the logged-in user’s ID
+        var userId = localStorage.getItem('userId'); // Fetch the stored user ID (assuming it's stored in localStorage)
 
-   $(document).ready(function() {
+        // If the user is logged in, replace the placeholder with their ID
+        if (userId) {
+            $('#user-name').text(userId);
+        }
 
+        // Logout functionality
+        $('#logout-button').click(function (event) {
+            event.preventDefault(); // Prevent the default link behavior
 
-       $('#adminButton').click(function(event) {
-           event.preventDefault(); // 기본 동작을 막음
+            // Clear the JWT token or user session data
+            localStorage.removeItem('token');  // Remove the stored JWT token (if using JWT)
+            localStorage.removeItem('userId'); // Remove the stored userId
 
-           var token = localStorage.getItem('token'); // 로컬 스토리지에서 토큰 가져오기
-           console.log("Stored token: ", token); // 토큰 로그 출력
+            // Optionally, make a logout API request to the server if needed (not required for JWT)
+            // $.post("/api/logout", function() {});
 
-           if (!token) {
-               alert('로그인이 필요합니다.');
-               window.location.href = '/view/login'; // 토큰이 없으면 로그인 페이지로 이동
-               return;
-           }
-
-           $.ajax({
-               type: 'GET',
-               url: '/admin/dashboard', // 관리자 페이지 URL
-               headers: {
-                   'Authorization': 'Bearer ' + token, // JWT 토큰을 Authorization 헤더에 포함
-                   'Content-Type': 'application/json'
-               },
-               success: function(response) {
-
-                    console.log("ok");
-
-                   window.location.href = '/admin/dashboard'; // 전체 HTML을 응답으로 교체
-
-               },
-               error: function(xhr, status, error) {
-                   console.error('관리자 페이지 접근 실패:', xhr.responseText);
-                   alert('접근 권한이 없습니다. 로그인 후 다시 시도해주세요.');
-                   window.location.href = '/view/login';
-               }
-           });
-       });
-   });
-
-
-
+            // Redirect the user to the login page after logging out
+            window.location.href = '/view/login';
+        });
+    });
 </script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        // Tab Navigation Logic
+        $('.frametab-close').click(function() {
+            $(this).closest('.frametab').remove();
+        });
 
+        // Admin Page Navigation
+        $('#adminButton').click(function(event) {
+            event.preventDefault();
+            const token = localStorage.getItem('token');
 
+            if (!token) {
+                alert('로그인이 필요합니다.');
+                window.location.href = '/view/login';
+                return;
+            }
+
+            $.ajax({
+                type: 'GET',
+                url: '/admin/dashboard',
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Content-Type': 'application/json'
+                },
+                success: function() {
+                    window.location.href = '/admin/dashboard';
+                },
+                error: function() {
+                    alert('접근 권한이 없습니다. 로그인 후 다시 시도해주세요.');
+                    window.location.href = '/view/login';
+                }
+            });
+        });
+    });
+</script>
 </body>
+
 </html>
