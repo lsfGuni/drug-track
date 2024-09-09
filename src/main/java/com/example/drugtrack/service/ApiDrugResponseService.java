@@ -157,4 +157,12 @@ public class ApiDrugResponseService {
         txValueMap.put("hashCode", response.getHashCode());
         return objectMapper.writeValueAsString(txValueMap);
     }
+
+
+    public List<ApiDrugResponse> getDrugsByBarcodeData(String barcodeData) {
+        List<ApiDrugResponse> results = repository.findByBarcodeData(barcodeData);
+        System.out.println("Fetched results: " + results.size()); // 로그 추가
+        return results;
+    }
+
 }

@@ -1,5 +1,6 @@
 package com.example.drugtrack.controller;
 
+import com.example.drugtrack.dto.ApiDrugResponseWrapper;
 import com.example.drugtrack.dto.DrugTrackingListRequestDTO;
 import com.example.drugtrack.entity.ApiDrugResponse;
 import com.example.drugtrack.service.ApiDrugResponseService;
@@ -101,5 +102,14 @@ public class ApiDrugResponseController {
         return ResponseEntity.ok(responseMap);
     }
 
+
+    @Operation(summary = "바코드로 의약품 추적정보 조회", description = "바코드 기준으로 의약품 상세정보를 조회합니다.")
+    @GetMapping("/getInfo")
+    public ApiDrugResponseWrapper getDrugsByBarcode(@RequestParam String barcodeData) {
+        List<ApiDrugResponse> data = service.getDrugsByBarcodeData(barcodeData);
+        String result = (data != null && !data.isEmpty()) ? "Y" : "N";
+
+        return new ApiDrugResponseWrapper(result, data);
+    }
 
 }
