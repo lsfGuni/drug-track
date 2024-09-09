@@ -8,10 +8,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Service
 public class ApiDrugResponseService {
@@ -36,17 +36,21 @@ public class ApiDrugResponseService {
         String deliveryType = response.getDeliveryType();
 
         // DB에서 동일한 delivery_type 값이 존재하는지 확인
-        Optional<ApiDrugResponse> latestResponseOpt = repository.findTopByStartCompanyRegNumberOrderBySeqDesc(startCompanyRegNumber);
 
-        // 최신 데이터가 존재하고, 그 값이 동일한 경우 예외 발생
-        if (latestResponseOpt.isPresent()) {
-            ApiDrugResponse latestResponse = latestResponseOpt.get();
+        List<ApiDrugResponse> latestResponseList = repository.findByStartCompanyRegNumberAndBarcodeData(startCompanyRegNumber, barcodeData);
 
-            // 필요한 검증 로직을 여기에 추가, 예를 들어서 특정 필드의 값이 같은 경우 에러 처리
-            if (deliveryType.equals(latestResponse.getDeliveryType())) {
+        // 최신 데이터가 존재하는지 확인 (내림차순 정렬하여 가장 최신 데이터를 가져옴)
+        if (!latestResponseList.isEmpty()) {
+            ApiDrugResponse latestResponse = latestResponseList.stream()
+                    .max(Comparator.comparing(ApiDrugResponse::getSeq))
+                    .orElse(null); // seq 기준으로 가장 최신 데이터 가져옴
+
+            if (latestResponse != null && deliveryType.equals(latestResponse.getDeliveryType())) {
+                // delivery_type이 동일한 경우 예외 발생
                 throw new IllegalStateException("이미 동일한 출고등록 기록이 있습니다.");
             }
         }
+
 
         try {
             ensureNonNullFields(response);
