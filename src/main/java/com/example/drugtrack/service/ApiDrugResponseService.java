@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class ApiDrugResponseService {
@@ -28,6 +29,25 @@ public class ApiDrugResponseService {
 
     // 단일 의약품 정보 저장
     public ApiDrugResponse saveResponse(ApiDrugResponse response) {
+
+        // 데이터 저장 전에 프론트에서 받은 파라미터 값 가져오기
+        String barcodeData = response.getBarcodeData();
+        String startCompanyRegNumber = response.getStartCompanyRegNumber();
+        String deliveryType = response.getDeliveryType();
+
+        // DB에서 동일한 delivery_type 값이 존재하는지 확인
+        Optional<ApiDrugResponse> latestResponseOpt = repository.findTopByStartCompanyRegNumberOrderBySeqDesc(startCompanyRegNumber);
+
+        // 최신 데이터가 존재하고, 그 값이 동일한 경우 예외 발생
+        if (latestResponseOpt.isPresent()) {
+            ApiDrugResponse latestResponse = latestResponseOpt.get();
+
+            // 필요한 검증 로직을 여기에 추가, 예를 들어서 특정 필드의 값이 같은 경우 에러 처리
+            if (deliveryType.equals(latestResponse.getDeliveryType())) {
+                throw new IllegalStateException("이미 동일한 출고등록 기록이 있습니다.");
+            }
+        }
+
         try {
             ensureNonNullFields(response);
 

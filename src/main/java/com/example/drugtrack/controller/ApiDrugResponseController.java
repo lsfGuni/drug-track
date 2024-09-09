@@ -47,17 +47,20 @@ public class ApiDrugResponseController {
 
         logger.info("POST 요청 발생 - IP: {}, User-Agent: {}, URI: {}", clientIp, userAgent, requestUri);
 
-        // 서비스 단에서 데이터 저장 및 반환
-        ApiDrugResponse savedResponse = service.saveResponse(response);
 
         // 응답 객체 생성
         Map<String, String> responseMap = new HashMap<>();
-        if (savedResponse != null) {
+        try {
+            // 서비스 단에서 데이터 저장 및 중복 검사
+            ApiDrugResponse savedResponse = service.saveResponse(response);
+
+            // 성공적인 저장
             responseMap.put("result", "Y");
             responseMap.put("error", null);
-        } else {
+        } catch (IllegalStateException e) {
+            // 중복 발생 시 에러 응답
             responseMap.put("result", "N");
-            responseMap.put("error", "등록이 실패했습니다.");
+            responseMap.put("error", e.getMessage());
         }
 
         return ResponseEntity.ok(responseMap);
