@@ -19,7 +19,7 @@ public class CompanyRegController {
     private CompanyRegService service;
 
     @Operation(summary = "사업자번호로 의약품 이력 조회", description = "사업자번호 기준으로 저장된 의약품 이력정보를 조회합니다.")
-    @GetMapping("/getDrugTrackingInfo")
+    @GetMapping("/getDrugTrackingInfo-companyRegNum")
     public ApiDrugResponseWrapper getResponseByCompanyRegNumber(@RequestParam String startCompanyRegNumber) {
         List<ApiDrugResponse> responses = service.getResponseByCompanyRegNumber(startCompanyRegNumber);
         String result = (responses != null && !responses.isEmpty()) ? "Y" : "N";

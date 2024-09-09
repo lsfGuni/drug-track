@@ -104,7 +104,7 @@ public class ApiDrugResponseController {
 
 
     @Operation(summary = "바코드로 의약품 추적정보 조회", description = "바코드 기준으로 의약품 상세정보를 조회합니다.")
-    @GetMapping("/getInfo")
+    @GetMapping("/getDrugTrackingInfo")
     public ApiDrugResponseWrapper getDrugsByBarcode(@RequestParam String barcodeData) {
         List<ApiDrugResponse> data = service.getDrugsByBarcodeData(barcodeData);
         String result = (data != null && !data.isEmpty()) ? "Y" : "N";
