@@ -2,6 +2,7 @@ package com.example.drugtrack.security.config;
 
 import com.example.drugtrack.security.jwt.JWTFilter;
 import com.example.drugtrack.security.jwt.JWTUtil;
+import com.example.drugtrack.security.jwt.LoginFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -61,7 +62,14 @@ public class SecurityConfig {
                     .anyRequest().authenticated();
         });
 
-        http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED));
+
+        http
+                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration)), UsernamePasswordAuthenticationFilter.class);
+
+        //세션 설정
+        http
+                .sessionManagement((session) -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         http.addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
 

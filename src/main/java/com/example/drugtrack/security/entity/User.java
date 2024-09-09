@@ -3,10 +3,14 @@ package com.example.drugtrack.security.entity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "users")
 @Data
+@Getter
+@Setter
 public class User {
 
     @Id
