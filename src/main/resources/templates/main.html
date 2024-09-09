@@ -12,6 +12,7 @@
 </head>
 
 <body>
+
 <div class="total_wrap iamdistribution">
     <!-- Header Section -->
     <div class="header">
@@ -89,9 +90,12 @@
         </ul>
     </div>
 
-    <!-- Content Area with iframe -->
-    <div class="contents">
-        <iframe src="고객관리_고객관리_고객정보변경.html" style="border:0" frameborder="0" width="100%" height="600px;" id="iFrame" name="iFrame"></iframe>
+    <!-- Content Area with iframe
+    <iframe src="/view/user-list" style="border:0" frameborder="0" width="100%" height="600px;" id="iFrame" name="iFrame"></iframe>
+    -->
+
+    <div id="user-list-content">
+        <!-- 이곳에 /view/user-list 응답 내용이 표시됩니다. -->
     </div>
 
     <!-- Footer Section -->
@@ -128,9 +132,9 @@
     <span class="btn_basic close-layerpop"><a href="#">닫기</a></span>
 </div>
 
-<!-- Scripts -->
+<!-- Scripts-->
 
-<script th:src="@{/js/jquery.js}"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script th:src="@{/js/hana.js}"></script>
 <script type="text/javascript">
     $(document).ready(function () {
@@ -194,6 +198,26 @@
         });
     });
 </script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        // 페이지가 로드되면 자동으로 AJAX 요청을 보내서 /view/user-list 불러오기
+        $.ajax({
+            url: '/view/user-list',  // 불러올 URL
+            type: 'GET',
+            success: function(data) {
+                console.log("데이터 수신 성공:", data);  // 데이터가 성공적으로 수신됨
+                // 받은 데이터를 #user-list-content에 삽입
+                $('#user-list-content').html(data);
+            },
+            error: function() {
+                console.log("오류 발생:", textStatus, errorThrown);  // 오류 정보 출력
+                alert('데이터를 불러오는 중 오류가 발생했습니다.');
+            }
+        });
+    });
+
+</script>
+
 </body>
 
 </html>

@@ -18,6 +18,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig {
 
+    
+
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JWTUtil jwtUtil;
 
@@ -44,7 +46,11 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable());
-        http.formLogin(formLogin -> formLogin.disable());
+        http.formLogin(form -> form
+                .loginPage("/view/login") // 로그인 페이지 경로 설정
+                .defaultSuccessUrl("/view/main", true)  // 로그인 성공 후 리다이렉트
+                .permitAll() // 로그인 페이지는 누구나 접근할 수 있게 허용
+        );
         http.httpBasic(httpBasic -> httpBasic.disable());
 
         http.authorizeHttpRequests(auth -> {
@@ -57,6 +63,7 @@ public class SecurityConfig {
                     .requestMatchers("/user/**", "/", "/view/**").permitAll()
                     .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll()
                     .requestMatchers("/api/files-upload").permitAll()
+                    .requestMatchers("/static/**", "/iframe/**").permitAll()
                     .requestMatchers("/traceability/**", "/search/**","/api/**").permitAll()
                     .anyRequest().authenticated();
         });
