@@ -16,9 +16,5 @@ public interface BarcodeRepository extends JpaRepository<ApiDrugList, Long> {
     @Query(value = "SELECT * FROM api_drug_list WHERE FIND_IN_SET(:barcode, BAR_CODE) > 0", nativeQuery = true)
     List<ApiDrugList> findByBarcode(@Param("barcode") String barcode);
 
-    @Transactional
-    @Modifying
-    @Query(value = "UPDATE drug_tracking_data SET delivery_type = '4' WHERE barcode_data = :barcode", nativeQuery = true)
-    int updateDeliveryTypeByBarcode(@Param("barcode") String barcode);
 
 }

@@ -18,8 +18,4 @@ public class BarcodeService {
         return results;
     }
 
-    public boolean updateDeliveryType(String barcode) {
-        int updatedRows = repository.updateDeliveryTypeByBarcode(barcode);
-        return updatedRows > 0; // Return true if update was successful
-    }
 }

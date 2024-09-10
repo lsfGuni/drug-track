@@ -1,5 +1,6 @@
 package com.example.drugtrack.tracking.contorller;
 
+import com.example.drugtrack.search.dto.UpdateResponse;
 import com.example.drugtrack.tracking.dto.ApiDrugResponseWrapper;
 import com.example.drugtrack.tracking.dto.DrugTrackingListRequestDTO;
 import com.example.drugtrack.tracking.entity.ApiDrugResponse;
@@ -112,4 +113,12 @@ public class ApiDrugResponseController {
         return new ApiDrugResponseWrapper(result, data);
     }
 
+
+    @Operation(summary = "의약품 판매 완료 업데이트", description = "바코드를 사용하여 DB의 delivery_type을 4(판매코드)로 업데이트합니다.")
+    @PostMapping("/updateDeliveryType")
+    public UpdateResponse updateDeliveryType(@RequestParam String barcode) {
+        boolean isUpdated = service.updateDeliveryType(barcode);
+        String result = isUpdated ? "Y" : "N";
+        return new UpdateResponse(result);
+    }
 }
