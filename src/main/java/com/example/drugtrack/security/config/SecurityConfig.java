@@ -18,7 +18,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig {
 
-    
 
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JWTUtil jwtUtil;
@@ -45,6 +44,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
         http.csrf(csrf -> csrf.disable());
         http.formLogin(form -> form
                 .loginPage("/view/login") // 로그인 페이지 경로 설정
@@ -56,6 +56,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests(auth -> {
             auth
                     .requestMatchers("/admin/**").hasRole("ADMIN")
+                    .requestMatchers("/user/forgot-password").permitAll()
                     .requestMatchers("/api/files-upload", "/error").permitAll()
                     .requestMatchers("/user/details/**").permitAll() // Corrected typo
                     .requestMatchers("/user/update/**").permitAll()
@@ -72,7 +73,13 @@ public class SecurityConfig {
 
         http.addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
 
+        http.headers(headers -> headers
+                .frameOptions().sameOrigin()  // Allows framing from the same origin
+        );
+
+
         http.anonymous(auth -> auth.disable());
+
 
         return http.build();
     }

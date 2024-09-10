@@ -126,7 +126,9 @@
 <div class="layerpopwrap ac none">
     <div class="layer-header">레이어 팝업</div>
     <div class="contents">
+        <!--
         <iframe class="contecnts-frame" src="pattern_00.html"></iframe>
+        -->
     </div>
     <br/>
     <span class="btn_basic close-layerpop"><a href="#">닫기</a></span>
@@ -135,6 +137,8 @@
 <!-- Scripts-->
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script th:src="@{/js/hana.js}"></script>
 <script type="text/javascript">
     $(document).ready(function () {
@@ -170,7 +174,7 @@
             url: '/view/user-list',  // 불러올 URL
             type: 'GET',
             success: function(data) {
-                console.log("데이터 수신 성공:", data);  // 데이터가 성공적으로 수신됨
+
                 // 받은 데이터를 #user-list-content에 삽입
                 $('#user-list-content').html(data);
 
@@ -184,6 +188,7 @@
                     const phoneNumber = $(this).find('td:nth-child(6)').text();
                     const email = $(this).find('td:nth-child(7)').text();
                     const active = $(this).find('td:nth-child(8)').text();
+                    const seq = $(this).find('td:nth-child(9)').text();
 
                     // Update the customer detail section with the clicked row's data
                     $('#user-id').text(id);
@@ -193,7 +198,8 @@
                     $('#user-companyRegNumber').text(companyRegNumber);
                     $('#user-phoneNumber').text(phoneNumber);
                     $('#user-active').text(active);
-                    $('#user-email').val(email);  // For the email input field
+                    $('#user-email').val(email);
+                    $('#user-seq').val(email);
                 });
 
             },
@@ -202,6 +208,7 @@
                 alert('데이터를 불러오는 중 오류가 발생했습니다.');
             }
         });
+
     });
 
 </script>

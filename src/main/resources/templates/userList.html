@@ -114,7 +114,7 @@
                 <tr th:each="user : ${users}" class="select">
 
                     <td th:text="${user.id}"></td>
-                    <td th:text="${user.seq}" style="display:none"></td>
+
                     <td th:text="${user.role}"></td>
                     <td th:text="${user.companyType}"></td>
                     <td th:text="${user.companyName}"></td>
@@ -122,6 +122,7 @@
                     <td th:text="${user.phoneNumber}"></td>
                     <td th:text="${user.email}"></td>
                     <td th:text="${user.active}"></td>
+                    <td th:text="${user.seq}" style="display:none"></td>
                 </tr>
                 </tbody>
             </table>
@@ -146,7 +147,7 @@
 
     <!-- section 시작 -->
     <div class="section">
-        <h3>고객기본정보</h3>
+        <h3>회원기본정보</h3>
         <!-- table 영역 -->
         <div class="table-box">
             <table class="tbl_Form" summary="고객구분, 가입구분, 가입채널, 가입경로, 고객번호, 고객ID, 고개명, 생년월일, 휴대폰, 이메일, 내/외국인, 성별, 추천인 수, 임직원 여부, 가입일, 고객상태, 결합여부, 비밀번호, 주소, 비고">
@@ -175,11 +176,18 @@
                     <th scope="row"><label  >Email</label></th>
                     <td colspan="3"><input id="user-email" name="Input" type="text" class="email_l" value="gildong@naver.com" /></td>
                     <th scope="row"><label  >비밀번호</label></th>
-                    <td colspan="3">
-                        <span class="btn_table_in"><a href="#">초기화</a></span>
+                    <td>
+                        <span class="btn_table_in"><a href="#" id="reset-password-btn">초기화</a></span>
+
                         ※ 회원 이메일로 임의의 비밀번호가 발송됩니다.
                     </td>
+                    <th scope="row"><label  >회원탈퇴</label></th>
+                    <td>
+                        <span class="btn_table_in"><a href="#" id="deactivate-btn">탈퇴처리</a></span>
 
+                        ※ 회원 이메일로 임의의 비밀번호가 발송됩니다.
+                    </td>
+                    <td id="user-seq" style="display:none"></td>
                 </tr>
 
             </table>
@@ -244,29 +252,8 @@
     </div>
     <!-- section 종료 -->
 
-
-
-
-
-
-
-        <!-- 페이징이 들어갈 경우 -->
-        <div class="tablepaging-box">
-            <ul class="board-paging">
-                <li class="nobrd navbtn"><a href="#"><img src="../img/contents/ic-paging-left-start.gif"  border="0" align="absmiddle"/></a></li>
-                <li class="nobrd navbtn"><a href="#"><img src="../img/contents/ic-paging-left.gif"  border="0" align="absmiddle"/></a></li>
-                <li class="nobrd">
-                    <span class="input"><input name="Input" type="text" class="pg" value=""/></span>
-                    <span class="pline">/</span>
-                    <span><a href="">284</a></span>
-                </li>
-                <li class="nobrd navbtn"><a href="#"><img src="../img/contents/ic-paging-right.gif"  border="0" align="absmiddle"/></a></li>
-                <li class="nobrd navbtn"><a href="#"><img src="../img/contents/ic-paging-right-end.gif"  border="0" align="absmiddle"/></a></li>
-            </ul>
-        </div>
-        <!--// 페이징이 들어갈 경우 -->
     </div>
-    <!-- section 종료 -->
+
 
     <!-- ################### 화면내 탭 처리 화면 전부 처리 ################### -->
 
@@ -291,6 +278,60 @@ function setPng24(obj) {
 }
 </script>
 -->
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        // 초기화 버튼 클릭 이벤트
+        $('#reset-password-btn').click(function(event) {
+            event.preventDefault(); // 기본 링크 동작을 막음
+
+            // 필요한 파라미터 값 추출
+            const id = $('#user-id').text().trim();  // 사용자 ID 가져오기
+            const companyType = $('#user-companyType').text().trim();  // 회사 타입 가져오기
+
+
+            // Add console logs to see what values are being used
+            console.log("Extracted ID: ", id);
+            console.log("Extracted Company Type: ", companyType);
+
+            if (!id || !companyType) {
+                alert("사용자 ID와 회사 타입을 확인해주세요.");
+                return;
+            }
+
+            // API로 전송할 데이터
+            const requestData = {
+                id: id,
+                companyType: companyType
+            };
+
+            // 비밀번호 초기화 API 호출
+            $.ajax({
+                url: '/user/forgot-password',  // Use the full URL
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(requestData),  // 데이터를 JSON 형식으로 전송
+                success: function(response) {
+                    console.log("아이디랑 회사타입 : " + id + companyType)
+                    if (response.result === 'Y') {
+                        alert("임시 비밀번호가 이메일로 전송되었습니다.");
+                    } else {
+                        alert("사용자 정보를 찾을 수 없습니다.");
+                        console.log("User not found: ", response);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.log("Error Status: ", status);
+                    console.log("XHR Object: ", xhr);
+                    console.log("Error Thrown: ", error);
+
+                    alert("비밀번호 초기화 중 오류가 발생했습니다.");
+                    console.log("오류 정보:", status, error);
+                }
+            });
+        });
+    });
+</script>
 
 
 </body>
