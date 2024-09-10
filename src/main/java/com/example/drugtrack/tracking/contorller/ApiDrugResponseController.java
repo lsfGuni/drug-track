@@ -1,9 +1,9 @@
-package com.example.drugtrack.controller;
+package com.example.drugtrack.tracking.contorller;
 
-import com.example.drugtrack.dto.ApiDrugResponseWrapper;
-import com.example.drugtrack.dto.DrugTrackingListRequestDTO;
-import com.example.drugtrack.entity.ApiDrugResponse;
-import com.example.drugtrack.service.ApiDrugResponseService;
+import com.example.drugtrack.tracking.dto.ApiDrugResponseWrapper;
+import com.example.drugtrack.tracking.dto.DrugTrackingListRequestDTO;
+import com.example.drugtrack.tracking.entity.ApiDrugResponse;
+import com.example.drugtrack.tracking.service.ApiDrugResponseService;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

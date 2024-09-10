@@ -1,6 +1,6 @@
 package com.example.drugtrack.search.service;
 
-import com.example.drugtrack.entity.ApiDrugResponse;
+import com.example.drugtrack.tracking.entity.ApiDrugResponse;
 import com.example.drugtrack.search.repository.CompanyRegRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -1,4 +1,4 @@
-package com.example.drugtrack.dto;
+package com.example.drugtrack.tracking.dto;
 
 public class SerialNumberInfoDTO {
     private String barcodeData;

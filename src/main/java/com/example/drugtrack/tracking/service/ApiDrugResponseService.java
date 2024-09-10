@@ -1,8 +1,8 @@
-package com.example.drugtrack.service;
+package com.example.drugtrack.tracking.service;
 
-import com.example.drugtrack.dto.DrugTrackingRequestDTO;
-import com.example.drugtrack.entity.ApiDrugResponse;
-import com.example.drugtrack.repository.ApiDrugResponseRepository;
+import com.example.drugtrack.tracking.dto.DrugTrackingRequestDTO;
+import com.example.drugtrack.tracking.entity.ApiDrugResponse;
+import com.example.drugtrack.tracking.repository.ApiDrugResponseRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;

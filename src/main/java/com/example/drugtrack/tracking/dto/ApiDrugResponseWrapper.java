@@ -1,6 +1,6 @@
-package com.example.drugtrack.dto;
+package com.example.drugtrack.tracking.dto;
 
-import com.example.drugtrack.entity.ApiDrugResponse;
+import com.example.drugtrack.tracking.entity.ApiDrugResponse;
 
 import java.util.List;
 

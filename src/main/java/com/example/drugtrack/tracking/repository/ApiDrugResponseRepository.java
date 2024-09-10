@@ -1,6 +1,6 @@
-package com.example.drugtrack.repository;
+package com.example.drugtrack.tracking.repository;
 
-import com.example.drugtrack.entity.ApiDrugResponse;
+import com.example.drugtrack.tracking.entity.ApiDrugResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

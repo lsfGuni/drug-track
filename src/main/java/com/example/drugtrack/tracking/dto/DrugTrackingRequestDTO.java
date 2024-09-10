@@ -1,41 +1,25 @@
-package com.example.drugtrack.entity;
+// 파일: DrugTrackingRequestDTO.java
+package com.example.drugtrack.tracking.dto;
 
+import java.util.List;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.Data;
+public class DrugTrackingRequestDTO {
+    private String startCompanyRegNumber;
+    private String startCompanyName;
+    private String endCompanyRegNumber;
+    private String endCompanyName;
+    private String deliveryType;
+    private String deliveryDate;
+    private String productName;
+    private String gs1Code;
+    private String mfNumber;
+    private String expDate;
+    private String aggData;
 
-@Entity
-@Data
-public class FileDB {
+    private List<SerialNumberInfoDTO> serialNumbers;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    // Getters and Setters
 
-    private String startCompanyRegNumber;  // 출고업체 사업장등록번호
-    private String startCompanyName;  // 출고업체명
-    private String endCompanyRegNumber;  // 대상업체 사업자등록번호 (엑셀에 없음, 다른 API에서 사용)
-    private String endCompanyName;  // 대상업체명 (엑셀에 없음, 다른 API에서 사용)
-    private String deliveryType;  // 입고, 출고 구분값
-    private String deliveryDate; // 입출고일자
-    private String productName;   // 제품명
-    private String gs1Code;   // GTIN14
-    private String mfNumber;  // 제조번호
-    private String expDate;  // 유효일자
-    private String barcodeData;   // 바코드 데이터 추가
-    private String aggData;   // Aggregation 정보
-    private String serialNumbers;   // 시리얼 번호
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getStartCompanyRegNumber() {
         return startCompanyRegNumber;
@@ -116,15 +100,7 @@ public class FileDB {
     public void setExpDate(String expDate) {
         this.expDate = expDate;
     }
-
-    public String getBarcodeData() {
-        return barcodeData;
-    }
-
-    public void setBarcodeData(String barcodeData) {
-        this.barcodeData = barcodeData;
-    }
-
+    
     public String getAggData() {
         return aggData;
     }
@@ -133,11 +109,11 @@ public class FileDB {
         this.aggData = aggData;
     }
 
-    public String getSerialNumbers() {
+    public List<SerialNumberInfoDTO> getSerialNumbers() {
         return serialNumbers;
     }
 
-    public void setSerialNumbers(String serialNumbers) {
+    public void setSerialNumbers(List<SerialNumberInfoDTO> serialNumbers) {
         this.serialNumbers = serialNumbers;
     }
 }

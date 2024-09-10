@@ -1,5 +1,5 @@
 // 파일: DrugTrackingListRequestDTO.java
-package com.example.drugtrack.dto;
+package com.example.drugtrack.tracking.dto;
 
 import java.util.List;
 

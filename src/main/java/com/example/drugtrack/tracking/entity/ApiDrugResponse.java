@@ -1,4 +1,4 @@
-package com.example.drugtrack.entity;
+package com.example.drugtrack.tracking.entity;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;

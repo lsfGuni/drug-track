@@ -1,7 +1,7 @@
 package com.example.drugtrack.search.controller;
 
-import com.example.drugtrack.dto.ApiDrugResponseWrapper;
-import com.example.drugtrack.entity.ApiDrugResponse;
+import com.example.drugtrack.tracking.dto.ApiDrugResponseWrapper;
+import com.example.drugtrack.tracking.entity.ApiDrugResponse;
 import com.example.drugtrack.search.service.CompanyRegService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
