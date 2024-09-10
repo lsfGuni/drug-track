@@ -173,6 +173,29 @@
                 console.log("데이터 수신 성공:", data);  // 데이터가 성공적으로 수신됨
                 // 받은 데이터를 #user-list-content에 삽입
                 $('#user-list-content').html(data);
+
+                $('#user-list-content').on('click', 'tr.select', function() {
+                    // Extract values from the clicked row's cells
+                    const id = $(this).find('td:nth-child(1)').text();
+                    const role = $(this).find('td:nth-child(2)').text();
+                    const companyType = $(this).find('td:nth-child(3)').text();
+                    const companyName = $(this).find('td:nth-child(4)').text();
+                    const companyRegNumber = $(this).find('td:nth-child(5)').text();
+                    const phoneNumber = $(this).find('td:nth-child(6)').text();
+                    const email = $(this).find('td:nth-child(7)').text();
+                    const active = $(this).find('td:nth-child(8)').text();
+
+                    // Update the customer detail section with the clicked row's data
+                    $('#user-id').text(id);
+                    $('#user-role').text(role);
+                    $('#user-companyType').text(companyType);
+                    $('#user-companyName').text(companyName);
+                    $('#user-companyRegNumber').text(companyRegNumber);
+                    $('#user-phoneNumber').text(phoneNumber);
+                    $('#user-active').text(active);
+                    $('#user-email').val(email);  // For the email input field
+                });
+
             },
             error: function() {
                 console.log("오류 발생:", textStatus, errorThrown);  // 오류 정보 출력
