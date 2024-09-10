@@ -56,6 +56,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests(auth -> {
             auth
                     .requestMatchers("/admin/**").hasRole("ADMIN")
+
                     .requestMatchers("/user/forgot-password").permitAll()
                     .requestMatchers("/api/files-upload", "/error").permitAll()
                     .requestMatchers("/user/details/**").permitAll() // Corrected typo

@@ -69,7 +69,7 @@
 <script type="text/javascript">
     function loginSuccess(token) {
         // 토큰을 쿠키에 저장
-        document.cookie = "token=" + token + "; path=/";
+        document.cookie = "token=" + token + "; path=/; HttpOnly";  // 쿠키로 저장, XSS 공격 방지 가능
         console.log("JWT 토큰이 쿠키에 저장되었습니다.");
         // 원하는 페이지로 리디렉션
         //window.location.href = '/admin/dashboard';
@@ -80,12 +80,21 @@
         $('#loginButton').click(function(event) {
             event.preventDefault();  // Prevent the default form submission
 
-            // Get the input values
-            var loginData = {
-                id: $('#id').val(),
-                password: $('#password').val()
-            };
+            // 입력된 값 가져오기
+            var userId = $('#id').val().trim();
+            var userPassword = $('#password').val().trim();
 
+            // 유효성 검사: 아이디와 비밀번호가 입력되지 않은 경우
+            if (!userId || !userPassword) {
+                $('#error-msg').text('아이디와 비밀번호를 입력해 주세요.').show();  // 에러 메시지 표시
+                return;  // 서버 요청 중지
+            }
+
+            // 유효성 검사를 통과한 경우 AJAX 요청 실행
+            var loginData = {
+                id: userId,
+                password: userPassword
+            };
             // Clear any previous error message
             $('#error-msg').hide();
 
@@ -98,16 +107,11 @@
                 success: function(response) {
                     // Check if the login was successful
                     if (response.token) {
-                        // Store the JWT token in localStorage
-                        localStorage.setItem('token', response.token);
-                        console.log('로그인 성공:', response);
-
+                        // JWT 토큰 처리
+                        loginSuccess(response.token);
                         localStorage.setItem('userId', response.data.id);
-                        $('#user-name').text(response.data.id);
-                        // Redirect to the main page or the dashboard
-                        window.location.href = '/view/main';  // Change this to your desired URL
+                        window.location.href = '/view/main';  // 리디렉션
                     } else {
-                        // Show an error message if the login failed
                         $('#error-msg').text('로그인 실패: 토큰이 없습니다.').show();
                     }
                 },
