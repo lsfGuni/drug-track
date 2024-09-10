@@ -3,6 +3,8 @@ package com.example.drugtrack.security.service;
 import com.example.drugtrack.security.dto.UserListDTO;
 import com.example.drugtrack.security.entity.User;
 import com.example.drugtrack.security.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,10 +38,33 @@ public class UserListService {
                 .collect(Collectors.toList());
     }
 
+    // New paginated method to fetch a page of UserListDTOs
+    public Page<UserListDTO> getPaginatedUsers(Pageable pageable) {
+        // Fetch paginated users and map them to DTOs
+        return userRepository.findAll(pageable)
+                .map(user -> new UserListDTO(
+                        user.getSeq(),
+                        user.getId(),
+                        user.getUsername(),
+                        user.getRole(),
+                        user.getCompanyType(),
+                        user.getCompanyName(),
+                        user.getCompanyRegNumber(),
+                        user.getPhoneNumber(),
+                        user.getEmail(),
+                        user.getActive()
+                ));
+    }
 
     //유저 상세정보 조회
     public Optional<User> getUserBySeq(Long seq) {
         System.out.println("Entering getUserBySeq with seq: " + seq);
         return userRepository.findBySeq(seq); // Call the repository method to find user by sequence number
+    }
+
+
+    //페이징
+    public Page<User> findAllUsers(Pageable pageable) {
+        return userRepository.findAll(pageable);
     }
 }

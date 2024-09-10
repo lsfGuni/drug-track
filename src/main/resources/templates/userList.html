@@ -127,21 +127,61 @@
                 </tbody>
             </table>
         </div>
-        <!-- 페이징이 들어갈 경우 -->
-        <div class="tablepaging-box">
-            <ul class="board-paging">
-                <li class="nobrd navbtn"><a href="#"><img src="../img/contents/ic-paging-left-start.gif"  border="0" align="absmiddle"/></a></li>
-                <li class="nobrd navbtn"><a href="#"><img src="../img/contents/ic-paging-left.gif"  border="0" align="absmiddle"/></a></li>
-                <li class="nobrd">
-                    <span class="input"><input name="Input" type="text" class="pg" value=""/></span>
-                    <span class="pline">/</span>
-                    <span><a href="">284</a></span>
-                </li>
-                <li class="nobrd navbtn"><a href="#"><img src="../img/contents/ic-paging-right.gif"  border="0" align="absmiddle"/></a></li>
-                <li class="nobrd navbtn"><a href="#"><img src="../img/contents/ic-paging-right-end.gif"  border="0" align="absmiddle"/></a></li>
-            </ul>
+
+        <div class="space5"></div>
+
+        <div class="total-records">
+            (총 <span th:text="${totalItems}">0</span> 건)
         </div>
-        <!--// 페이징이 들어갈 경우 -->
+
+        <div class="space1"></div>
+        <!-- Container for total records and pagination -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+
+            <!-- Pagination controls (centered) -->
+            <div class="tablepaging-box" style="display: inline-block; margin: 0 auto;">
+                <ul class="board-paging" style="list-style: none; padding: 0; display: flex; justify-content: center; gap: 5px;">
+                    <!-- First page button -->
+                    <li class="nobrd navbtn" th:classappend="${currentPage == 0} ? 'disabled'">
+                        <a href="#" class="pagination-button" th:data-page="0">
+                            <img src="../img/contents/ic-paging-left-start.gif" border="0" align="absmiddle"/>
+                        </a>
+                    </li>
+
+                    <!-- Previous page button -->
+                    <li class="nobrd navbtn" th:classappend="${currentPage == 0} ? 'disabled'">
+                        <a href="#" class="pagination-button" th:data-page="${currentPage - 1}" th:unless="${currentPage == 0}">
+                            <img src="../img/contents/ic-paging-left.gif" border="0" align="absmiddle"/>
+                        </a>
+                    </li>
+
+                    <!-- Display up to 3 pages, depending on current page -->
+                    <li th:each="i : ${#numbers.sequence((currentPage - 1 > 0 ? currentPage - 1 : 0), (currentPage + 1 < totalPages - 1 ? currentPage + 1 : totalPages - 1))}"
+                        th:classappend="${i == currentPage} ? 'active' : ''">
+                        <a href="#" class="pagination-button" th:data-page="${i}" th:text="${i + 1}"></a>
+                    </li>
+
+                    <!-- Next page button -->
+                    <li class="nobrd navbtn" th:classappend="${currentPage + 1 >= totalPages} ? 'disabled'">
+                        <a href="#" class="pagination-button" th:data-page="${currentPage + 1}" th:unless="${currentPage + 1 >= totalPages}">
+                            <img src="../img/contents/ic-paging-right.gif" border="0" align="absmiddle"/>
+                        </a>
+                    </li>
+
+                    <!-- Last page button -->
+                    <li class="nobrd navbtn" th:classappend="${currentPage + 1 >= totalPages} ? 'disabled'">
+                        <a href="#" class="pagination-button" th:data-page="${totalPages - 1}" th:unless="${currentPage + 1 >= totalPages}">
+                            <img src="../img/contents/ic-paging-right-end.gif" border="0" align="absmiddle"/>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+
+
+
+
     </div>
     <!-- section 종료 -->
 
@@ -176,17 +216,12 @@
                     <th scope="row"><label  >Email</label></th>
                     <td colspan="3"><input id="user-email" name="Input" type="text" class="email_l" value="gildong@naver.com" /></td>
                     <th scope="row"><label  >비밀번호</label></th>
-                    <td>
+                    <td colspan="3">
                         <span class="btn_table_in"><a href="#" id="reset-password-btn">초기화</a></span>
 
                         ※ 회원 이메일로 임의의 비밀번호가 발송됩니다.
                     </td>
-                    <th scope="row"><label  >회원탈퇴</label></th>
-                    <td>
-                        <span class="btn_table_in"><a href="#" id="deactivate-btn">탈퇴처리</a></span>
 
-                        ※ 회원 이메일로 임의의 비밀번호가 발송됩니다.
-                    </td>
                     <td id="user-seq" style="display:none"></td>
                 </tr>
 
@@ -278,6 +313,7 @@ function setPng24(obj) {
 }
 </script>
 -->
+
 
 <script type="text/javascript">
     $(document).ready(function() {

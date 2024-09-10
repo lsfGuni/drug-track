@@ -2,11 +2,13 @@ package com.example.drugtrack.security.controller;
 
 import com.example.drugtrack.security.dto.UserListDTO;
 import com.example.drugtrack.security.service.UserListService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class ViewController {
@@ -40,10 +42,24 @@ public class ViewController {
     }
 
     @GetMapping("/view/user-list")
-    public String getUserList(Model model) {
-        List<UserListDTO> userDTOs = userListService.getAllUsers(); // Fetch all users
-        model.addAttribute("users", userDTOs);  // Add the list of users to the model
-        return "userList";  // Return Thymeleaf template for displaying users
+    public String getUserList(
+            @RequestParam(defaultValue = "0") int page,  // Default to first page (page index starts from 0)
+            @RequestParam(defaultValue = "10") int size, // Default to page size of 10
+            Model model) {
+
+        // Use a pageable object to request a specific page and size
+        Pageable pageable = PageRequest.of(page, size);
+
+        // Fetch a paginated list of users
+        Page<UserListDTO> userPage = userListService.getPaginatedUsers(pageable);
+
+        // Add paginated list and pagination details to the model
+        model.addAttribute("users", userPage.getContent());  // List of users for the current page
+        model.addAttribute("currentPage", page);  // Current page number
+        model.addAttribute("totalPages", userPage.getTotalPages());  // Total number of pages
+        model.addAttribute("totalItems", userPage.getTotalElements());  // Total number of items
+
+        return "userList";  // Return the Thymeleaf template
     }
 
 

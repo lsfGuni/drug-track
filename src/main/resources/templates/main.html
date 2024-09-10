@@ -168,50 +168,70 @@
 </script>
 
 <script type="text/javascript">
-    $(document).ready(function() {
-        // 페이지가 로드되면 자동으로 AJAX 요청을 보내서 /view/user-list 불러오기
-        $.ajax({
-            url: '/view/user-list',  // 불러올 URL
-            type: 'GET',
-            success: function(data) {
+    $(document).ready(function () {
+        // 페이지가 로드되면 AJAX로 첫 번째 페이지를 불러옵니다
+        loadUserList(0);
 
+        // 페이지 번호 클릭 시
+        $(document).on('click', '.pagination-button', function (event) {
+            event.preventDefault();  // 기본 페이지 이동 동작을 막음
+            const page = $(this).data('page');  // 클릭된 페이지 번호를 가져옴
+            loadUserList(page);
+        });
+    });
+
+    function loadUserList(page) {
+        $.ajax({
+            url: '/view/user-list',  // 서버에서 데이터를 불러올 URL
+            type: 'GET',
+            data: { page: page, size: 10 },  // 필요한 페이지 정보 전송
+            success: function (data) {
                 // 받은 데이터를 #user-list-content에 삽입
                 $('#user-list-content').html(data);
 
-                $('#user-list-content').on('click', 'tr.select', function() {
-                    // Extract values from the clicked row's cells
-                    const id = $(this).find('td:nth-child(1)').text();
-                    const role = $(this).find('td:nth-child(2)').text();
-                    const companyType = $(this).find('td:nth-child(3)').text();
-                    const companyName = $(this).find('td:nth-child(4)').text();
-                    const companyRegNumber = $(this).find('td:nth-child(5)').text();
-                    const phoneNumber = $(this).find('td:nth-child(6)').text();
-                    const email = $(this).find('td:nth-child(7)').text();
-                    const active = $(this).find('td:nth-child(8)').text();
-                    const seq = $(this).find('td:nth-child(9)').text();
-
-                    // Update the customer detail section with the clicked row's data
-                    $('#user-id').text(id);
-                    $('#user-role').text(role);
-                    $('#user-companyType').text(companyType);
-                    $('#user-companyName').text(companyName);
-                    $('#user-companyRegNumber').text(companyRegNumber);
-                    $('#user-phoneNumber').text(phoneNumber);
-                    $('#user-active').text(active);
-                    $('#user-email').val(email);
-                    $('#user-seq').val(email);
-                });
-
+                // 행 클릭 이벤트 바인딩
+                // 동적으로 삽입된 테이블 행에도 클릭 이벤트를 바인딩하기 위해
+                // 이벤트 위임 방식으로 이벤트를 바인딩함
+                bindRowClickEvent();
             },
-            error: function() {
-                console.log("오류 발생:", textStatus, errorThrown);  // 오류 정보 출력
+            error: function () {
+                console.log("오류 발생");  // 오류 정보 출력
                 alert('데이터를 불러오는 중 오류가 발생했습니다.');
             }
         });
+    }
 
-    });
+    function bindRowClickEvent() {
+        // 이벤트 위임을 통해 동적으로 로드된 테이블의 행에 이벤트를 바인딩합니다.
+        // 이 코드는 document에 이벤트를 바인딩하고, 그 안에서 특정 셀렉터가 클릭되었을 때만 이벤트를 트리거합니다.
+        $(document).on('click', '#user-list-content tr.select', function () {
+            console.log("클릭 이벤트 감지");
 
+            // 각 열에서 데이터를 추출
+            const id = $(this).find('td:nth-child(1)').text().trim();
+            const role = $(this).find('td:nth-child(2)').text().trim();
+            const companyType = $(this).find('td:nth-child(3)').text().trim();
+            const companyName = $(this).find('td:nth-child(4)').text().trim();
+            const companyRegNumber = $(this).find('td:nth-child(5)').text().trim();
+            const phoneNumber = $(this).find('td:nth-child(6)').text().trim();
+            const email = $(this).find('td:nth-child(7)').text().trim();
+            const active = $(this).find('td:nth-child(8)').text().trim();
+            const seq = $(this).find('td:nth-child(9)').text().trim();
+
+            // 추출된 데이터를 디테일 영역에 업데이트
+            $('#user-id').text(id);
+            $('#user-role').text(role);
+            $('#user-companyType').text(companyType);
+            $('#user-companyName').text(companyName);
+            $('#user-companyRegNumber').text(companyRegNumber);
+            $('#user-phoneNumber').text(phoneNumber);
+            $('#user-active').text(active);
+            $('#user-email').val(email);
+            $('#user-seq').val(seq);
+        });
+    }
 </script>
+
 
 </body>
 
