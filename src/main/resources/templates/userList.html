@@ -98,9 +98,9 @@
                 <caption>리스트</caption>
                 <thead>
                 <tr>
-                    <th>Seq</th>
+
                     <th>ID</th>
-                    <th>Username</th>
+
                     <th>Role</th>
                     <th>Company Type</th>
                     <th>Company Name</th>
@@ -112,9 +112,9 @@
                 </thead>
                 <tbody>
                 <tr th:each="user : ${users}" class="select">
-                    <td th:text="${user.seq}"></td>
+
                     <td th:text="${user.id}"></td>
-                    <td th:text="${user.username}"></td>
+
                     <td th:text="${user.role}"></td>
                     <td th:text="${user.companyType}"></td>
                     <td th:text="${user.companyName}"></td>
@@ -153,79 +153,35 @@
                 <caption>상세내역</caption>
                 <colgroup><col width="90px"/><col width="*"/><col width="80px"/><col width="*"/><col width="80px"/><col width="*"/><col width="100px"/><col width="*"/></colgroup>
                 <tr>
-                    <th scope="row"><label  >고객구분</label></th>
-                    <td>일반</td>
-                    <th scope="row"><label  >가입구분</label></th>
-                    <td>정회원</td>
-                    <th scope="row"><label  >가입채널</label></th>
-                    <td>APP</td>
-                    <th scope="row"><label  >가입경로</label></th>
-                    <td>Maeil Do</td>
+                    <th scope="row"><label  >ID</label></th>
+                    <td></td>
+                    <th scope="row"><label  >Role</label></th>
+                    <td></td>
+                    <th scope="row"><label  >Company Type</label></th>
+                    <td></td>
+                    <th scope="row"><label  >Company Name</label></th>
+                    <td> Do</td>
                 </tr>
                 <tr>
-                    <th scope="row"><label  >고객번호</label></th>
-                    <td>00000000000</td>
-                    <th scope="row"><label  >고객ID</label></th>
-                    <td>gildong</td>
-                    <th scope="row"><label  >고객명</label></th>
-                    <td>
-                        <input name="Input" type="text" class="name" value="홍길동" />
-                        <span class="btn_table_in"><a href="#">변경</a></span>
-                    </td>
-                    <th scope="row"><label  >생년월일</label></th>
-                    <td>1988-01-**</td>
+                    <th scope="row"><label  >Company Reg Number</label></th>
+                    <td></td>
+                    <th scope="row"><label  >Phone Number</label></th>
+                    <td></td>
+
+                    <th scope="row"><label  >Active</label></th>
+                    <td colspan="3"></td>
                 </tr>
                 <tr>
-                    <th scope="row"><label  >휴대폰</label></th>
-                    <td>010-****-0000</td>
-                    <th scope="row"><label  >이메일</label></th>
+                    <th scope="row"><label  >Email</label></th>
                     <td colspan="3"><input name="Input" type="text" class="email_l" value="gildong@naver.com" /></td>
-                    <th scope="row"><label  >성별</label></th>
-                    <td>남</td>
-                </tr>
-                <tr>
-                    <th scope="row"><label  >임직원여부</label></th>
-                    <td>N</td>
-                    <th scope="row"><label  >내/외국인</label></th>
-                    <td>내국인</td>
-                    <th scope="row"><label  >가입일</label></th>
-                    <td>2016-11-06</td>
-                    <th scope="row"><label  >고객상태</label></th>
-                    <td>
-                        휴먼
-                        <span class="btn_table_in"><a href="#">변경</a></span>
-                        <!-- ※ 휴먼일때만 변경 버튼 처리, 정상일 때는 변경 버튼 없음 -->
-                    </td>
-                </tr>
-                <tr>
-                    <th scope="row"><label  >결합여부</label></th>
-                    <td colspan="3">
-                        <input type="checkbox" checked="checked" /> Kakao
-                        <input type="checkbox" checked="checked" /> Naver
-                        <input type="checkbox" checked="checked" /> Facebook
-                        ※ 고객센터에서는 결합해제만 가능합니다.
-                    </td>
                     <th scope="row"><label  >비밀번호</label></th>
                     <td colspan="3">
                         <span class="btn_table_in"><a href="#">초기화</a></span>
-                        ※ 초기화번호는 ###### 입니다.
+                        ※ 회원 이메일로 임의의 비밀번호가 발송됩니다.
                     </td>
+
                 </tr>
-                <tr>
-                    <th scope="row"><label  >주소</label></th>
-                    <td colspan="7">
-                        <input name="Input" type="text" class="post off" value="11100" />
-                        <span class="btn_table_in"><a href="#">우편번호</a></span>
-                        <input name="Input" type="text" class="name_s04p off" value="" />
-                        <input name="Input" type="text" class="name_s45p" value="" />
-                    </td>
-                </tr>
-                <tr>
-                    <th scope="row"><label  >메모</label></th>
-                    <td colspan="7">
-                        <input name="Input" type="text" class="name_s03p" value="" />
-                    </td>
-                </tr>
+
             </table>
         </div>
     </div>

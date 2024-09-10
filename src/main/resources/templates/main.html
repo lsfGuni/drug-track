@@ -162,42 +162,7 @@
         });
     });
 </script>
-<script type="text/javascript">
-    $(document).ready(function() {
-        // Tab Navigation Logic
-        $('.frametab-close').click(function() {
-            $(this).closest('.frametab').remove();
-        });
 
-        // Admin Page Navigation
-        $('#adminButton').click(function(event) {
-            event.preventDefault();
-            const token = localStorage.getItem('token');
-
-            if (!token) {
-                alert('로그인이 필요합니다.');
-                window.location.href = '/view/login';
-                return;
-            }
-
-            $.ajax({
-                type: 'GET',
-                url: '/admin/dashboard',
-                headers: {
-                    'Authorization': 'Bearer ' + token,
-                    'Content-Type': 'application/json'
-                },
-                success: function() {
-                    window.location.href = '/admin/dashboard';
-                },
-                error: function() {
-                    alert('접근 권한이 없습니다. 로그인 후 다시 시도해주세요.');
-                    window.location.href = '/view/login';
-                }
-            });
-        });
-    });
-</script>
 <script type="text/javascript">
     $(document).ready(function() {
         // 페이지가 로드되면 자동으로 AJAX 요청을 보내서 /view/user-list 불러오기
