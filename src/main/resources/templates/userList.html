@@ -48,11 +48,11 @@
                 <tr>
                     <th scope="row"><label  >회원 ID</label></th>
                     <td>
-                        <input name="Input" type="text" class="id" value="" />
+                        <input id="id" name="Input" type="text" class="id" value="" />
                     </td>
                     <th scope="row"><label  >업체명</label></th>
                     <td>
-                        <input name="Input" type="text" class="name" value="" />
+                        <input id="companyName" name="Input" type="text" class="name" value="" />
                     </td>
                     <th scope="row"><label  >가입일</label></th>
                     <td colspan="3">
@@ -76,7 +76,7 @@
 
                     <th scope="row"><label  >사업자등록번호</label></th>
                     <td>
-                        <input name="Input" type="text" class="name" value="" />
+                        <input id="CompanyRegNumber" name="Input" type="text" class="name" value="" />
                     </td>
 
                     <th scope="row"><label  >대표연락처</label></th>
@@ -110,7 +110,7 @@
                     <th>Active</th>
                 </tr>
                 </thead>
-                <tbody>
+                <tbody name="userList">
                 <tr th:each="user : ${users}" class="select">
 
                     <td th:text="${user.id}"></td>
@@ -138,9 +138,13 @@
         <!-- Container for total records and pagination -->
         <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
 
+
+
+
             <!-- Pagination controls (centered) -->
             <div class="tablepaging-box" style="display: inline-block; margin: 0 auto;">
                 <ul class="board-paging" style="list-style: none; padding: 0; display: flex; justify-content: center; gap: 5px;">
+
                     <!-- First page button -->
                     <li class="nobrd navbtn" th:classappend="${currentPage == 0} ? 'disabled'">
                         <a href="#" class="pagination-button" th:data-page="0">
@@ -155,11 +159,15 @@
                         </a>
                     </li>
 
-                    <!-- Display up to 3 pages, depending on current page -->
-                    <li th:each="i : ${#numbers.sequence((currentPage - 1 > 0 ? currentPage - 1 : 0), (currentPage + 1 < totalPages - 1 ? currentPage + 1 : totalPages - 1))}"
-                        th:classappend="${i == currentPage} ? 'active' : ''">
-                        <a href="#" class="pagination-button" th:data-page="${i}" th:text="${i + 1}"></a>
+                    <!-- Dynamic page numbers, apply the active-page class to the anchor tag -->
+                    <li th:each="i : ${#numbers.sequence((currentPage - 1 > 0 ? currentPage - 1 : 0), (currentPage + 1 < totalPages ? currentPage + 1 : totalPages - 1))}">
+                        <a href="#" class="pagination-button"
+                           th:data-page="${i}"
+                           th:classappend="${i == currentPage} ? 'active-page' : ''"
+                           th:text="${i + 1}">
+                        </a>
                     </li>
+
 
                     <!-- Next page button -->
                     <li class="nobrd navbtn" th:classappend="${currentPage + 1 >= totalPages} ? 'disabled'">
@@ -233,53 +241,45 @@
 
     <!-- section 시작 -->
     <div class="section">
-        <h3>약관(정보제공)동의</h3>
+        <h3>약관동의 이력</h3>
         <!-- table 영역 -->
         <div class="table-box grid_wrap"><!-- grid가 들어갈경우 grid_wrap추가 -->
             <!-- grid높이 grid_height_s: 5라인, grid_height_l: 10라인, grid_height_100:높이 100px, grid_height_200: 높이 200px, grid_height_line_15: 15라인, grid_height_line_20: 20라인, 높이단이 더 필요하면 요청주세요. -->
             <table class="tbl_List" summary="약관유형, Maeil Do이용약관(필수),개인정보수집 및 이용동의(필수),개인정보 제3자제공동의(선택)-Mail Do, 매일유업(주),(주)제로투세븐, 상하농원(유),폴 바셋, 크리스탈 제이드, 더키친살바토레">
-                <caption>약관(정보제공)동의</caption>
+                <caption>약관동의 이력</caption>
                 <thead>
                 <tr>
-                    <th rowspan="2">약관유형</th>
-                    <th rowspan="2">Maeil Do<br />이용약관(필수)</th>
-                    <th rowspan="2">개인정보수집 및<br /> 이용동의(필수)</th>
-                    <th colspan="7">개인정보 제3자제공동의(선택)</th>
-                </tr>
-                <tr>
-                    <th>Mail Do</th>
-                    <th>매일유업(주)</th>
-                    <th>(주)제로투세븐</th>
-                    <th>상하농원(유)</th>
-                    <th>폴 바셋</th>
-                    <th>크리스탈 제이드</th>
-                    <th>더 키친 살바토레</th>
+                    <th>No</th>
+                    <th>약관유형</th>
+                    <th>버전</th>
+                    <th>동의일자</th>
+                    <th>동의시간</th>
+                    <th>동의여부</th>
+                    <th>등록자(업체)</th>
+                    <th>등록일시</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr>
-                    <th class="right m-letter">동의여부</th>
-                    <td>Y</td>
-                    <td>Y</td>
-                    <td>Y</td>
-                    <td>Y</td>
-                    <td>N</td>
-                    <td>Y</td>
-                    <td>Y</td>
-                    <td>Y</td>
-                    <td>Y</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+
                 </tr>
                 <tr>
-                    <th class="right m-letter">최종동의일시</th>
-                    <td>2016-11-06 00:00</td>
-                    <td>2016-11-06 00:00</td>
-                    <td>2016-11-06 00:00</td>
-                    <td>2016-11-06 00:00</td>
                     <td></td>
-                    <td>2016-11-06 00:00</td>
-                    <td>2016-11-06 00:00</td>
-                    <td>2016-11-06 00:00</td>
-                    <td>2016-11-06 00:00</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
                 </tr>
                 </tbody>
             </table>
@@ -317,7 +317,7 @@ function setPng24(obj) {
 
 <script type="text/javascript">
     $(document).ready(function() {
-        // 초기화 버튼 클릭 이벤트
+        // 비밀번호초기화 버튼 클릭 이벤트
         $('#reset-password-btn').click(function(event) {
             event.preventDefault(); // 기본 링크 동작을 막음
 
@@ -368,7 +368,62 @@ function setPng24(obj) {
         });
     });
 </script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('.btn_sch a').click(function(event) {
+            event.preventDefault(); // 기본 동작 막기
 
+            const companyRegNumber = $('#CompanyRegNumber').val().trim();
+            const id = $('#id').val().trim();
+            const companyName = $('#companyName').val().trim();
+
+            // Constructing data object dynamically to omit empty values
+            const queryData = {};
+            if (companyRegNumber) queryData.companyRegNumber = companyRegNumber;
+            if (id) queryData.id = id;
+            if (companyName) queryData.companyName = companyName;
+
+            // Send data only if there are values
+            $.ajax({
+                url: '/user/search',
+                type: 'GET',
+                data: queryData,  // send only the fields that have values
+                success: function(response) {
+                    if (response && response.users.length > 0) {
+                        // 기존 tbody 비우기
+                        const userList = $('tbody[name="userList"]');
+                        userList.empty();
+
+                        // 새 데이터를 동적으로 추가
+                        response.users.forEach(user => {
+                            const newRow = `
+                            <tr class="select">
+                                <td>${user.id}</td>
+                                <td>${user.role}</td>
+                                <td>${user.companyType}</td>
+                                <td>${user.companyName}</td>
+                                <td>${user.companyRegNumber}</td>
+                                <td>${user.phoneNumber}</td>
+                                <td>${user.email}</td>
+                                <td>${user.active}</td>
+                                <td style="display:none">${user.seq}</td>
+                            </tr>`;
+
+                            userList.append(newRow);
+                        });
+                    } else {
+                        alert("일치하는 사용자 정보가 없습니다.");
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert("조회 중 오류가 발생했습니다.");
+                }
+            });
+        });
+    });
+
+
+</script>
 
 </body>
 </html>

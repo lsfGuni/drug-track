@@ -7,14 +7,12 @@ import com.example.drugtrack.security.entity.User;
 import com.example.drugtrack.security.service.UpdateUserService;
 import com.example.drugtrack.security.service.UserListService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 @RequestMapping
@@ -76,6 +74,24 @@ public class AdminController {
     public ResponseEntity<User> updateUser(@PathVariable Long seq, @RequestBody UpdateUserDTO updateUserDTO) {
         User updatedUser = updateUserService.updateUser(seq, updateUserDTO);
         return ResponseEntity.ok(updatedUser);
+    }
+
+    @GetMapping("/user/search")
+    public ResponseEntity<?> searchByCriteria(
+            @RequestParam(required = false) String companyRegNumber,
+            @RequestParam(required = false) String id,
+            @RequestParam(required = false) String companyName) {
+
+        System.out.println("Search request received: companyRegNumber=" + companyRegNumber + ", id=" + id + ", companyName=" + companyName);
+
+        List<User> users = userListService.searchUsers(companyRegNumber, id, companyName);
+
+        if (users.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Collections.singletonMap("message", "사용자를 찾을 수 없습니다."));
+        }
+
+        return ResponseEntity.ok(Collections.singletonMap("users", users));
     }
 
 }
