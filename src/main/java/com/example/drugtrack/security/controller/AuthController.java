@@ -20,10 +20,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -221,6 +218,30 @@ public class AuthController {
         userService.deactivateUser(user);
         return ResponseEntity.ok(Collections.singletonMap("result", "Y")); // 탈퇴 성공
     }
+
+
+    @Operation(summary = "회원 검증 get요청", description = "이미 가입된 아이디가 있는지 체크한다.")
+    @GetMapping("/check-user")
+    @ResponseBody
+    public ResponseEntity<?> checkUser(String id) {
+        Map<String, Object> response = new HashMap<>();
+
+        if (userService.findById(id) != null) {
+            log.error("이미 가입된 아이디가 있습니다: {}", id);
+
+            response.put("result", "Y");
+            response.put("msg", "이미 가입된 아이디가 있습니다.");
+        } else {
+            // 사용자 등록
+            log.info("가입된 아이디가 없습니다.: ID = {}", id);
+            // Assuming user creation logic would be in POST request, removing registerUser call here
+            response.put("result", "N");
+            response.put("msg", "가입된 아이디가 없습니다.");
+        }
+
+        return ResponseEntity.ok(response);
+    }
+
 
 
 }
