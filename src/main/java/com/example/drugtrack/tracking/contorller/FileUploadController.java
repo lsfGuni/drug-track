@@ -4,6 +4,7 @@ import com.example.drugtrack.tracking.service.*;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -223,17 +224,19 @@ public class FileUploadController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/files-save-db")
-    public ResponseEntity<String> uploadCSVFile(@RequestParam("file") MultipartFile file) {
+    @PostMapping("/files-save")
+    public ResponseEntity<Map<String, String>> uploadCSVFile(@RequestParam("file") MultipartFile file) {
+
+        Map<String, String> response = new HashMap<>();
+
         try {
-            // Parse CSV data
+            // CSV 데이터 파싱
             List<String[]> csvData = new ArrayList<>();
 
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8))) {
-                // Ensure we use the correct CSVParser from Apache Commons CSV
-                org.apache.commons.csv.CSVParser csvParser = CSVFormat.DEFAULT.parse(reader);
+                CSVParser csvParser = CSVFormat.DEFAULT.parse(reader);
 
-                // Iterate through the parsed records
+                // CSV 레코드를 순회하며 파싱
                 for (CSVRecord csvRecord : csvParser) {
                     String[] rowData = new String[csvRecord.size()];
                     for (int i = 0; i < csvRecord.size(); i++) {
@@ -243,12 +246,19 @@ public class FileUploadController {
                 }
             }
 
-            // Call the service to save the parsed CSV data
+            // 서비스 호출하여 CSV 데이터를 저장
             fileDBBackService.saveCsvDataToDB(csvData);
 
-            return ResponseEntity.ok("File uploaded and data saved successfully.");
+            // 성공 시 반환할 메시지
+            response.put("result", "Y");
+            response.put("msg", "데이터 업로드 완료");
+            return ResponseEntity.ok(response);
+
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error saving file: " + e.getMessage());
+            // 실패 시 반환할 메시지
+            response.put("result", "N");
+            response.put("msg", "에러발생: " + e.getMessage());
+            return ResponseEntity.status(500).body(response);
         }
     }
 }
