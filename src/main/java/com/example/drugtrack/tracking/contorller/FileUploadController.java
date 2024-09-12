@@ -1,13 +1,13 @@
 package com.example.drugtrack.tracking.contorller;
 
-import com.example.drugtrack.tracking.service.CsvDataService;
-import com.example.drugtrack.tracking.service.DataLoadService;
-import com.example.drugtrack.tracking.service.ExcelDataService;
-import com.example.drugtrack.tracking.service.FileDBService;
+import com.example.drugtrack.tracking.service.*;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVRecord;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,19 +24,21 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
+@CrossOrigin(origins = "http://localhost:8081")
 public class FileUploadController {
 
     private final CsvDataService csvDataService;  // CSV 데이터 관리 서비스
     private final ExcelDataService excelDataService;  // Excel 데이터 관리 서비스
     private final FileDBService fileDBService;
-    private final DataLoadService dataLoadService;
+    private final FileDBBackService fileDBBackService;
 
     public FileUploadController(CsvDataService csvDataService, ExcelDataService excelDataService, FileDBService fileDBService
-    , DataLoadService dataLoadService) {
+    ,FileDBBackService fileDBBackService) {
         this.csvDataService = csvDataService;
         this.excelDataService = excelDataService;
         this.fileDBService = fileDBService;
-        this.dataLoadService = dataLoadService;
+        this.fileDBBackService = fileDBBackService;
+
     }
 
 
@@ -186,6 +189,7 @@ public class FileUploadController {
     // CSV 데이터를 데이터베이스에 저장하는 엔드포인트
     @PostMapping("/save-csv-data")
     public ResponseEntity<String> saveCsvDataToDB() {
+
         var csvData = csvDataService.getCsvData();  // 메모리에 저장된 CSV 데이터를 가져옴
         if (csvData == null || csvData.isEmpty()) {
             return new ResponseEntity<>("메모리에 저장된 CSV 데이터가 없습니다.", HttpStatus.NO_CONTENT);
@@ -209,4 +213,42 @@ public class FileUploadController {
         return new ResponseEntity<>("엑셀 데이터를 데이터베이스에 성공적으로 저장했습니다.", HttpStatus.OK);
     }
 
+    @Autowired
+    private CSVUploadClientService csvUploadClientService;
+
+
+    @GetMapping("/upload-file-front")
+    public ResponseEntity<String> uploadFileFromClient() {
+        String response = csvUploadClientService.uploadCSVFile();
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/files-save-db")
+    public ResponseEntity<String> uploadCSVFile(@RequestParam("file") MultipartFile file) {
+        try {
+            // Parse CSV data
+            List<String[]> csvData = new ArrayList<>();
+
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8))) {
+                // Ensure we use the correct CSVParser from Apache Commons CSV
+                org.apache.commons.csv.CSVParser csvParser = CSVFormat.DEFAULT.parse(reader);
+
+                // Iterate through the parsed records
+                for (CSVRecord csvRecord : csvParser) {
+                    String[] rowData = new String[csvRecord.size()];
+                    for (int i = 0; i < csvRecord.size(); i++) {
+                        rowData[i] = csvRecord.get(i);
+                    }
+                    csvData.add(rowData);
+                }
+            }
+
+            // Call the service to save the parsed CSV data
+            fileDBBackService.saveCsvDataToDB(csvData);
+
+            return ResponseEntity.ok("File uploaded and data saved successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error saving file: " + e.getMessage());
+        }
+    }
 }

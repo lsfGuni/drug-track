@@ -14,10 +14,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
 
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JWTUtil jwtUtil;
@@ -33,7 +34,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+    public AuthenticationManager authenticationManager() throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
@@ -42,47 +43,33 @@ public class SecurityConfig {
         return new JWTFilter(jwtUtil);
     }
 
+
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+                .csrf(csrf -> csrf.disable())
+                .cors(withDefaults())  // Enable CORS
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/upload-file").permitAll()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/user/forgot-password", "/api/files-upload", "/error").permitAll()
+                        .requestMatchers("/user/details/**", "/user/update/**").permitAll()
+                        .requestMatchers("/css/**", "/js/**", "/img/**", "/favicon.ico", "/fonts/**").permitAll()
+                        .requestMatchers("/user/**", "/", "/view/**").permitAll()
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll()
+                        .requestMatchers("/static/**", "/iframe/**").permitAll()
+                        .requestMatchers("/traceability/**", "/search/**", "/api/**").permitAll()
+                        .anyRequest().authenticated()
+                );
 
-        http.csrf(csrf -> csrf.disable());
-        http.formLogin(form -> form
-                .loginPage("/view/login") // 로그인 페이지 경로 설정
-                .defaultSuccessUrl("/view/main", true)  // 로그인 성공 후 리다이렉트
-                .permitAll() // 로그인 페이지는 누구나 접근할 수 있게 허용
-        );
-        http.httpBasic(httpBasic -> httpBasic.disable());
-
-        http.authorizeHttpRequests(auth -> {
-            auth
-                    .requestMatchers("/admin/**").hasRole("ADMIN")
-
-                    .requestMatchers("/user/forgot-password").permitAll()
-                    .requestMatchers("/api/files-upload", "/error").permitAll()
-                    .requestMatchers("/user/details/**").permitAll() // Corrected typo
-                    .requestMatchers("/user/update/**").permitAll()
-                    .requestMatchers("/css/**", "/js/**", "/img/**", "/favicon.ico", "/fonts/**").permitAll()
-                    .requestMatchers("/user/**", "/", "/view/**").permitAll()
-                    .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll()
-                    .requestMatchers("/api/files-upload").permitAll()
-                    .requestMatchers("/static/**", "/iframe/**").permitAll()
-                    .requestMatchers("/traceability/**", "/search/**","/api/**").permitAll()
-                    .anyRequest().authenticated();
-        });
-
-        http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED));
-
+        // Add JWT filter before the UsernamePasswordAuthenticationFilter
         http.addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
 
-        http.headers(headers -> headers
-                .frameOptions().sameOrigin()  // Allows framing from the same origin
-        );
-
-
-        http.anonymous(auth -> auth.disable());
-
+        // Configure headers
+        http.headers(headers -> headers.frameOptions().sameOrigin());
 
         return http.build();
     }
-
 }
