@@ -159,10 +159,10 @@ public class AuthController {
 
 
 
-    @Operation(summary = "비밀번호 찾기", description = "계정 ID와 사업자구분값을 통해 비밀번호를 찾습니다.")
-    @PostMapping("/forgot-password")
+    @Operation(summary = "비밀번호 찾기", description = "Email을 통해 비밀번호를 찾습니다.")
+    @PostMapping("/find-password")
     @ResponseBody
-    public ResponseEntity<?> forgotPassword(@RequestBody PasswordResetRequest request) {
+    public ResponseEntity<?> findPassword(@RequestBody PasswordResetRequest request) {
         String id = request.getId();
         String companyType = request.getCompanyType();
 
