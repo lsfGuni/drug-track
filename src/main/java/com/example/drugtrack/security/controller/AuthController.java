@@ -163,10 +163,10 @@ public class AuthController {
     @PostMapping("/find-password")
     @ResponseBody
     public ResponseEntity<?> findPassword(@RequestBody PasswordResetRequest request) {
-        String id = request.getId();
-        String companyType = request.getCompanyType();
 
-        User user = userService.findByIdAndCompanyType(id, companyType);
+        String email = request.getEmail();
+
+        User user = userService.findByEmail(email);
 
         if (user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -180,7 +180,7 @@ public class AuthController {
         userService.updatePassword(user, tempPassword);
 
         // 이메일 발송 (EmailService가 있다고 가정)
-        String message = "의약품 이력관리 API 계정 비밀번호입니다.: " + tempPassword;
+        String message = "Nipa 의약품 이력관리 시스템 계정 비밀번호입니다.: " + tempPassword;
         emailService.sendResetPasswordEmail(user.getEmail(), message);
         System.out.println(message);
         return ResponseEntity.ok(Collections.singletonMap("result", "Y"));
