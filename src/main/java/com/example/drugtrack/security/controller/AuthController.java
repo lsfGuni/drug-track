@@ -223,7 +223,7 @@ public class AuthController {
     @Operation(summary = "회원 검증 get요청", description = "이미 가입된 아이디가 있는지 체크한다.")
     @GetMapping("/check-user")
     @ResponseBody
-    public ResponseEntity<?> checkUser(String id) {
+    public ResponseEntity<?> checkUser(@RequestParam String id) {
         Map<String, Object> response = new HashMap<>();
 
         if (userService.findById(id) != null) {

@@ -205,7 +205,7 @@
                     <th scope="row"><label  >ID</label></th>
                     <td id="user-id"></td>
                     <th scope="row"><label  >Role</label></th>
-                    <td id="user-role"></td>
+                    <td><input id="user-role" type="text" class="input-box" value=""/></td>
                     <th scope="row"><label  >Company Type</label></th>
                     <td id="user-companyType"></td>
                     <th scope="row"><label  >Company Name</label></th>
@@ -322,38 +322,34 @@ function setPng24(obj) {
             event.preventDefault(); // 기본 링크 동작을 막음
 
             // 필요한 파라미터 값 추출
-            const id = $('#user-id').text().trim();  // 사용자 ID 가져오기
-            const companyType = $('#user-companyType').text().trim();  // 회사 타입 가져오기
-
+            const email = $('#user-email').val();
 
             // Add console logs to see what values are being used
-            console.log("Extracted ID: ", id);
-            console.log("Extracted Company Type: ", companyType);
+            console.log("Extracted Email: ", email);
 
-            if (!id || !companyType) {
-                alert("사용자 ID와 회사 타입을 확인해주세요.");
+            if (!email) {
+                alert("사용자 email을 확인 하세요.");
                 return;
             }
 
             // API로 전송할 데이터
             const requestData = {
-                id: id,
-                companyType: companyType
+                email: email
             };
 
             // 비밀번호 초기화 API 호출
             $.ajax({
-                url: '/user/forgot-password',  // Use the full URL
+                url: '/user/find-password',  // Use the full URL
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify(requestData),  // 데이터를 JSON 형식으로 전송
                 success: function(response) {
-                    console.log("아이디랑 회사타입 : " + id + companyType)
+                    console.log("email : " + email)
                     if (response.result === 'Y') {
                         alert("임시 비밀번호가 이메일로 전송되었습니다.");
                     } else {
                         alert("사용자 정보를 찾을 수 없습니다.");
-                        console.log("User not found: ", response);
+                        console.log("Email not found: ", response);
                     }
                 },
                 error: function(xhr, status, error) {
@@ -423,6 +419,24 @@ function setPng24(obj) {
     });
 
 
+</script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        // Reset 버튼 클릭 이벤트
+        $('.btn_reset a').click(function(event) {
+            event.preventDefault(); // 기본 동작 막기
+
+            // 테이블 내의 모든 인풋 요소 선택
+            $('.tbl_Sch input').each(function() {
+                $(this).val(''); // 각 인풋의 값을 빈 문자열로 설정
+            });
+
+            // 선택 박스도 초기화 (필요 시)
+            $('.tbl_Sch select').each(function() {
+                $(this).prop('selectedIndex', 0); // 첫 번째 옵션으로 설정
+            });
+        });
+    });
 </script>
 
 </body>
