@@ -58,6 +58,7 @@ public class SecurityConfig {
                         .requestMatchers("/user/details/**", "/user/update/**").permitAll()
                         .requestMatchers("/css/**", "/js/**", "/img/**", "/favicon.ico", "/fonts/**").permitAll()
                         .requestMatchers("/user/**", "/", "/view/**").permitAll()
+
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll()
                         .requestMatchers("/static/**", "/iframe/**").permitAll()
                         .requestMatchers("/traceability/**", "/search/**", "/api/**").permitAll()

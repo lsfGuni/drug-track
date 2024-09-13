@@ -230,13 +230,13 @@ public class AuthController {
             log.error("이미 가입된 아이디가 있습니다: {}", id);
 
             response.put("result", "Y");
-            response.put("msg", "이미 가입된 아이디가 있습니다.");
+            response.put("error", "");
         } else {
             // 사용자 등록
             log.info("가입된 아이디가 없습니다.: ID = {}", id);
             // Assuming user creation logic would be in POST request, removing registerUser call here
             response.put("result", "N");
-            response.put("msg", "가입된 아이디가 없습니다.");
+            response.put("error", "가입된 아이디가 없습니다.");
         }
 
         return ResponseEntity.ok(response);
