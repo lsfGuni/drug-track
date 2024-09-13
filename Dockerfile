@@ -1,14 +1,14 @@
-# Use an official OpenJDK runtime as a parent image
+# 베이스 이미지 설정
 FROM openjdk:17-jdk-alpine
 
-# Set the working directory inside the container
+# 작업 디렉토리 설정
 WORKDIR /app
 
-# Copy the build jar file to the container
-COPY build/libs/drug-track-0.1.0.jar app.jar
+# 빌드된 JAR 파일을 컨테이너로 복사
+COPY build/libs/app.jar app.jar
 
-# Expose the port the app runs on
+# 애플리케이션에서 사용하는 포트 노출
 EXPOSE 8080
 
-# Run the jar file
+# 애플리케이션 실행 명령어 설정
 ENTRYPOINT ["java", "-jar", "app.jar"]
