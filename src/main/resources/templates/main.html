@@ -134,31 +134,6 @@
     <span class="btn_basic close-layerpop"><a href="#">닫기</a></span>
 </div>
 
-<h1>Upload CSV from Java Client</h1>
-
-<!-- 파일 업로드를 트리거하는 버튼 -->
-<button id="uploadButton">Upload CSV</button>
-
-<!-- 업로드 상태를 보여줄 영역 -->
-<p id="status"></p>
-
-<!-- Scripts-->
-<script type="text/javascript">
-    document.getElementById('uploadButton').addEventListener('click', function() {
-        // GET 요청을 보내서 CSV 파일 업로드 실행
-        fetch('http://localhost:8082/api/upload-file-front')
-            .then(response => response.text())
-            .then(result => {
-                document.getElementById('status').textContent = "Upload response: " + result;
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                document.getElementById('status').textContent = "Upload failed.";
-            });
-    });
-
-</script>
-
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
