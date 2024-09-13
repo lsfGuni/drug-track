@@ -62,6 +62,11 @@ public class AuthController {
 
             response.put("result", "N");
             response.put("error", "이미 가입된 아이디가 있습니다.");
+        } else if (userService.findByEmail(user.getEmail()) != null) {
+            log.error("이미 가입된 이메일 요청: {}", user.getEmail());
+
+            response.put("result", "N");
+            response.put("error", "이미 가입된 이메일이 있습니다.");
         } else {
             // 사용자 등록
             log.info("회원가입 성공: ID = {}", user.getId());
@@ -257,6 +262,31 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
+
+    @Operation(summary = "이메일 검증 get요청", description = "이미 가입된 이메일이 있는지 체크한다.")
+    @GetMapping("/check-email")
+    @ResponseBody
+    public ResponseEntity<?> checkEmail(@RequestParam String email) {
+        Map<String, Object> response = new HashMap<>();
+
+        //email 로 가입된 id 칼럼 값을 가져와서 API 응답 파라미터에 표현 해 주는 로직 필요
+        User user = userService.findByEmail(email);
+        if (userService.findByEmail(email) != null) {
+            log.error("이미 가입된 계정이 있습니다: {}", email);
+
+            response.put("id", user.getId());
+            response.put("result", "Y");
+            response.put("error", "");
+        } else {
+            // 사용자 등록
+            log.info("가입된 이메일이 없습니다.: ID = {}", email);
+            // Assuming user creation logic would be in POST request, removing registerUser call here
+            response.put("result", "N");
+            response.put("error", "가입된 이메일이 없습니다.");
+        }
+
+        return ResponseEntity.ok(response);
+    }
 
 
 }
