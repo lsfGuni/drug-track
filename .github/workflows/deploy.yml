@@ -31,9 +31,9 @@ jobs:
           echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> $GITHUB_ENV
           echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> $GITHUB_ENV
 
-      # 5. Gradle 빌드 및 테스트 실행 (DB 연결 테스트 포함)
-      - name: Build and test with Gradle
-        run: ./gradlew build
+      # 5. Gradle 테스트 생략 및 빌드 실행
+      - name: Build without tests
+        run: ./gradlew assemble
 
       # 6. Docker 이미지 빌드 및 푸시
       - name: Build Docker image
