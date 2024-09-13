@@ -9,6 +9,7 @@ import com.example.drugtrack.security.service.EmailService;
 import com.example.drugtrack.security.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
@@ -159,15 +161,25 @@ public class AuthController {
     @Operation(summary = "비밀번호 찾기", description = "Email을 통해 비밀번호를 찾습니다.")
     @PostMapping("/find-password")
     @ResponseBody
-    public ResponseEntity<?> findPassword(@RequestBody PasswordResetRequest request) {
+    public ResponseEntity<?> findPassword(@Valid @RequestBody PasswordResetRequest request, BindingResult bindingResult) {
+
+        Map<String, Object> response = new HashMap<>();
+
+        if (bindingResult.hasErrors()) {
+            String errorMessage = bindingResult.getFieldError().getDefaultMessage();
+            response.put("result", "N");
+            response.put("error", errorMessage);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
 
         String email = request.getEmail();
 
         User user = userService.findByEmail(email);
 
         if (user == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(Collections.singletonMap("result", "N"));
+            response.put("result", "N");
+            response.put("error", "해당 이메일로 등록된 사용자가 없습니다.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
 
         // 임시 비밀번호 생성
@@ -176,11 +188,14 @@ public class AuthController {
         // 임시 비밀번호로 비밀번호 업데이트
         userService.updatePassword(user, tempPassword);
 
-        // 이메일 발송 (EmailService가 있다고 가정)
+        // 이메일 발송
         String message = "Nipa 의약품 이력관리 시스템 계정 비밀번호입니다.: " + tempPassword;
         emailService.sendResetPasswordEmail(user.getEmail(), message);
         System.out.println(message);
-        return ResponseEntity.ok(Collections.singletonMap("result", "Y"));
+
+        response.put("result", "Y");
+        response.put("error", "");
+        return ResponseEntity.ok(response);
     }
 
     private String generateTemporaryPassword() {
