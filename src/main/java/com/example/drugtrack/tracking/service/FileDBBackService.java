@@ -3,6 +3,7 @@ package com.example.drugtrack.tracking.service;
 
 import com.example.drugtrack.tracking.entity.FileDBBack;
 import com.example.drugtrack.tracking.repository.FileDBBackRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,10 +16,14 @@ public class FileDBBackService {
     @Autowired
     private FileDBBackRepository fileDBBackRepository;
 
+    @Transactional
     public void saveData(FileDBBack fileDBBack) {
         fileDBBackRepository.save(fileDBBack);
     }
+
+
     // CSV 데이터를 데이터베이스에 저장하는 메서드 (첫 번째 행은 건너뛰기)
+    @Transactional
     public void saveCsvDataToDB(List<String[]> csvData) {
         // 첫 번째 행은 헤더이므로 건너뜀
         for (int i = 1; i < csvData.size(); i++) {
@@ -36,6 +41,8 @@ public class FileDBBackService {
             fileDBBack.setSerialNumbers(rowData.length > 7 ? rowData[9] : null);  // 시리얼 번호
             fileDBBack.setBarcodeData(rowData.length > 8 ? rowData[10] : null);  // 바코드 데이터
             fileDBBack.setAggData(rowData.length > 9 ? rowData[11] : null);  // Aggregation 정보
+            fileDBBack.setDeliveryType(rowData.length > 10 ? rowData[12] : null);  // 추적상태
+
 
             // 데이터베이스에 저장
             fileDBBackRepository.save(fileDBBack);
@@ -60,7 +67,7 @@ public class FileDBBackService {
             fileDBBack.setSerialNumbers(rowData.size() > 7 ? rowData.get(9) : null);  // 시리얼 번호
             fileDBBack.setBarcodeData(rowData.size() > 8 ? rowData.get(10) : null);  // 바코드 데이터
             fileDBBack.setAggData(rowData.size() > 9 ? rowData.get(11) : null);  // Aggregation 정보
-
+            fileDBBack.setDeliveryType(rowData.size() > 10 ? rowData.get(12) : null);  // 추적상태
             // 데이터베이스에 저장
             fileDBBackRepository.save(fileDBBack);
         }
