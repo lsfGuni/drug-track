@@ -22,6 +22,28 @@ public class JWTFilter extends OncePerRequestFilter {
     }
 
     @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        String path = request.getRequestURI();
+        return isPermitAllEndpoint(path);
+    }
+
+    private boolean isPermitAllEndpoint(String path) {
+        return path.equals("/user/get-user-list") ||
+                path.startsWith("/css/") ||
+                path.startsWith("/js/") ||
+                path.startsWith("/images/") ||
+                path.equals("/favicon.ico") ||
+                path.startsWith("/swagger-ui/") ||
+                path.startsWith("/v3/api-docs/") ||
+                path.startsWith("/swagger-resources/") ||
+                path.startsWith("/webjars/") ||
+                path.startsWith("/user/update/") ||
+                path.startsWith("/user/details/") ||
+                path.startsWith("/api/files-upload") ||
+                path.startsWith("/api/files-save"); // 필요한 엔드포인트 추가
+    }
+
+    @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
@@ -41,25 +63,4 @@ public class JWTFilter extends OncePerRequestFilter {
         // 인증 실패 시에도 다음 필터로 넘깁니다.
         filterChain.doFilter(request, response);
     }
-
-
-    private boolean isPermitAllEndpoint(String path) {
-        return path.equals("/user/get-user-list") ||
-                path.startsWith("/css/") ||
-                path.startsWith("/js/") ||
-                path.startsWith("/images/") ||
-                path.equals("/favicon.ico") ||
-                path.startsWith("/swagger-ui/") ||
-                path.startsWith("/v3/api-docs/") ||
-                path.startsWith("/swagger-resources/") ||
-                path.startsWith("/webjars/") ||
-                path.startsWith("/user/update/") || // Corrected path for update
-                path.startsWith("/user/details/") || // Corrected path for update
-                path.startsWith("/api/**") || // Corrected path for update
-                path.startsWith("/api/files-upload") ||
-                path.startsWith("/api/files-save") ; // Corrected path for update
-        // Corrected path for details
-
-    }
-
 }
