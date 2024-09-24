@@ -232,7 +232,9 @@ public class FileUploadController {
 
 
     @PostMapping("/files-save")
-    public ResponseEntity<Map<String, String>> uploadCSVFile(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<Map<String, String>> uploadCSVFile(@RequestParam("file") MultipartFile file,
+                                                             @RequestParam("api_key") String apiKey) {
+
 
         Map<String, String> response = new HashMap<>();
 
@@ -268,7 +270,7 @@ public class FileUploadController {
             logger.info("CSV 데이터 파싱 완료. 총 {}개의 레코드가 파싱되었습니다.", csvData.size());
 
             // 서비스 호출하여 CSV 데이터를 저장
-            fileDBBackService.saveCsvDataToDB(csvData);
+            fileDBBackService.saveCsvDataToDB(csvData, apiKey);
 
             // 데이터 저장 완료 로그
             logger.info("CSV 데이터 저장 완료.");

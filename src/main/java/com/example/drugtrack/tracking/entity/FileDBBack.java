@@ -28,6 +28,7 @@ public class FileDBBack {
     private String barcodeData;   // 바코드 데이터 추가
     private String aggData;   // Aggregation 정보
     private String serialNumbers;   // 시리얼 번호
+    private String apiKey;
 
     public Long getId() {
         return id;
@@ -139,5 +140,13 @@ public class FileDBBack {
 
     public void setSerialNumbers(String serialNumbers) {
         this.serialNumbers = serialNumbers;
+    }
+
+    public String getApiKey() {
+        return apiKey;
+    }
+
+    public void setApiKey(String apiKey) {
+        this.apiKey = apiKey;
     }
 }
