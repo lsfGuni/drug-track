@@ -229,6 +229,8 @@ public class FileUploadController {
         String response = csvUploadClientService.uploadCSVFile();
         return ResponseEntity.ok(response);
     }
+
+
     @PostMapping("/files-save")
     public ResponseEntity<Map<String, String>> uploadCSVFile(@RequestParam("file") MultipartFile file) {
 
@@ -237,6 +239,14 @@ public class FileUploadController {
         try {
             // API 호출 로그
             logger.info("/files-save API 호출됨. 파일명: {}, 파일 크기: {} bytes", file.getOriginalFilename(), file.getSize());
+
+            // 파일이 비어 있는지 확인
+            if (file.isEmpty() || file.getSize() == 0) {
+                logger.warn("업로드된 파일이 비어 있습니다.");
+                response.put("result", "N");
+                response.put("msg", "파일이 비어 있습니다.");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+            }
 
             // CSV 데이터 파싱
             List<String[]> csvData = new ArrayList<>();
@@ -286,4 +296,5 @@ public class FileUploadController {
             return ResponseEntity.status(500).body(response);
         }
     }
+
 }
