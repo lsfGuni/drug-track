@@ -25,7 +25,8 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "http://localhost:8081")
+@CrossOrigin(origins = "*") // 모든 도메인 허용
+
 public class FileUploadController {
 
     private final CsvDataService csvDataService;  // CSV 데이터 관리 서비스
