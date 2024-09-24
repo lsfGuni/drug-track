@@ -3,11 +3,16 @@ package com.example.drugtrack.tracking.service;
 
 import com.example.drugtrack.tracking.entity.FileDBBack;
 import com.example.drugtrack.tracking.repository.FileDBBackRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 @Service
 public class FileDBBackService {
 
@@ -38,12 +43,19 @@ public class FileDBBackService {
 
 
 
-
-
-
-
             // 여기에서 apiKey를 설정
             fileDBBack.setApiKey(apiKey);
+
+            // Generate tx value and set it
+            try {
+                String txValue = generateTxValue(fileDBBack);
+                fileDBBack.setTx(txValue);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException("Failed to generate tx value", e);
+            }
+
+            // Generate hash code
+            fileDBBack.generateHashValue();
 
             // 데이터베이스에 저장
             fileDBBackRepository.save(fileDBBack);
@@ -72,4 +84,31 @@ public class FileDBBackService {
             fileDBBackRepository.save(fileDBBack);
         }
     }
+
+
+
+    /*
+    * 해시값 생성 메소드
+    * */
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    private String generateTxValue(FileDBBack fileDBBack) throws JsonProcessingException {
+        Map<String, String> txValueMap = new HashMap<>();
+        txValueMap.put("barcodeData", fileDBBack.getBarcodeData());
+        txValueMap.put("StartCompanyRegNumber", fileDBBack.getStartCompanyRegNumber());
+        txValueMap.put("StartCompanyName", fileDBBack.getStartCompanyName());
+        txValueMap.put("endCompanyRegNumber", fileDBBack.getEndCompanyRegNumber());
+        txValueMap.put("endCompanyName", fileDBBack.getEndCompanyName());
+        txValueMap.put("deliveryType", fileDBBack.getDeliveryType());
+        txValueMap.put("deliveryDate", fileDBBack.getDeliveryDate());
+        txValueMap.put("productName", fileDBBack.getProductName());
+        txValueMap.put("gs1Code", fileDBBack.getGs1Code());
+        txValueMap.put("mfNumber", fileDBBack.getMfNumber());
+        txValueMap.put("expDate", fileDBBack.getExpDate());
+        txValueMap.put("serialNumbers", fileDBBack.getSerialNumbers());
+        txValueMap.put("aggData", fileDBBack.getAggData());
+        return objectMapper.writeValueAsString(txValueMap);
+    }
+
 }

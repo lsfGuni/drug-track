@@ -1,11 +1,13 @@
 package com.example.drugtrack.tracking.entity;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.*;
 import lombok.Data;
+
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 @Entity
 @Data
@@ -29,6 +31,14 @@ public class FileDBBack {
     private String aggData;   // Aggregation 정보
     private String serialNumbers;   // 시리얼 번호
     private String apiKey;
+
+    @Schema(hidden = true)
+    @Column(name = "hash_code", nullable = false)
+    private String hashCode;
+
+    @Schema(hidden = true)
+    @Column(name = "tx", length = 500, nullable = false)
+    private String tx;
 
     public Long getId() {
         return id;
@@ -148,5 +158,41 @@ public class FileDBBack {
 
     public void setApiKey(String apiKey) {
         this.apiKey = apiKey;
+    }
+
+    public String getHashCode() {
+        return hashCode;
+    }
+
+    public void setHashCode(String hashCode) {
+        this.hashCode = hashCode;
+    }
+
+    public String getTx() {
+        return tx;
+    }
+
+    public void setTx(String tx) {
+        this.tx = tx;
+    }
+
+    public void generateHashValue() {
+        String combinedData = this.tx;
+
+        if (combinedData == null) {
+            throw new RuntimeException("tx 값이 null입니다. 해시 값을 생성할 수 없습니다.");
+        }
+
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hashBytes = digest.digest(combinedData.getBytes(StandardCharsets.UTF_8));
+            StringBuilder sb = new StringBuilder();
+            for (byte b : hashBytes) {
+                sb.append(String.format("%02x", b));
+            }
+            this.hashCode = sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("해시값 생성이 실패했습니다.", e);
+        }
     }
 }
