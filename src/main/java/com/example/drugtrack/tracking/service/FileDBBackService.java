@@ -22,19 +22,25 @@ public class FileDBBackService {
             FileDBBack fileDBBack = new FileDBBack();
 
             // 필드 설정
-            fileDBBack.setStartCompanyName(rowData.length > 0 ? rowData[0] : null);
-            fileDBBack.setStartCompanyRegNumber(rowData.length > 1 ? rowData[1] : null);
-            fileDBBack.setEndCompanyName(rowData.length > 2 ? rowData[2] : null);
+            fileDBBack.setBarcodeData(rowData.length > 0 ? rowData[0] : null);
+            fileDBBack.setStartCompanyName(rowData.length > 1 ? rowData[1] : null);
+            fileDBBack.setStartCompanyRegNumber(rowData.length > 2 ? rowData[2] : null);
             fileDBBack.setEndCompanyRegNumber(rowData.length > 3 ? rowData[3] : null);
-            fileDBBack.setDeliveryDate(rowData.length > 4 ? rowData[4] : null);
-            fileDBBack.setProductName(rowData.length > 5 ? rowData[5] : null);
-            fileDBBack.setGs1Code(rowData.length > 6 ? rowData[6] : null);
-            fileDBBack.setMfNumber(rowData.length > 7 ? rowData[7] : null);
-            fileDBBack.setExpDate(rowData.length > 8 ? rowData[8] : null);
-            fileDBBack.setSerialNumbers(rowData.length > 9 ? rowData[9] : null);
-            fileDBBack.setBarcodeData(rowData.length > 10 ? rowData[10] : null);
-            fileDBBack.setAggData(rowData.length > 11 ? rowData[11] : null);
-            fileDBBack.setDeliveryType(rowData.length > 12 ? rowData[12] : null);
+            fileDBBack.setEndCompanyName(rowData.length > 4 ? rowData[4] : null);
+            fileDBBack.setDeliveryType(rowData.length > 5 ? rowData[5] : null);
+            fileDBBack.setDeliveryDate(rowData.length > 6 ? rowData[6] : null);
+            fileDBBack.setProductName(rowData.length > 7 ? rowData[7] : null);
+            fileDBBack.setGs1Code(rowData.length > 8 ? rowData[8] : null);
+            fileDBBack.setMfNumber(rowData.length > 9 ? rowData[9] : null);
+            fileDBBack.setExpDate(rowData.length > 10 ? rowData[10] : null);
+            fileDBBack.setSerialNumbers(rowData.length > 11 ? rowData[11] : null);
+            fileDBBack.setAggData(rowData.length > 12 ? rowData[12] : null);
+
+
+
+
+
+
 
             // 여기에서 apiKey를 설정
             fileDBBack.setApiKey(apiKey);
