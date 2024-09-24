@@ -8,6 +8,8 @@ import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +30,9 @@ import java.util.Map;
 @CrossOrigin(origins = "*") // 모든 도메인 허용
 
 public class FileUploadController {
+
+    private static final Logger logger = LoggerFactory.getLogger(FileUploadController.class);  // 로거 선언
+
 
     private final CsvDataService csvDataService;  // CSV 데이터 관리 서비스
     private final ExcelDataService excelDataService;  // Excel 데이터 관리 서비스
@@ -224,13 +229,15 @@ public class FileUploadController {
         String response = csvUploadClientService.uploadCSVFile();
         return ResponseEntity.ok(response);
     }
-
     @PostMapping("/files-save")
     public ResponseEntity<Map<String, String>> uploadCSVFile(@RequestParam("file") MultipartFile file) {
 
         Map<String, String> response = new HashMap<>();
 
         try {
+            // API 호출 로그
+            logger.info("/files-save API 호출됨. 파일명: {}, 파일 크기: {} bytes", file.getOriginalFilename(), file.getSize());
+
             // CSV 데이터 파싱
             List<String[]> csvData = new ArrayList<>();
 
@@ -247,18 +254,35 @@ public class FileUploadController {
                 }
             }
 
+            // 파싱 완료 로그
+            logger.info("CSV 데이터 파싱 완료. 총 {}개의 레코드가 파싱되었습니다.", csvData.size());
+
             // 서비스 호출하여 CSV 데이터를 저장
             fileDBBackService.saveCsvDataToDB(csvData);
+
+            // 데이터 저장 완료 로그
+            logger.info("CSV 데이터 저장 완료.");
 
             // 성공 시 반환할 메시지
             response.put("result", "Y");
             response.put("msg", "데이터 업로드 완료");
+
+            // 응답 로그
+            logger.info("API 응답: {}", response);
+
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
+            // 에러 로그
+            logger.error("파일 업로드 중 에러 발생: ", e);
+
             // 실패 시 반환할 메시지
             response.put("result", "N");
             response.put("msg", "에러발생: " + e.getMessage());
+
+            // 응답 로그
+            logger.info("API 응답: {}", response);
+
             return ResponseEntity.status(500).body(response);
         }
     }
