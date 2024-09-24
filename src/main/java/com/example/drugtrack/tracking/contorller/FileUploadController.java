@@ -279,6 +279,8 @@ public class FileUploadController {
 
             // 응답 로그
             logger.info("API 응답: {}", response);
+            logger.info("/files-save API 호출됨. 파일명: {}, 파일 크기: {} bytes", file.getOriginalFilename(), file.getSize());
+            logger.info("총 {}개의 레코드가 파싱되었습니다.", csvData.size());
 
             return ResponseEntity.ok(response);
 
