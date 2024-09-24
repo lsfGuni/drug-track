@@ -11,25 +11,47 @@ import java.security.NoSuchAlgorithmException;
 
 @Entity
 @Data
+@Table(name = "drug_tracking_data")
 public class FileDBBack {
 
+
+    /*
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    */
+    @Id
+    @Schema(hidden = true)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "seq")
+    private Long seq;
+    @Column(name = "start_company_reg_number")
     private String startCompanyRegNumber;  // 출고업체 사업장등록번호
+    @Column(name = "start_company_name")
     private String startCompanyName;  // 출고업체명
+    @Column(name = "end_company_reg_number")
     private String endCompanyRegNumber;  // 대상업체 사업자등록번호 (엑셀에 없음, 다른 API에서 사용)
+    @Column(name = "end_company_name")
     private String endCompanyName;  // 대상업체명 (엑셀에 없음, 다른 API에서 사용)
+    @Column(name = "delivery_type")
     private String deliveryType;  // 입고, 출고 구분값
+    @Column(name = "delivery_date")
     private String deliveryDate; // 입출고일자
+    @Column(name = "product_name")
     private String productName;   // 제품명
+    @Column(name = "gs1_code")
     private String gs1Code;   // GTIN14
+    @Column(name = "mf_number")
     private String mfNumber;  // 제조번호
+    @Column(name = "exp_date")
     private String expDate;  // 유효일자
+    @Column(name = "barcode_data")
     private String barcodeData;   // 바코드 데이터 추가
+    @Column(name = "agg_data")
     private String aggData;   // Aggregation 정보
-    private String serialNumbers;   // 시리얼 번호
+    @Column(name = "serial_number")
+    private String serialNumber;   // 시리얼 번호
+    @Column(name = "api_key")
     private String apiKey;
 
     @Schema(hidden = true)
@@ -40,13 +62,16 @@ public class FileDBBack {
     @Column(name = "tx", length = 500, nullable = false)
     private String tx;
 
-    public Long getId() {
-        return id;
+    @Schema(hidden = true)
+    @Column(name = "auth", nullable = false)
+    private String auth;
+
+
+    @PrePersist
+    protected void omCreate(){
+        this.auth = "sys";
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getStartCompanyRegNumber() {
         return startCompanyRegNumber;
@@ -144,12 +169,20 @@ public class FileDBBack {
         this.aggData = aggData;
     }
 
-    public String getSerialNumbers() {
-        return serialNumbers;
+    public Long getSeq() {
+        return seq;
     }
 
-    public void setSerialNumbers(String serialNumbers) {
-        this.serialNumbers = serialNumbers;
+    public void setSeq(Long seq) {
+        this.seq = seq;
+    }
+
+    public String getSerialNumber() {
+        return serialNumber;
+    }
+
+    public void setSerialNumber(String serialNumber) {
+        this.serialNumber = serialNumber;
     }
 
     public String getApiKey() {
@@ -174,6 +207,14 @@ public class FileDBBack {
 
     public void setTx(String tx) {
         this.tx = tx;
+    }
+
+    public String getAuth() {
+        return auth;
+    }
+
+    public void setAuth(String auth) {
+        this.auth = auth;
     }
 
     public void generateHashValue() {

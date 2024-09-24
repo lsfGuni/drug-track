@@ -38,7 +38,7 @@ public class FileDBBackService {
             fileDBBack.setGs1Code(rowData.length > 8 ? rowData[8] : null);
             fileDBBack.setMfNumber(rowData.length > 9 ? rowData[9] : null);
             fileDBBack.setExpDate(rowData.length > 10 ? rowData[10] : null);
-            fileDBBack.setSerialNumbers(rowData.length > 11 ? rowData[11] : null);
+            fileDBBack.setSerialNumber(rowData.length > 11 ? rowData[11] : null);
             fileDBBack.setAggData(rowData.length > 12 ? rowData[12] : null);
 
 
@@ -76,7 +76,7 @@ public class FileDBBackService {
             fileDBBack.setGs1Code(rowData.size() > 6 ? rowData.get(6) : null);
             fileDBBack.setMfNumber(rowData.size() > 7 ? rowData.get(7) : null);
             fileDBBack.setExpDate(rowData.size() > 8 ? rowData.get(8) : null);
-            fileDBBack.setSerialNumbers(rowData.size() > 9 ? rowData.get(9) : null);
+            fileDBBack.setSerialNumber(rowData.size() > 9 ? rowData.get(9) : null);
             fileDBBack.setBarcodeData(rowData.size() > 10 ? rowData.get(10) : null);
             fileDBBack.setAggData(rowData.size() > 11 ? rowData.get(11) : null);
             fileDBBack.setDeliveryType(rowData.size() > 12 ? rowData.get(12) : null);
@@ -106,7 +106,7 @@ public class FileDBBackService {
         txValueMap.put("gs1Code", fileDBBack.getGs1Code());
         txValueMap.put("mfNumber", fileDBBack.getMfNumber());
         txValueMap.put("expDate", fileDBBack.getExpDate());
-        txValueMap.put("serialNumbers", fileDBBack.getSerialNumbers());
+        txValueMap.put("serialNumber", fileDBBack.getSerialNumber());
         txValueMap.put("aggData", fileDBBack.getAggData());
         return objectMapper.writeValueAsString(txValueMap);
     }
