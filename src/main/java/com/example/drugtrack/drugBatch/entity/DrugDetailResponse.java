@@ -1,9 +1,9 @@
-package com.example.drugtrack.drugDetail.model;
+package com.example.drugtrack.drugBatch.entity;
 
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "api_drug_list")
+@Table(name = "api_drug_batch_list")
 public class DrugDetailResponse {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

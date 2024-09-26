@@ -1,7 +1,7 @@
-package com.example.drugtrack.drugDetail.service;
+package com.example.drugtrack.drugBatch.service;
 
-import com.example.drugtrack.drugDetail.model.DrugDetailResponse;
-import com.example.drugtrack.drugDetail.repository.DrugDetailResponseRepository;
+import com.example.drugtrack.drugBatch.entity.DrugDetailResponse;
+import com.example.drugtrack.drugBatch.repository.DrugDetailResponseRepository;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,18 +40,26 @@ public class DrugDetailService {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
+    private int cachedTotalCount = -1;
+
     public int getTotalCount() {
+        if (cachedTotalCount != -1) {
+            return cachedTotalCount;
+        }
+
         String url = String.format("%s?serviceKey=%s&type=%s&pageNo=1&numOfRows=1", apiUrl, serviceKey, responseType);
         String response = restTemplate.getForObject(url, String.class);
         try {
             JSONObject jsonResponse = new JSONObject(response);
             JSONObject body = jsonResponse.getJSONObject("body");
-            return body.getInt("totalCount");
+            cachedTotalCount = body.getInt("totalCount");
+            return cachedTotalCount;
         } catch (JSONException e) {
             logger.error("Error parsing JSON response for totalCount: {}", e.getMessage());
             return 0;
         }
     }
+
 
     private void setApiResponseFields(DrugDetailResponse apiResponse, DrugDetailResponse item) {
         apiResponse.setItemSeq(item.getItemSeq());

@@ -52,6 +52,7 @@ public class SecurityConfig {
                 .cors(withDefaults())  // Enable CORS
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/batch/run").permitAll()
                         .requestMatchers("/api/files-save").permitAll()
                         .requestMatchers("/upload-file").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")

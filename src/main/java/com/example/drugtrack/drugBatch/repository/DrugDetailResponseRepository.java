@@ -1,6 +1,6 @@
-package com.example.drugtrack.drugDetail.repository;
+package com.example.drugtrack.drugBatch.repository;
 
-import com.example.drugtrack.drugDetail.model.DrugDetailResponse;
+import com.example.drugtrack.drugBatch.entity.DrugDetailResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

@@ -3,6 +3,7 @@ server:
  port: 8080
 
 spring:
+
   jackson:
     time-zone: Asia/Seoul  # 애플리케이션의 기본 시간대 설정
   servlet:
@@ -10,6 +11,11 @@ spring:
       enabled: true
       max-file-size: 60MB  # 파일당 최대 크기
       max-request-size: 60MB  # 요청당 최대 크기 (여러 파일 포함)
+  batch:
+    jdbc:
+      initialize-schema: never
+    job:
+      enabled: false
   jwt:
     secret: vmfhaltmskdlstkfkdgodyroqkfwkdbalroqkfwkdbalaaaaaaaaaaaaaaaabbbbb  # JWT 서명에 사용할 비밀 키
 
