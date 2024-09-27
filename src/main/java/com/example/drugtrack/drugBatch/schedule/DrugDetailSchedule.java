@@ -21,17 +21,21 @@ public class DrugDetailSchedule {
         this.jobRegistry = jobRegistry;
     }
 
-    // 하루에 한 번 (매일 자정) 실행
-    @Scheduled(cron = "0 0 0 * * ?", zone = "Asia/Seoul")
+    @Scheduled(cron = "0 0 0 1,15 * ?", zone = "Asia/Seoul") // 매 달 1일, 15일에 실행
+    //@Scheduled(cron = "0 0 * * * ?", zone = "Asia/Seoul") // 매 시정각에 실행
     public void runFirstJob() throws Exception {
 
+        // 현재 날짜를 사용한 파라미터 생성
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
         String date = dateFormat.format(new Date());
 
+        // jobParameters 정의
         JobParameters jobParameters = new JobParametersBuilder()
-                .addString("크론식실행-매일자정", date)
+                .addString("매달1,15일실행", date)
                 .toJobParameters();
 
+        // 배치 실행
         jobLauncher.run(jobRegistry.getJob("drugDetailJob"), jobParameters);
     }
+
 }

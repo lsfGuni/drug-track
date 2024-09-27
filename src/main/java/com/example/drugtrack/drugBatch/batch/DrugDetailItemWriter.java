@@ -17,7 +17,11 @@ public class DrugDetailItemWriter implements ItemWriter<DrugDetailResponse> {
 
     @Override
     public void write(Chunk<? extends DrugDetailResponse> items) throws Exception {
-        // 검증 없이 새로운 데이터를 그대로 저장
-        drugDetailResponseRepository.saveAll(items);
+        try {
+            drugDetailResponseRepository.saveAll(items);
+        } catch (Exception e) {
+            // 재시도와 스킵이 이 예외 처리에서 발생
+            throw new Exception("Error saving batch of DrugDetailResponse", e);
+        }
     }
 }

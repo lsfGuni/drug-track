@@ -49,10 +49,15 @@ public class DrugDetailBatchConfig {
     public Step drugDetailStep() {
         return new StepBuilder("drugDetailStep", jobRepository)
                 .<DrugDetailResponse, DrugDetailResponse>chunk(100, transactionManager)
+                .listener(drugDetailStepListener)  // StepListener 추가
                 .reader(drugDetailItemReader)
                 .processor(drugDetailItemProcessor)
                 .writer(drugDetailItemWriter)
-                .listener(drugDetailStepListener)  // StepListener 추가
+                .faultTolerant()
+                .retry(Exception.class)     // 예외 발생 시 재시도
+                .retryLimit(2)              // 최대 2번 재시도
+                .skip(Exception.class)      // 실패 시 해당 항목을 스킵
+                .skipLimit(5)               // 최대 5개 항목을 스킵 가능
                 .build();
     }
 }
