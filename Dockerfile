@@ -11,4 +11,4 @@ COPY build/libs/app.jar /app/app.jar
 EXPOSE 8080
 
 # 애플리케이션 실행 명령어 설정
-ENTRYPOINT ["java", "-Xmx2g", "-jar", "/app.jar"]
+ENTRYPOINT ["java", "-jar", "/app.jar"]
