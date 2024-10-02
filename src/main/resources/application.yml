@@ -63,9 +63,9 @@ logging:
       hibernate:
         SQL: debug
         type: trace
+    com.example.drugtrack.controller: INFO
 
-      springframework:
-        security=DEBUG:com.example.drugtrack.controller: INFO
+
 
 
 
@@ -75,3 +75,5 @@ api:
   serviceKey: 4/QsOE8OxyyVse/LVodjHXg5ScZuaCH6rgbU9Kx4dtIKpGY/xQe98tXhaiIGDIB9rSbtiC01IBVBI6LZSRmZ2A==
   type: json
 
+scheduling:
+  enabled: false
