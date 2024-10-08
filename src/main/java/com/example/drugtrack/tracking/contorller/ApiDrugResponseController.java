@@ -33,28 +33,26 @@ public class ApiDrugResponseController {
     @Hidden
     @Operation(summary = "모든 의약품 목록 조회", description = "데이터베이스에 저장된 모든 약물 응답을 조회합니다.")
     @GetMapping("/list")
-
     public List<ApiDrugResponse> getAllResponses() {
         return service.getAllResponses();
     }
 
-    @Operation(summary = "의약품 등록 post요청", description = "파라미터를 통해 의약품 정보를 등록합니다.")
+    @Operation(summary = "의약품 단건등록 post요청", description = "파라미터를 통해 의약품 정보를 등록합니다.")
     @PostMapping("/regDrugTracking")
-
-    public ResponseEntity<Map<String, String>> createResponse(@RequestBody ApiDrugResponse response, HttpServletRequest request) {
+    public ResponseEntity<Map<String, String>> createResponse(@RequestHeader("API_KEY") String apiKey, @RequestBody ApiDrugResponse response, HttpServletRequest request) {
         // 요청자의 IP 주소 및 User-Agent 등 로그 기록
         String clientIp = request.getRemoteAddr();
         String userAgent = request.getHeader("User-Agent");
         String requestUri = request.getRequestURI();
 
-        logger.info("POST 요청 발생 - IP: {}, User-Agent: {}, URI: {}", clientIp, userAgent, requestUri);
+        logger.info("POST 요청 발생 - IP: {}, User-Agent: {}, URI: {}, API_KEY: {}", clientIp, userAgent, requestUri, apiKey);
 
 
         // 응답 객체 생성
         Map<String, String> responseMap = new HashMap<>();
         try {
             // 서비스 단에서 데이터 저장 및 중복 검사
-            ApiDrugResponse savedResponse = service.saveResponse(response);
+            ApiDrugResponse savedResponse = service.saveResponse(response, apiKey);
 
             // 성공적인 저장
             responseMap.put("result", "Y");

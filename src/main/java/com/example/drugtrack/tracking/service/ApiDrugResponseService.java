@@ -28,8 +28,9 @@ public class ApiDrugResponseService {
     }
 
     // 단일 의약품 정보 저장
-    public ApiDrugResponse saveResponse(ApiDrugResponse response) {
+    public ApiDrugResponse saveResponse(ApiDrugResponse response,String apiKey) {
 
+        response.setApiKey(apiKey);
         // 데이터 저장 전에 프론트에서 받은 파라미터 값 가져오기
         String barcodeData = response.getBarcodeData();
         String startCompanyRegNumber = response.getStartCompanyRegNumber();

@@ -56,6 +56,9 @@ public class ApiDrugResponse {
     @Column(name = "serial_number", nullable = false)
     private String serialNumber;
 
+    @Column(name = "api_key")
+    private String apiKey;
+
     @Column(name = "agg_data", nullable = false)
     private String aggData;
 
@@ -181,6 +184,14 @@ public class ApiDrugResponse {
 
     public void setSerialNumber(String serialNumber) {
         this.serialNumber = serialNumber;
+    }
+
+    public String getApiKey() {
+        return apiKey;
+    }
+
+    public void setApiKey(String apiKey) {
+        this.apiKey = apiKey;
     }
 
     public String getAggData() {
