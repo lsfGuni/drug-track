@@ -16,8 +16,12 @@ public interface ApiDrugResponseRepository extends JpaRepository<ApiDrugResponse
 
     List<ApiDrugResponse> findByStartCompanyRegNumberAndBarcodeData(String startCompanyRegNumber, String barcodeData);
 
-    @Query(value = "SELECT * FROM drug_tracking_data WHERE FIND_IN_SET(:barcodeData, BARCODE_DATA) > 0", nativeQuery = true)
+    @Query(value = "SELECT * FROM drug_tracking_data WHERE BARCODE_DATA LIKE CONCAT('%,', :barcodeData, ',%') " +
+            "OR BARCODE_DATA LIKE CONCAT(:barcodeData, ',%') " +
+            "OR BARCODE_DATA LIKE CONCAT('%,', :barcodeData) " +
+            "OR BARCODE_DATA = :barcodeData", nativeQuery = true)
     List<ApiDrugResponse> findByBarcodeData(@Param("barcodeData") String barcodeData);
+
 
 
     @Transactional
