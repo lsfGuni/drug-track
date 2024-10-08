@@ -28,8 +28,8 @@ public class FileDBBackService {
 
             // 필드 설정
             fileDBBack.setBarcodeData(rowData.length > 0 ? rowData[0] : null);
-            fileDBBack.setStartCompanyName(rowData.length > 1 ? rowData[1] : null);
-            fileDBBack.setStartCompanyRegNumber(rowData.length > 2 ? rowData[2] : null);
+            fileDBBack.setStartCompanyRegNumber(rowData.length > 1 ? rowData[1] : null);
+            fileDBBack.setStartCompanyName(rowData.length > 2 ? rowData[2] : null);
             fileDBBack.setEndCompanyRegNumber(rowData.length > 3 ? rowData[3] : null);
             fileDBBack.setEndCompanyName(rowData.length > 4 ? rowData[4] : null);
             fileDBBack.setDeliveryType(rowData.length > 5 ? rowData[5] : null);
@@ -67,8 +67,8 @@ public class FileDBBackService {
         for (int i = 1; i < excelData.size(); i++) {
             List<String> rowData = excelData.get(i);
             FileDBBack fileDBBack = new FileDBBack();
-            fileDBBack.setStartCompanyName(rowData.size() > 0 ? rowData.get(0) : null);
-            fileDBBack.setStartCompanyRegNumber(rowData.size() > 1 ? rowData.get(1) : null);
+            fileDBBack.setStartCompanyRegNumber(rowData.size() > 0 ? rowData.get(0) : null);
+            fileDBBack.setStartCompanyName(rowData.size() > 1 ? rowData.get(1) : null);
             fileDBBack.setEndCompanyName(rowData.size() > 2 ? rowData.get(2) : null);
             fileDBBack.setEndCompanyRegNumber(rowData.size() > 3 ? rowData.get(3) : null);
             fileDBBack.setDeliveryDate(rowData.size() > 4 ? rowData.get(4) : null);

@@ -56,6 +56,7 @@ public class FileUploadController {
                             schema = @Schema(type = "string", format = "binary")))
             MultipartFile file) {
 
+        //응답 파라미터 선언
         Map<String, String> response = new HashMap<>();
 
         // 파일이 비어 있는지 확인
@@ -66,7 +67,7 @@ public class FileUploadController {
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
 
-        // 파일의 확장자 추출
+        // 파일의 확장자 추출 및 파일 형식 검증
         String filename = file.getOriginalFilename();
         System.out.println("업로드된 파일 이름: " + filename);
 
@@ -115,7 +116,7 @@ public class FileUploadController {
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    // CSV 파일 파싱 로직
+    // CSV 파일 파싱 로직 메서드
     private List<String[]> parseCsvFile(MultipartFile file) throws IOException {
         List<String[]> data = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {

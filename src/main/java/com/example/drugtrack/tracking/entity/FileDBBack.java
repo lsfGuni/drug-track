@@ -25,10 +25,10 @@ public class FileDBBack {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "seq")
     private Long seq;
-    @Column(name = "start_company_reg_number")
-    private String startCompanyRegNumber;  // 출고업체 사업장등록번호
     @Column(name = "start_company_name")
     private String startCompanyName;  // 출고업체명
+    @Column(name = "start_company_reg_number")
+    private String startCompanyRegNumber;  // 출고업체 사업장등록번호
     @Column(name = "end_company_reg_number")
     private String endCompanyRegNumber;  // 대상업체 사업자등록번호 (엑셀에 없음, 다른 API에서 사용)
     @Column(name = "end_company_name")
