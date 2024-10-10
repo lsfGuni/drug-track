@@ -205,6 +205,8 @@ span.btn_del a {display:inline-block;background:url("../img/common/fav_del_btn.g
 	height: 34px;
 	background:url('../img/common/header_menu_bg.jpg');
 	text-align: center;
+	position: relative;
+	z-index: 9999;
 }
 
 /* 화면검색 */

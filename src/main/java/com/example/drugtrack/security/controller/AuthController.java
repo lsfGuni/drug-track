@@ -144,7 +144,7 @@ public class AuthController {
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             response.put("result", "N");
-            response.put("error", "Authentication failed: " + e.getMessage());
+            response.put("error", "로그인 실패: " + e.getMessage());
 
             Map<String, String> data = new HashMap<>();
             data.put("id", loginRequest.getId());

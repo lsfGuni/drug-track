@@ -13,6 +13,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -31,8 +33,9 @@ public class UserListService {
     }
 
     public List<UserListDTO> getAllUsers() {
-        List<User> users = userRepository.findAll();
-        return users.stream()
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX");
+
+        return userRepository.findAll().stream()
                 .map(user -> new UserListDTO(
                         user.getSeq(),
                         user.getId(),
@@ -43,28 +46,41 @@ public class UserListService {
                         user.getCompanyRegNumber(),
                         user.getPhoneNumber(),
                         user.getEmail(),
-                        user.getActive()
+                        user.getActive(),
+                        user.getRegDate() != null ? LocalDateTime.parse(user.getRegDate(), formatter) : null // Convert String to LocalDateTime
                 ))
                 .collect(Collectors.toList());
     }
 
     // New paginated method to fetch a page of UserListDTOs
     public Page<UserListDTO> getPaginatedUsers(Pageable pageable) {
-        // Fetch paginated users and map them to DTOs
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
         return userRepository.findAll(pageable)
-                .map(user -> new UserListDTO(
-                        user.getSeq(),
-                        user.getId(),
-                        user.getUsername(),
-                        user.getRole(),
-                        user.getCompanyType(),
-                        user.getCompanyName(),
-                        user.getCompanyRegNumber(),
-                        user.getPhoneNumber(),
-                        user.getEmail(),
-                        user.getActive()
-                ));
+                .map(user -> {
+                    try {
+                        return new UserListDTO(
+                                user.getSeq(),
+                                user.getId(),
+                                user.getUsername(),
+                                user.getRole(),
+                                user.getCompanyType(),
+                                user.getCompanyName(),
+                                user.getCompanyRegNumber(),
+                                user.getPhoneNumber(),
+                                user.getEmail(),
+                                user.getActive(),
+                                user.getRegDate() != null ? LocalDateTime.parse(user.getRegDate(), formatter) : null
+                        );
+                    } catch (Exception e) {
+                        // Log the error for better debugging
+                        System.err.println("Error mapping user: " + e.getMessage());
+                        return null;  // Handle the mapping error
+                    }
+                });
     }
+
+
 
     //유저 상세정보 조회
     public Optional<User> getUserBySeq(Long seq) {

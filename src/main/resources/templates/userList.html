@@ -99,31 +99,30 @@
                 <caption>리스트</caption>
                 <thead>
                 <tr>
-
-                    <th>ID</th>
-
-                    <th>Role</th>
-                    <th>Company Type</th>
-                    <th>Company Name</th>
-                    <th>Company Reg Number</th>
-                    <th>Phone Number</th>
-                    <th>Email</th>
-                    <th>Active</th>
+                    <th>No</th>
+                    <th>회원번호</th>
+                    <th>회원ID</th>
+                    <th>업체명</th>
+                    <th>사업자구분</th>
+                    <th>사업자등록번호</th>
+                    <th>대표연락처</th>
+                    <th>대표이메일</th>
+                    <th>가입일시</th>
                 </tr>
                 </thead>
-                <tbody name="userList">
+                <tbody id="userList">
                 <tr th:each="user : ${users}" class="select">
-
+                    <td th:text="${user.seq}"></td>
+                    <td th:text="'00' + ${user.seq}"></td>
                     <td th:text="${user.id}"></td>
-
-                    <td th:text="${user.role}"></td>
-                    <td th:text="${user.companyType}"></td>
                     <td th:text="${user.companyName}"></td>
+                    <td th:text="${user.companyType}"></td>
                     <td th:text="${user.companyRegNumber}"></td>
                     <td th:text="${user.phoneNumber}"></td>
                     <td th:text="${user.email}"></td>
-                    <td th:text="${user.active}"></td>
-                    <td th:text="${user.seq}" style="display:none"></td>
+                    <td th:text="${#temporals.format(user.regDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
+
+
                 </tr>
                 </tbody>
             </table>
@@ -199,31 +198,34 @@
         <h3>회원기본정보</h3>
         <!-- table 영역 -->
         <div class="table-box">
-            <table class="tbl_Form" summary="고객구분, 가입구분, 가입채널, 가입경로, 고객번호, 고객ID, 고개명, 생년월일, 휴대폰, 이메일, 내/외국인, 성별, 추천인 수, 임직원 여부, 가입일, 고객상태, 결합여부, 비밀번호, 주소, 비고">
+            <table class="tbl_Form">
                 <caption>상세내역</caption>
                 <colgroup><col width="90px"/><col width="*"/><col width="80px"/><col width="*"/><col width="80px"/><col width="*"/><col width="100px"/><col width="*"/></colgroup>
                 <tr>
-                    <th scope="row"><label  >ID</label></th>
+                    <th scope="row"><label  >회원번호</label></th>
+                    <td id="user-seq"></td>
+                    <th scope="row"><label  >회원ID</label></th>
                     <td id="user-id"></td>
-                    <th scope="row"><label  >Role</label></th>
-                    <td><input id="user-role" type="text" class="input-box" value=""/></td>
-                    <th scope="row"><label  >Company Type</label></th>
-                    <td id="user-companyType"></td>
-                    <th scope="row"><label  >Company Name</label></th>
-                    <td id="user-companyName"></td>
+                    <th scope="row"><label  >업체명</label></th>
+                    <td id="user-companyName" colspan="3"></td>
                 </tr>
                 <tr>
-                    <th scope="row"><label  >Company Reg Number</label></th>
-                    <td id="user-companyRegNumber"></td>
-                    <th scope="row"><label  >Phone Number</label></th>
-                    <td id="user-phoneNumber"></td>
 
-                    <th scope="row"><label  >Active</label></th>
-                    <td colspan="3" id="user-active"></td>
+                    <th scope="row"><label  >사업자구분</label></th>
+                    <td id="user-companyType"></td>
+                    <th scope="row"><label>사업자등록번호</label></th>
+                    <td id="user-companyRegNumber"></td>
+                    <th scope="row"><label  >대표연락처</label></th>
+                    <td colspan="3" >
+                        <input id="user-phoneNumber" name="Input" type="text" />
+                        <span class="btn_table_in"><a href="#" id="check-phoneNumber-btn">중복검사</a></span>
+                    </td>
                 </tr>
                 <tr>
-                    <th scope="row"><label  >Email</label></th>
-                    <td colspan="3"><input id="user-email" name="Input" type="text" class="email_l" value="gildong@naver.com" /></td>
+                    <th scope="row"><label  >대표이메일</label></th>
+                    <td><input id="user-email" name="Input" type="text" class="email_l" value="gildong@naver.com" /></td>
+                    <th scope="row"><label  >가입일시</label></th>
+                    <td id="user-regDate"></td>
                     <th scope="row"><label  >비밀번호</label></th>
                     <td colspan="3">
                         <span class="btn_table_in"><a href="#" id="reset-password-btn">초기화</a></span>
@@ -231,7 +233,6 @@
                         ※ 회원 이메일로 임의의 비밀번호가 발송됩니다.
                     </td>
 
-                    <td id="user-seq" style="display:none"></td>
                 </tr>
 
             </table>
@@ -314,7 +315,6 @@ function setPng24(obj) {
 }
 </script>
 -->
-
 
 <script type="text/javascript">
     $(document).ready(function() {

@@ -40,6 +40,10 @@ public class User {
     @Column
     private String email;
 
+
+    @Column
+    private String regDate;
+
     @Column(nullable = false)
     @Schema(hidden = true)
     private String active;  // "Y" (활성화), "N" (비활성화)
@@ -150,5 +154,13 @@ public class User {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getRegDate() {
+        return regDate;
+    }
+
+    public void setRegDate(String regDate) {
+        this.regDate = regDate;
     }
 }

@@ -1,5 +1,7 @@
 package com.example.drugtrack.security.dto;
 
+import java.time.LocalDateTime;
+
 public class UserListDTO {
     private Long seq;
     private String id;
@@ -11,6 +13,7 @@ public class UserListDTO {
     private String phoneNumber;
     private String email;
     private String active;
+    private LocalDateTime regDate;
 
     // 기본 생성자
     public UserListDTO() {}
@@ -18,7 +21,7 @@ public class UserListDTO {
     // 모든 필드를 포함하는 생성자
     public UserListDTO(Long seq, String id, String username, String role, String companyType,
                        String companyName, String companyRegNumber, String phoneNumber,
-                       String email, String active) {
+                       String email, String active, LocalDateTime regDate) {
         this.seq = seq;
         this.id = id;
         this.username = username;
@@ -29,6 +32,7 @@ public class UserListDTO {
         this.phoneNumber = phoneNumber;
         this.email = email;
         this.active = active;
+        this.regDate = regDate;
     }
 
     // Getter와 Setter
@@ -61,4 +65,12 @@ public class UserListDTO {
 
     public String getActive() { return active; }
     public void setActive(String active) { this.active = active; }
+
+    public LocalDateTime getRegDate() {
+        return regDate;
+    }
+
+    public void setRegDate(LocalDateTime regDate) {
+        this.regDate = regDate;
+    }
 }
