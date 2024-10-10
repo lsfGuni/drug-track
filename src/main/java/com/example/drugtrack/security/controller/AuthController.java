@@ -155,12 +155,53 @@ public class AuthController {
         }
     }
 
+    @Operation(summary = "이메일, 대표연락처 변경사항 저장", description = "이메일, 대표연락처 변경사항을 저장한다.")
+    @PostMapping("/update-info")
+    public ResponseEntity<?> updateUserInfo(@RequestBody Map<String, String> userInfo) {
+        String userId = userInfo.get("userId");
+        String email = userInfo.get("email");
+        String phoneNumber = userInfo.get("phoneNumber");
+
+        if (userId == null || email == null || phoneNumber == null) {
+            return ResponseEntity.badRequest().body("필수 정보가 누락되었습니다.");
+        }
+
+        // 사용자 정보 업데이트
+        boolean isUpdated = userService.updateUserInfo(userId, email, phoneNumber);
+
+        if (isUpdated) {
+            return ResponseEntity.ok(Map.of("result", "Y"));
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("result", "error", "message", "업데이트 실패"));
+        }
+    }
 
 
 
 
 
 
+    @Operation(summary = "대표연락처 중복검사", description = "대표연락처 변경 전 데이터베이스에서 중복데이터가 있는지 검사한다.")
+    @GetMapping("/check-phoneNumber")
+    @ResponseBody
+    public ResponseEntity<?> checkPhoneNumber(@RequestParam String phoneNumber) {
+        Map<String, Object> response = new HashMap<>();
+
+        if (userService.findByPhoneNumber(phoneNumber) != null) {
+            log.error("이미 가입된 대표연락처가 있습니다: {}", phoneNumber);
+
+            response.put("result", "Y");
+            response.put("error", "");
+        } else {
+            // 사용자 등록
+            log.info("가입된 대표연락처가 없습니다.: ID = {}", phoneNumber);
+            // Assuming user creation logic would be in POST request, removing registerUser call here
+            response.put("result", "N");
+            response.put("error", "가입된 대표연락처가 없습니다.");
+        }
+
+        return ResponseEntity.ok(response);
+    }
 
 
     @Operation(summary = "비밀번호 찾기", description = "Email을 통해 비밀번호를 찾습니다.")

@@ -237,6 +237,29 @@
 
             </table>
         </div>
+        <!-- 로딩 스피너 s-->
+        <div id="loading" style="display:none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999;">
+            <div class="spinner"></div>
+        </div>
+        <style>
+            /* 로딩 스피너 스타일 */
+            .spinner {
+                border: 6px solid #f3f3f3;
+                border-radius: 50%;
+                border-top: 5px solid #3498db;
+                width: 40px;
+                height: 40px;
+                animation: spin 0.6s linear infinite;
+            }
+
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+
+
+        </style>
+        <!-- 로딩 스피너 e-->
     </div>
     <!-- section 종료 -->
 
@@ -315,42 +338,94 @@ function setPng24(obj) {
 }
 </script>
 -->
-
 <script type="text/javascript">
     $(document).ready(function() {
-        // 비밀번호초기화 버튼 클릭 이벤트
-        $('#reset-password-btn').click(function(event) {
+        // 저장 버튼 클릭 이벤트
+        $('.btn_save a').click(function(event) {
             event.preventDefault(); // 기본 링크 동작을 막음
 
             // 필요한 파라미터 값 추출
-            const email = $('#user-email').val();
+            const userId = $('#user-id').text();  // ID는 td 태그에서 추출
+            const userEmail = $('#user-email').val();  // 이메일 입력값 추출
+            const userPhoneNumber = $('#user-phoneNumber').val();  // 연락처 입력값 추출
 
             // Add console logs to see what values are being used
-            console.log("Extracted Email: ", email);
+            console.log("회원 ID: ", userId);
+            console.log("이메일: ", userEmail);
+            console.log("연락처: ", userPhoneNumber);
 
-            if (!email) {
-                alert("사용자 email을 확인 하세요.");
+            // 값 검증
+            if (!userId || !userEmail || !userPhoneNumber) {
+                alert("이메일, 대표연락처는 필수정보입니다.");
+                return;
+            }
+
+            // 서버로 전송할 데이터
+            const requestData = {
+                userId: userId,
+                email: userEmail,
+                phoneNumber: userPhoneNumber
+            };
+
+            // Ajax를 이용한 업데이트 API 호출
+            $.ajax({
+                url: '/user/update-info',  // 백엔드 API URL
+                type: 'POST',  // 업데이트는 POST 방식으로 처리
+                contentType: 'application/json',
+                data: JSON.stringify(requestData),  // 데이터를 JSON 형식으로 전송
+                success: function(response) {
+                    if (response.result === 'Y') {
+                        alert("회원 정보가 성공적으로 업데이트되었습니다.");
+
+                        loadUserList();
+                    } else {
+                        alert("업데이트 중 오류가 발생했습니다.");
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.log("Error Status: ", status);
+                    console.log("XHR Object: ", xhr);
+                    console.log("Error Thrown: ", error);
+                    alert("업데이트 중 오류가 발생했습니다.");
+                }
+            });
+        });
+    });
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        // 연락처 중복검사 버튼 클릭 이벤트
+        $('#check-phoneNumber-btn').click(function(event) {
+            event.preventDefault(); // 기본 링크 동작을 막음
+
+            // 필요한 파라미터 값 추출
+            const phoneNumber = $('#user-phoneNumber').val();
+
+            // Add console logs to see what values are being used
+            console.log("휴대폰번호: ", phoneNumber);
+
+            if (!phoneNumber) {
+                alert("대표연락처를 확인 하세요.");
                 return;
             }
 
             // API로 전송할 데이터
             const requestData = {
-                email: email
+                phoneNumber: phoneNumber
             };
 
             // 비밀번호 초기화 API 호출
             $.ajax({
-                url: '/user/find-password',  // Use the full URL
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(requestData),  // 데이터를 JSON 형식으로 전송
+                url: '/user/check-phoneNumber',  // api url 주소
+                type: 'get',
+                data: requestData,  // 데이터를 JSON 형식으로 전송
                 success: function(response) {
-                    console.log("email : " + email)
+                    console.log("API 요청 시 phoneNumber 데이터값 : " + phoneNumber)
                     if (response.result === 'Y') {
-                        alert("임시 비밀번호가 이메일로 전송되었습니다.");
+                        alert("이미 등록된 대표 연락처 입니다. 확인 후 다시 입력해 주세요.");
                     } else {
-                        alert("사용자 정보를 찾을 수 없습니다.");
-                        console.log("Email not found: ", response);
+                        alert("대표 연락처를 등록 할 수 있습니다.");
                     }
                 },
                 error: function(xhr, status, error) {
@@ -358,13 +433,77 @@ function setPng24(obj) {
                     console.log("XHR Object: ", xhr);
                     console.log("Error Thrown: ", error);
 
-                    alert("비밀번호 초기화 중 오류가 발생했습니다.");
+                    alert("대표연락처 중복검사 중 오류가 발생했습니다.");
                     console.log("오류 정보:", status, error);
                 }
             });
         });
     });
 </script>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        // 비밀번호 초기화 버튼 클릭 이벤트
+        $('#reset-password-btn').click(function(event) {
+            event.preventDefault(); // 기본 링크 동작을 막음
+
+            // 경고 메시지 표시 후 확인 버튼을 눌렀을 때만 API 요청 진행
+            if (confirm("비밀번호를 초기화 시키시겠습니까?\n초기화 되면 회원한테 임시비밀번호가 발송됩니다.")) {
+
+                // 필요한 파라미터 값 추출
+                const email = $('#user-email').val();
+
+                // Add console logs to see what values are being used
+                console.log("Extracted Email: ", email);
+
+                if (!email) {
+                    alert("사용자 email을 확인 하세요.");
+                    return;
+                }
+
+                // API로 전송할 데이터
+                const requestData = {
+                    email: email
+                };
+
+                // 로딩 메시지 표시
+                $('#loading').show();
+                // 비밀번호 초기화 API 호출
+
+                $.ajax({
+                    url: '/user/find-password',  // Use the full URL
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(requestData),  // 데이터를 JSON 형식으로 전송
+                    success: function(response) {
+                        $('#loading').hide();
+                        if (response.result === 'Y') {
+                            alert("임시 비밀번호가 이메일로 전송되었습니다.");
+                        } else {
+                            alert("사용자 정보를 찾을 수 없습니다.");
+                            console.log("Email not found: ", response);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        // 요청 완료 후 로딩 메시지 숨기기
+                        $('#loading').hide();
+
+                        console.log("Error Status: ", status);
+                        console.log("XHR Object: ", xhr);
+                        console.log("Error Thrown: ", error);
+
+                        alert("비밀번호 초기화 중 오류가 발생했습니다.");
+                        console.log("오류 정보:", status, error);
+                    }
+                });
+            } else {
+                // 사용자가 취소 버튼을 누른 경우
+                console.log("비밀번호 초기화 요청이 취소되었습니다.");
+            }
+        });
+    });
+</script>
+
 <script type="text/javascript">
     $(document).ready(function() {
         $('.btn_sch a').click(function(event) {

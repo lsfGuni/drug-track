@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class UserService {
 
@@ -34,6 +36,25 @@ public class UserService {
         return userRepository.findByIdAndActive(id, "Y").orElse(null);
     }
 
+
+    //저장 누를 때 변경한 이메일, 대표연락처 업데이트
+    public boolean updateUserInfo(String userId, String email, String phoneNumber) {
+        Optional<User> userOptional = userRepository.findById(userId);
+
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            user.setEmail(email);
+            user.setPhoneNumber(phoneNumber);
+
+            userRepository.save(user);  // 변경 사항 저장
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    //대표연락처 중복검사
+    public User findByPhoneNumber(String phoneNumber) { return userRepository.findByPhoneNumber(phoneNumber).orElse(null); }
 
     //비밀번호 찾기
     public User findByEmail(String email) {
