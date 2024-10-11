@@ -15,13 +15,15 @@ public interface UserInfoHistoryRepository extends JpaRepository<UserInfoHistory
 
     @Query("SELECT new com.example.drugtrack.security.dto.UserChangeHistoryDto( " +
             "u.companyName, u.companyType, u.companyRegNumber, " +
-            "CASE WHEN h.changedField = 'phone_number' THEN h.newValue ELSE null END AS phoneNumber, " +
-            "CASE WHEN h.changedField = 'email' THEN h.newValue ELSE null END AS email, " +
-            "h.changeCount, h.changeDate, u.password, h.changedBy) " +
+            "CASE WHEN h.changedField = 'phone_number' THEN COALESCE(h.newValue, '') ELSE '' END AS phoneNumber, " +
+            "CASE WHEN h.changedField = 'email' THEN COALESCE(h.newValue, '') ELSE '' END AS email, " +
+            "CASE WHEN h.changedField = 'password' THEN '****' ELSE '' END AS password, " +  // Mask password as '****'
+            "h.changeCount, h.changeDate, h.changedBy) " +
             "FROM User u JOIN UserInfoHistory h ON u.seq = h.userSeq " +
             "WHERE h.changeCount > 0 AND u.seq = :userSeq " +
-            "ORDER BY h.changeDate ASC")
+            "ORDER BY h.changeDate DESC")
     List<UserChangeHistoryDto> findUserChangeHistoryByUserSeq(@Param("userSeq") Long userSeq);
+
 
 
 

@@ -5,6 +5,7 @@ import com.example.drugtrack.security.dto.LoginRequest;
 import com.example.drugtrack.security.dto.PasswordResetRequest;
 import com.example.drugtrack.security.dto.UserChangeHistoryDto;
 import com.example.drugtrack.security.entity.User;
+import com.example.drugtrack.security.entity.UserInfoHistory;
 import com.example.drugtrack.security.jwt.JWTUtil;
 import com.example.drugtrack.security.repository.UserInfoHistoryRepository;
 import com.example.drugtrack.security.service.EmailService;
@@ -245,6 +246,23 @@ public class AuthController {
         String message = "Nipa 의약품 이력관리 시스템 계정 비밀번호입니다.: " + tempPassword;
         emailService.sendResetPasswordEmail(user.getEmail(), message);
         System.out.println(message);
+
+
+        // ** 비밀번호 변경 이력 추가 **
+        UserInfoHistory passwordChangeHistory = new UserInfoHistory();
+        passwordChangeHistory.setUserSeq(user.getSeq());  // user_seq
+        passwordChangeHistory.setChangedField("password");  // 비밀번호 변경
+        passwordChangeHistory.setOldValue("****");  // 이전 비밀번호를 기록할 필요 없음
+        passwordChangeHistory.setNewValue("****");  // 변경된 비밀번호도 마스킹 처리
+
+        // 비밀번호 변경 이력 추가 시 변경 횟수를 설정 (이력이 없는 경우 0으로 설정)
+        Integer maxChangeCount = userInfoHistoryRepository.findMaxChangeCountByUserSeq(user.getSeq());
+        passwordChangeHistory.setChangeCount((maxChangeCount == null ? 0 : maxChangeCount) + 1);  // 최초 변경인 경우 1부터 시작
+
+        passwordChangeHistory.setChangeDate(new Date());  // 변경 일시 기록
+        passwordChangeHistory.setChangedBy(user.getId());  // 변경한 사용자 ID
+
+        userInfoHistoryRepository.save(passwordChangeHistory);  // 변경 이력 저장
 
         response.put("result", "Y");
         response.put("error", "");

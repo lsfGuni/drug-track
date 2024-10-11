@@ -472,6 +472,24 @@ function setPng24(obj) {
 
 <script type="text/javascript">
     $(document).ready(function() {
+
+        // Event handler for email input changes
+        $('#user-email').on('input', function() {
+            const currentEmail = $(this).val().trim();  // Get the current email value
+
+
+            // Compare original and current email values
+            if (currentEmail !== selectedEmail) {
+                console.log("Email has changed, hiding reset button.");
+                // Hide the reset button when the email changes
+                $('#reset-password-btn').hide();
+            } else {
+                console.log("Email matches the original, showing reset button.");
+                // Show the reset button when the email matches the original
+                $('#reset-password-btn').show();
+            }
+        });
+
         // 비밀번호 초기화 버튼 클릭 이벤트
         $('#reset-password-btn').click(function(event) {
             event.preventDefault(); // 기본 링크 동작을 막음

@@ -238,6 +238,8 @@
         });
     }
 
+    let selectedEmail = '';  // Global variable to store selected email
+
     function bindRowClickEvent() {
         // 동적으로 로드된 테이블의 행에 이벤트 위임 방식으로 클릭 이벤트 바인딩
         $('#userList').on('click', 'tr.select', function () {
@@ -254,6 +256,8 @@
             const companyRegNumber = $(this).find('td:nth-child(6)').text().trim();
             const phoneNumber = $(this).find('td:nth-child(7)').text().trim();
             const email = $(this).find('td:nth-child(8)').text().trim();
+            selectedEmail = email;
+            console.log("Captured Email: ", selectedEmail);
             const regDate = $(this).find('td:nth-child(9)').text().trim();
 
             // 추출된 데이터를 디테일 영역에 업데이트
@@ -291,9 +295,9 @@
                         <td>${history.companyName}</td>  <!-- 업체명: company_name -->
                         <td>${history.companyType}</td>  <!-- 사업자구분: company_type -->
                         <td>${history.companyRegNumber}</td>  <!-- 사업자등록번호: company_reg_number -->
-                        <td>${history.phoneNumber || ''}</td>  <!-- 대표연락처: phone_number (from new_value) -->
-                        <td>${history.email || ''}</td>  <!-- 대표이메일: email (from new_value) -->
-                        <td>${history.password}</td>  <!-- 비밀번호: password -->
+                        <td>${history.phoneNumber || ''}</td>  <!-- 대표연락처: phone_number -->
+                        <td>${history.email || ''}</td>  <!-- 대표이메일: email -->
+                        <td>${history.password}</td>  <!-- 비밀번호: password (마스킹된 값) -->
                         <td>${localStorage.getItem('userId')}</td>  <!-- 등록/수정자: logged-in user -->
                         <td>${new Date(history.changeDate).toLocaleString()}</td>  <!-- 등록/수정일시: change_date -->
                     </tr>`;
@@ -308,6 +312,7 @@
             }
         });
     }
+
 
 </script>
 
