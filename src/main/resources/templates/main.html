@@ -245,6 +245,9 @@
 
             // 각 열에서 데이터를 추출
             const seq = $(this).find('td:nth-child(1)').text().trim();
+
+            fetchUserChangeHistory(seq);  // Call the fetch function to load history
+
             const id = $(this).find('td:nth-child(3)').text().trim();
             const companyName = $(this).find('td:nth-child(4)').text().trim();
             const companyType = $(this).find('td:nth-child(5)').text().trim();
@@ -263,10 +266,50 @@
             $('#user-email').val(email);
             $('#user-regDate').text(regDate);
         });
+
+
+
+    }
+</script>
+
+<script type="text/javascript">
+    function fetchUserChangeHistory(seq) {
+        // Make an AJAX request to fetch the change history of the selected user
+        $.ajax({
+            url: `/user/${seq}/history`,  // Backend endpoint to fetch history
+            type: 'GET',
+            success: function (data) {
+                const historyTableBody = $('#userChangeHistory');
+                historyTableBody.empty();  // Clear previous data
+
+                if (data.length > 0) {
+                    // Populate the change history table with the fetched data
+                    data.forEach((history, index) => {
+                        const row = `
+                    <tr>
+                        <td>${history.changeCount}</td>  <!-- No: change_count -->
+                        <td>${history.companyName}</td>  <!-- 업체명: company_name -->
+                        <td>${history.companyType}</td>  <!-- 사업자구분: company_type -->
+                        <td>${history.companyRegNumber}</td>  <!-- 사업자등록번호: company_reg_number -->
+                        <td>${history.phoneNumber || ''}</td>  <!-- 대표연락처: phone_number (from new_value) -->
+                        <td>${history.email || ''}</td>  <!-- 대표이메일: email (from new_value) -->
+                        <td>${history.password}</td>  <!-- 비밀번호: password -->
+                        <td>${localStorage.getItem('userId')}</td>  <!-- 등록/수정자: logged-in user -->
+                        <td>${new Date(history.changeDate).toLocaleString()}</td>  <!-- 등록/수정일시: change_date -->
+                    </tr>`;
+                        historyTableBody.append(row);
+                    });
+                } else {
+                    historyTableBody.append('<tr><td colspan="9">변경 이력이 없습니다.</td></tr>');
+                }
+            },
+            error: function () {
+                alert('정보변경 이력을 불러오는 중 오류가 발생했습니다.');
+            }
+        });
     }
 
 </script>
-
 
 </body>
 

@@ -1,11 +1,15 @@
 package com.example.drugtrack.security.service;
 
 import com.example.drugtrack.security.entity.User;
+import com.example.drugtrack.security.entity.UserInfoHistory;
+import com.example.drugtrack.security.repository.UserInfoHistoryRepository;
 import com.example.drugtrack.security.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.Optional;
 
 @Service
@@ -13,11 +17,14 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserInfoHistoryRepository userInfoHistoryRepository;
 
     @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserInfoHistoryRepository userInfoHistoryRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+
+        this.userInfoHistoryRepository = userInfoHistoryRepository;
     }
 
     public User registerUser(User user) {
@@ -37,21 +44,51 @@ public class UserService {
     }
 
 
-    //저장 누를 때 변경한 이메일, 대표연락처 업데이트
+    // 유저정보 변경 업데이트 메소드
+    @Transactional
     public boolean updateUserInfo(String userId, String email, String phoneNumber) {
         Optional<User> userOptional = userRepository.findById(userId);
 
         if (userOptional.isPresent()) {
             User user = userOptional.get();
-            user.setEmail(email);
-            user.setPhoneNumber(phoneNumber);
 
-            userRepository.save(user);  // 변경 사항 저장
+            // Check if email has changed
+            if (!email.equals(user.getEmail())) {
+                saveChangeHistory(user.getSeq(), "email", user.getEmail(), email);
+                user.setEmail(email);
+            }
+
+            // Check if phone number has changed
+            if (!phoneNumber.equals(user.getPhoneNumber())) {
+                saveChangeHistory(user.getSeq(), "phone_number", user.getPhoneNumber(), phoneNumber);
+                user.setPhoneNumber(phoneNumber);
+            }
+
+            // Save updated user information
+            userRepository.save(user);
             return true;
         } else {
             return false;
         }
     }
+    // 정보변경이력 메소드
+    private void saveChangeHistory(Long userSeq, String fieldName, String oldValue, String newValue) {
+        // Find the number of changes for this field
+        Integer maxChangeCount = userInfoHistoryRepository.findMaxChangeCountByUserSeq(userSeq);
+        int changeCount = (maxChangeCount == null) ? 1 : maxChangeCount + 1;
+
+        UserInfoHistory history = new UserInfoHistory();
+        history.setUserSeq(userSeq);
+        history.setChangedField(fieldName);
+        history.setOldValue(oldValue);
+        history.setNewValue(newValue);
+        history.setChangeCount(changeCount);
+        history.setChangeDate(new Date());  // Current timestamp
+
+        userInfoHistoryRepository.save(history);
+    }
+
+
 
     //대표연락처 중복검사
     public User findByPhoneNumber(String phoneNumber) { return userRepository.findByPhoneNumber(phoneNumber).orElse(null); }

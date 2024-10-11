@@ -3,8 +3,10 @@ package com.example.drugtrack.security.controller;
 import com.example.drugtrack.security.dto.DeactivateUserRequest;
 import com.example.drugtrack.security.dto.LoginRequest;
 import com.example.drugtrack.security.dto.PasswordResetRequest;
+import com.example.drugtrack.security.dto.UserChangeHistoryDto;
 import com.example.drugtrack.security.entity.User;
 import com.example.drugtrack.security.jwt.JWTUtil;
+import com.example.drugtrack.security.repository.UserInfoHistoryRepository;
 import com.example.drugtrack.security.service.EmailService;
 import com.example.drugtrack.security.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,10 +26,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 @Tag(name = "USER 관련 API", description = "USER정보를 관리하는 API")
 @Controller
@@ -42,14 +41,16 @@ public class AuthController {
     private final JWTUtil jwtUtil;
     private final EmailService emailService;  // EmailService 주입받기 위한 필드 추가
     private final PasswordEncoder passwordEncoder;
+    private final UserInfoHistoryRepository userInfoHistoryRepository;
 
     @Autowired
-    public AuthController(UserService userService, AuthenticationManager authenticationManager, EmailService emailService, PasswordEncoder passwordEncoder, JWTUtil jwtUtil) {
+    public AuthController(UserService userService, AuthenticationManager authenticationManager, EmailService emailService, PasswordEncoder passwordEncoder, JWTUtil jwtUtil, UserInfoHistoryRepository userInfoHistoryRepository) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
         this.emailService = emailService;
         this.passwordEncoder = passwordEncoder;
+        this.userInfoHistoryRepository = userInfoHistoryRepository;
     }
 
     @Operation(summary = "회원 가입 post요청", description = "데이터베이스에 회원정보를 저장합니다.")
@@ -158,7 +159,7 @@ public class AuthController {
     @Operation(summary = "이메일, 대표연락처 변경사항 저장", description = "이메일, 대표연락처 변경사항을 저장한다.")
     @PostMapping("/update-info")
     public ResponseEntity<?> updateUserInfo(@RequestBody Map<String, String> userInfo) {
-        String userId = userInfo.get("userId");
+        String userId = userInfo.get("userId");  // `userId` refers to `id` (String)
         String email = userInfo.get("email");
         String phoneNumber = userInfo.get("phoneNumber");
 
@@ -166,7 +167,7 @@ public class AuthController {
             return ResponseEntity.badRequest().body("필수 정보가 누락되었습니다.");
         }
 
-        // 사용자 정보 업데이트
+        // 사용자 정보 업데이트 - now using the String `userId` (which corresponds to `id`)
         boolean isUpdated = userService.updateUserInfo(userId, email, phoneNumber);
 
         if (isUpdated) {
@@ -176,7 +177,13 @@ public class AuthController {
         }
     }
 
-
+    // 정보변경이력 정보 조회하는 API
+    @GetMapping("/{seq}/history")
+    public ResponseEntity<List<UserChangeHistoryDto>> getUserChangeHistory(@PathVariable Long seq) {
+        // Use the updated method that fetches the joined data from the repository
+        List<UserChangeHistoryDto> history = userInfoHistoryRepository.findUserChangeHistoryByUserSeq(seq);
+        return ResponseEntity.ok(history);
+    }
 
 
 
