@@ -251,6 +251,7 @@
             const seq = $(this).find('td:nth-child(1)').text().trim();
 
             fetchUserChangeHistory(seq);  // Call the fetch function to load history
+            fetchTermsInfo(seq); // call the fetch function to load termsInfo
 
             const id = $(this).find('td:nth-child(3)').text().trim();
             const companyName = $(this).find('td:nth-child(4)').text().trim();
@@ -314,6 +315,44 @@
             }
         });
     }
+
+
+    // function fetchTermsInfo(seq) {
+    //     console.log("약관동의 호출");
+    //     // Make an AJAX request to fetch the change history of the selected user
+    //     $.ajax({
+    //         url: `/user/${seq}/terms-info`,  // Backend endpoint to fetch terms-info
+    //         type: 'GET',
+    //         success: function (data) {
+    //             const termsInfoBody = $('#termsInfo');
+    //             termsInfoBody.empty();  // Clear previous data
+    //
+    //             if (data.length > 0) {
+    //                 // Populate the change termsInfo with the fetched data
+    //                 data.forEach((termsInfo, index) => {
+    //                     const row = `
+    //                 <tr>
+    //                     <td>${termsInfo.termsNo}</td>  <!-- No: termsNo -->
+    //                     <td>${termsInfo.necessary}</td>  <!-- 필수여부: necessary -->
+    //                     <td>${termsInfo.termsType}</td>  <!-- 약관유형 : termsType -->
+    //                     <td>${termsInfo.version}</td>  <!-- 버전: version -->
+    //                     <td>${termsInfo.agreeDate}</td>  <!-- 동의일자: agreeDate -->
+    //                     <td>${termsInfo.agreeTime}</td>  <!-- 동의시간: agreeTime -->
+    //                     <td>${termsInfo.agreeYN}</td>  <!-- 동의여부: agreeYN -->
+    //                     <td>${localStorage.getItem('userId')}</td>  <!-- 등록/수정자(업체): logged-in user -->
+    //                     <td>${termsInfo.regDate}</td>  <!-- 등록/수정일시: regDate -->
+    //                 </tr>`;
+    //                     termsInfoBody.append(row);
+    //                 });
+    //             } else {
+    //                 termsInfoBody.append('<tr><td colspan="9">약관동의 이력이 없습니다.</td></tr>');
+    //             }
+    //         },
+    //         error: function () {
+    //             alert('약관동의 이력을 불러오는 중 오류가 발생했습니다.');
+    //         }
+    //     });
+    // }
 
 
 </script>

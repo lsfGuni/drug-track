@@ -1,9 +1,6 @@
 package com.example.drugtrack.security.controller;
 
-import com.example.drugtrack.security.dto.DeactivateUserRequest;
-import com.example.drugtrack.security.dto.LoginRequest;
-import com.example.drugtrack.security.dto.PasswordResetRequest;
-import com.example.drugtrack.security.dto.UserChangeHistoryDto;
+import com.example.drugtrack.security.dto.*;
 import com.example.drugtrack.security.entity.User;
 import com.example.drugtrack.security.entity.UserInfoHistory;
 import com.example.drugtrack.security.jwt.JWTUtil;
@@ -44,6 +41,7 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;
     private final UserInfoHistoryRepository userInfoHistoryRepository;
 
+
     @Autowired
     public AuthController(UserService userService, AuthenticationManager authenticationManager, EmailService emailService, PasswordEncoder passwordEncoder, JWTUtil jwtUtil, UserInfoHistoryRepository userInfoHistoryRepository) {
         this.userService = userService;
@@ -52,6 +50,7 @@ public class AuthController {
         this.emailService = emailService;
         this.passwordEncoder = passwordEncoder;
         this.userInfoHistoryRepository = userInfoHistoryRepository;
+
     }
 
     @Operation(summary = "회원 가입 post요청", description = "데이터베이스에 회원정보를 저장합니다.")
@@ -177,6 +176,8 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("result", "error", "message", "업데이트 실패"));
         }
     }
+
+
 
     // 정보변경이력 정보 조회하는 API
     @GetMapping("/{seq}/history")
