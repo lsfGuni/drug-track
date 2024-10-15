@@ -5,6 +5,7 @@ import com.example.drugtrack.tracking.dto.ApiDrugResponseWrapper;
 import com.example.drugtrack.tracking.dto.DrugTrackingListRequestDTO;
 import com.example.drugtrack.tracking.entity.ApiDrugResponse;
 import com.example.drugtrack.tracking.service.ApiDrugResponseService;
+import com.example.drugtrack.tracking.service.BlockchainService;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -20,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 
 @Tag(name = "의약 이력 API", description = "의약 관련 데이터를 조회하고 저장하는 API")
-
 @RestController
 @RequestMapping("/traceability")
 public class ApiDrugResponseController {
@@ -29,6 +29,12 @@ public class ApiDrugResponseController {
 
     @Autowired
     private ApiDrugResponseService service;
+
+    private final BlockchainService blockchainService;
+
+    public ApiDrugResponseController(BlockchainService blockchainService) {
+        this.blockchainService = blockchainService;
+    }
 
     @Hidden
     @Operation(summary = "모든 의약품 목록 조회", description = "데이터베이스에 저장된 모든 약물 응답을 조회합니다.")
@@ -53,6 +59,13 @@ public class ApiDrugResponseController {
         try {
             // 서비스 단에서 데이터 저장 및 중복 검사
             ApiDrugResponse savedResponse = service.saveResponse(response, apiKey);
+
+            // 블록체인 API 호출하기 위해 필요한 seq와 hashCode 추출
+            Long seq = savedResponse.getSeq();
+            String hashCode = savedResponse.getHashCode();
+
+            // 블록체인에 데이터 저장
+            blockchainService.storeDataOnBlockchain(seq, hashCode);
 
             // 성공적인 저장
             responseMap.put("result", "Y");
