@@ -12,7 +12,7 @@ import java.security.NoSuchAlgorithmException;
 @Entity
 @Data
 @Table(name = "drug_tracking_data")
-public class FileDBBack {
+public class FilesSave {
 
 
     /*

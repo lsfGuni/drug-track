@@ -1,6 +1,5 @@
 package com.example.drugtrack.tracking.service;
 
-import com.example.drugtrack.tracking.dto.DrugTrackingRequestDTO;
 import com.example.drugtrack.tracking.entity.ApiDrugResponse;
 import com.example.drugtrack.tracking.repository.ApiDrugResponseRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -21,11 +20,6 @@ public class ApiDrugResponseService {
 
     @Autowired
     private ObjectMapper objectMapper;
-
-    //모든 의약품정보 조회하는 서비스클래스
-    public List<ApiDrugResponse> getAllResponses() {
-        return repository.findAll();
-    }
 
     // 단일 의약품 정보 저장
     public ApiDrugResponse saveResponse(ApiDrugResponse response,String apiKey) {
@@ -66,39 +60,7 @@ public class ApiDrugResponseService {
         return repository.save(response);
     }
 
-
-    // 다중 의약품 정보 저장
-    public void saveResponseBatch(List<DrugTrackingRequestDTO> trackingRequests) {
-        for (DrugTrackingRequestDTO trackingRequest : trackingRequests) {
-            for (var serialNumber : trackingRequest.getSerialNumbers()) {
-                ApiDrugResponse response = new ApiDrugResponse();
-                response.setStartCompanyRegNumber(trackingRequest.getStartCompanyRegNumber());
-                response.setStartCompanyName(trackingRequest.getStartCompanyName());
-                response.setEndCompanyRegNumber(trackingRequest.getEndCompanyRegNumber());
-                response.setEndCompanyName(trackingRequest.getEndCompanyName());
-                response.setDeliveryType(trackingRequest.getDeliveryType());
-                response.setDeliveryDate(trackingRequest.getDeliveryDate());
-                response.setProductName(trackingRequest.getProductName());
-                response.setGs1Code(trackingRequest.getGs1Code());
-                response.setMfNumber(trackingRequest.getMfNumber());
-                response.setExpDate(trackingRequest.getExpDate());
-                response.setBarcodeData(serialNumber.getBarcodeData());
-                response.setSerialNumber(serialNumber.getSerialNumber());
-                response.setAggData(serialNumber.getAggData());
-
-                try {
-                    String txValueJson = generateTxValue(response);
-                    response.setTx(txValueJson);
-                    response.generateHashValue();
-                } catch (JsonProcessingException e) {
-                    throw new RuntimeException("Error processing JSON for tx", e);
-                }
-
-                repository.save(response);
-            }
-        }
-    }
-
+    // null값일경우 기본값 부여 메소드 체크
     private void ensureNonNullFields(ApiDrugResponse response) {
         if (response.getBarcodeData() == null) {
             response.setBarcodeData("");
@@ -144,6 +106,7 @@ public class ApiDrugResponseService {
         }
     }
 
+    // tx value 생성 메소드
     private String generateTxValue(ApiDrugResponse response) throws JsonProcessingException {
         Map<String, String> txValueMap = new HashMap<>();
         txValueMap.put("barcodeData", response.getBarcodeData());

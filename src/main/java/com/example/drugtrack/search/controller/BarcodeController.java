@@ -21,7 +21,7 @@ public class BarcodeController {
     @Autowired
     private BarcodeService barcodeService;
 
-    @Operation(summary = "바코드로 의약품 상세정보 조회", description = "바코드 기준으로 의약품 상세정보를 조회합니다.")
+    @Operation(summary = "바코드로 의약품 상세정보 조회(공공데이터)", description = "바코드 기준으로 공공데이터의 의약품 상세정보를 조회합니다.")
     @GetMapping("/getDrugInfo")
     public BarcodeWrapper getDrugsByBarcode(@RequestParam String barcode) {
         List<ApiDrugList> responses = barcodeService.getDrugsByBarcode(barcode);
