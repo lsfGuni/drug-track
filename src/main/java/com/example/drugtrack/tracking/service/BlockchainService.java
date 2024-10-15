@@ -71,11 +71,16 @@ public class BlockchainService {
             // OAuth2Client 생성 및 토큰 요청
             OAuth2Client client = new OAuth2Client(config);
             TokenResponse tokenResponse = client.getToken();
+
+            if (tokenResponse == null || tokenResponse.getAccessToken() == null) {
+                throw new RuntimeException("토큰 응답이 null입니다.");
+            }
+
             this.token = tokenResponse.getAccessToken();
             this.tokenExpiry = Instant.now().plusSeconds(tokenResponse.getExpiresIn());
             log.info("새로운 OAuth2 토큰 발급 완료: " + token);
         } catch (Exception e) {
-            log.error("OAuth2 토큰 발급 중 오류 발생", e);
+            log.error("OAuth2 토큰 발급 중 오류 발생 - 원인: {}", e.getMessage());
             throw new RuntimeException("토큰 발급 실패");
         }
     }
