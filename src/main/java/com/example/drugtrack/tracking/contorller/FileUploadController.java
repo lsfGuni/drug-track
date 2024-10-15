@@ -1,6 +1,8 @@
 package com.example.drugtrack.tracking.contorller;
 
+import com.example.drugtrack.tracking.entity.FileDBBack;
 import com.example.drugtrack.tracking.service.*;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.apache.commons.csv.CSVFormat;
@@ -38,14 +40,16 @@ public class FileUploadController {
     private final ExcelDataService excelDataService;  // Excel 데이터 관리 서비스
     private final FileDBService fileDBService;
     private final FileDBBackService fileDBBackService;
+    private final BlockchainService blockchainService;
 
     public FileUploadController(CsvDataService csvDataService, ExcelDataService excelDataService, FileDBService fileDBService
-    ,FileDBBackService fileDBBackService) {
+    , FileDBBackService fileDBBackService, BlockchainService blockchainService) {
         this.csvDataService = csvDataService;
         this.excelDataService = excelDataService;
         this.fileDBService = fileDBService;
         this.fileDBBackService = fileDBBackService;
 
+        this.blockchainService = blockchainService;
     }
 
 
@@ -232,13 +236,11 @@ public class FileUploadController {
     }
 
 
+    @Operation(summary = "CSV 파일 업로드 요청", description = "CSV 파일을 업로드하고 데이터를 저장합니다.")
     @PostMapping("/files-save")
     public ResponseEntity<Map<String, String>> uploadCSVFile(@RequestParam("file") MultipartFile file,
                                                              @RequestParam("api_key") String apiKey) {
-
-
         Map<String, String> response = new HashMap<>();
-
         try {
             // API 호출 로그
             logger.info("/files-save API 호출됨. 파일명: {}, 파일 크기: {} bytes", file.getOriginalFilename(), file.getSize());
@@ -253,10 +255,8 @@ public class FileUploadController {
 
             // CSV 데이터 파싱
             List<String[]> csvData = new ArrayList<>();
-
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8))) {
                 CSVParser csvParser = CSVFormat.DEFAULT.parse(reader);
-
                 // CSV 레코드를 순회하며 파싱
                 for (CSVRecord csvRecord : csvParser) {
                     String[] rowData = new String[csvRecord.size()];
@@ -271,8 +271,12 @@ public class FileUploadController {
             logger.info("CSV 데이터 파싱 완료. 총 {}개의 레코드가 파싱되었습니다.", csvData.size());
 
             // 서비스 호출하여 CSV 데이터를 저장
-            fileDBBackService.saveCsvDataToDB(csvData, apiKey);
+            List<FileDBBack> savedEntities = fileDBBackService.saveCsvDataToDB(csvData, apiKey);
 
+            // 블록체인에 각 레코드의 seq와 hashCode 저장
+            for (FileDBBack savedEntity : savedEntities) {
+                blockchainService.storeDataOnBlockchain(savedEntity.getSeq(), savedEntity.getHashCode());
+            }
             // 데이터 저장 완료 로그
             logger.info("CSV 데이터 저장 완료.");
 
@@ -282,9 +286,6 @@ public class FileUploadController {
 
             // 응답 로그
             logger.info("API 응답: {}", response);
-            logger.info("/files-save API 호출됨. 파일명: {}, 파일 크기: {} bytes", file.getOriginalFilename(), file.getSize());
-            logger.info("총 {}개의 레코드가 파싱되었습니다.", csvData.size());
-
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
@@ -301,5 +302,5 @@ public class FileUploadController {
             return ResponseEntity.status(500).body(response);
         }
     }
-
 }
+

@@ -9,6 +9,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +21,8 @@ public class FileDBBackService {
     private FileDBBackRepository fileDBBackRepository;
 
     @Transactional
-    public void saveCsvDataToDB(List<String[]> csvData, String apiKey) {
+    public List<FileDBBack> saveCsvDataToDB(List<String[]> csvData, String apiKey) {
+        List<FileDBBack> savedEntities = new ArrayList<>();
         // 첫 번째 행은 헤더이므로 건너뜀
         for (int i = 1; i < csvData.size(); i++) {
             String[] rowData = csvData.get(i);
@@ -59,7 +61,13 @@ public class FileDBBackService {
 
             // 데이터베이스에 저장
             fileDBBackRepository.save(fileDBBack);
+
+            FileDBBack savedEntity = fileDBBackRepository.save(fileDBBack);
+            savedEntities.add(savedEntity);
+
         }
+        return savedEntities;
+
     }
 
     // XLSX 처리 메서드도 동일하게 수정
