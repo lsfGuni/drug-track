@@ -23,65 +23,81 @@ public class BlockchainService {
     private String token;
     private Instant tokenExpiry;
 
-    public void storeDataOnBlockchain(Long seq, String hashCode) {
-        try {
-            // OAuth2 인증을 통한 토큰 발급 (토큰이 없거나 만료된 경우에만 발급)
-            if (token == null || Instant.now().isAfter(tokenExpiry)) {
-                refreshOAuth2Token();
-            }
+    // Method to check if the token is still valid
+    public boolean isTokenValid() {
+        return token != null && Instant.now().isBefore(tokenExpiry);
+    }
 
-            // 블록체인 API 호출 준비
+    // Method to ensure a valid token is available
+    public synchronized void ensureValidToken() {
+        if (!isTokenValid()) {
+            refreshOAuth2Token();
+        }
+    }
+
+    public synchronized void storeDataOnBlockchain(Long seq, String hashCode) {
+        try {
+            // Ensure token is issued only if it's null or expired
+            ensureValidToken();
+
+            // Prepare Blockchain API request
             RestTemplate restTemplate = new RestTemplate();
             String blockchainApiUrl = "http://192.168.0.51:3000/info/insertBlockDrug";
             HttpHeaders headers = new HttpHeaders();
             headers.set("Authorization", "Bearer " + token);
             headers.set("Content-Type", "application/json");
 
-            // 데이터 설정
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("seq", seq);
             requestBody.put("hashcode", hashCode);
 
             HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
+            ResponseEntity<String> response = restTemplate.exchange(
+                    blockchainApiUrl, HttpMethod.POST, requestEntity, String.class
+            );
 
-            // 블록체인 API 호출
-            ResponseEntity<String> response = restTemplate.exchange(blockchainApiUrl, HttpMethod.POST, requestEntity, String.class);
             if (response.getStatusCode().is2xxSuccessful()) {
-                log.info("블록체인 업로드 성공: " + response.getBody());
+                log.info("Blockchain upload successful: " + response.getBody());
             } else {
-                log.error("블록체인 업로드 실패 - 상태 코드: " + response.getStatusCode() + ", 응답 내용: " + response.getBody());
+                log.error("Blockchain upload failed - Status: " + response.getStatusCode() + ", Response: " + response.getBody());
             }
         } catch (Exception e) {
-            log.error("블록체인 API 호출 중 오류 발생: ", e);
+            log.error("Error during blockchain API call: ", e);
         }
     }
 
     private void refreshOAuth2Token() {
-        try {
-            // OAuth2Config 초기화
-            OAuth2Config config = new OAuth2Config(
-                    "nipa.71a69b9e5dad0ddd",
-                    "4275869d11639e98dd983639f42f7cf0a22df52c",
-                    "nipa_company01@nipa.co",
-                    "1234",
-                    "http://192.168.0.51:3000/oauth/token",
-                    "read write"
-            );
+        int retries = 3;
+        while (retries > 0) {
+            try {
+                OAuth2Config config = new OAuth2Config(
+                        "nipa.71a69b9e5dad0ddd",
+                        "4275869d11639e98dd983639f42f7cf0a22df52c",
+                        "nipa_company01@nipa.co",
+                        "1234",
+                        "http://192.168.0.51:3000/oauth/token",
+                        "read write"
+                );
 
-            // OAuth2Client 생성 및 토큰 요청
-            OAuth2Client client = new OAuth2Client(config);
-            TokenResponse tokenResponse = client.getToken();
+                OAuth2Client client = new OAuth2Client(config);
+                TokenResponse tokenResponse = client.getToken();
 
-            if (tokenResponse == null || tokenResponse.getAccessToken() == null) {
-                throw new RuntimeException("토큰 응답이 null입니다.");
+                if (tokenResponse == null || tokenResponse.getAccessToken() == null) {
+                    throw new RuntimeException("Token response is null");
+                }
+
+                this.token = tokenResponse.getAccessToken();
+                this.tokenExpiry = Instant.now().plusSeconds(tokenResponse.getExpiresIn());
+                log.info("New OAuth2 token issued: " + token);
+                return;  // Exit on success
+            } catch (Exception e) {
+                retries--;
+                log.error("Failed to issue OAuth2 token. Retries left: " + retries, e);
+                if (retries == 0) {
+                    throw new RuntimeException("Token issuance failed after retries", e);
+                }
             }
-
-            this.token = tokenResponse.getAccessToken();
-            this.tokenExpiry = Instant.now().plusSeconds(tokenResponse.getExpiresIn());
-            log.info("새로운 OAuth2 토큰 발급 완료: " + token);
-        } catch (Exception e) {
-            log.error("OAuth2 토큰 발급 중 오류 발생 - 원인: {}", e.getMessage());
-            throw new RuntimeException("토큰 발급 실패");
         }
     }
+
 }
