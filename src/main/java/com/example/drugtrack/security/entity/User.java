@@ -4,6 +4,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 @Entity
 @Table(name = "users")
 @Data
@@ -15,13 +18,13 @@ public class User {
     @Column(name = "seq")
     private Long seq;  // 기존의 seq 필드
 
-    @Column(name = "id", unique = true, nullable = false)
+    @Column(name = "id", nullable = false)
     private String id;  // 새로운 클라이언트 ID 필드
 
     @Column(nullable = false)
     private String password;
 
-    @Column(name = "ROLE", nullable = false)
+    @Column(name = "role", nullable = false)
     @Schema(hidden = true)
     private String role;  //"USER" (유저), "ADMIN" (관리자)
 
@@ -31,7 +34,7 @@ public class User {
     @Column
     private String companyName;
 
-    @Column(unique = true)
+    @Column
     private String companyRegNumber;
 
     @Column
@@ -42,6 +45,7 @@ public class User {
 
 
     @Column
+    @Schema(hidden = true)
     private String regDate;
 
     @Column(nullable = false)
@@ -50,7 +54,7 @@ public class User {
 
 
     // username 필드 추가
-    @Column( unique = true)
+    @Column
     @Schema(hidden = true)
     private String username;
 
@@ -65,9 +69,17 @@ public class User {
         if (this.username == null) {
             this.username = this.id; // id와 동일하게 설정하거나 적절한 기본값 설정
         }
+        // regDate를 현재 시간으로 설정
+        if (this.regDate == null) {
+            this.regDate = getCurrentTime();
+        }
     }
 
-
+    private String getCurrentTime() {
+        // 원하는 형식으로 현재 시간을 문자열로 변환
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return LocalDateTime.now().format(formatter);
+    }
     public String getId() {
         return id;
     }

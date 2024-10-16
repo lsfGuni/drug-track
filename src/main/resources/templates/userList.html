@@ -7,7 +7,18 @@
     <link href="../css/contents.css" rel="stylesheet" type="text/css" />
     <!--[if lte IE 7]>
     <link href="../css/ie.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <![endif]-->
+    <!-- jQuery 라이브러리 -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- jQuery UI CSS -->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+
+    <!-- jQuery UI 라이브러리 -->
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+
 </head>
 
 
@@ -54,12 +65,13 @@
                     <td>
                         <input id="companyName" name="Input" type="text" class="name" value="" />
                     </td>
-                    <th scope="row"><label  >가입일</label></th>
+
+                    <th scope="row"><label>가입일</label></th>
                     <td colspan="3">
-                        <input name="Input" type="text" class="date" value="" />
+                        <input id="startDate" name="startDate" type="text" class="date" value="" />
                         <a href="#"><img src="../img/contents/ico_calendar.png" class="img_ic" align="absbottom" alt="달력제어" /></a>
                         ~
-                        <input name="Input" type="text" class="date" value="" />
+                        <input id="endDate" name="endDate" type="text" class="date" value="" />
                         <a href="#"><img src="../img/contents/ico_calendar.png" class="img_ic" align="absbottom" alt="달력제어" /></a>
                     </td>
 
@@ -67,8 +79,8 @@
                 <tr>
                     <th scope="row"><label  >사업자구분</label></th>
                     <td>
-                        <select>
-                            <option>전체</option>
+                        <select id="companyType">
+                            <option value="">전체</option>
                             <option>법인</option>
                             <option>개인</option>
                             <option>기타</option>
@@ -80,9 +92,9 @@
                         <input id="CompanyRegNumber" name="Input" type="text" class="name" value="" />
                     </td>
 
-                    <th scope="row"><label  >대표연락처</label></th>
+                    <th scope="row"><label>대표연락처</label></th>
                     <td>
-                        <input name="Input" type="text" class="name" value="" />
+                        <input id="phoneNumber" name="phoneNumber" type="text" class="name" value="" />
                     </td>
                 </tr>
             </table>
@@ -533,55 +545,87 @@ function setPng24(obj) {
 
 <script type="text/javascript">
     $(document).ready(function() {
+        // 날짜 선택 기능 추가
+        $("#startDate, #endDate").datepicker({
+            dateFormat: 'yy-mm-dd', // 날짜 형식
+            changeMonth: true,
+            changeYear: true
+        });
+
         $('.btn_sch a').click(function(event) {
             event.preventDefault(); // 기본 동작 막기
+
+            // 검색 실행 전에 HTML 요소 초기화
+            $('#user-seq').text('');
+            $('#user-id').text('');
+            $('#user-companyName').text('');
+            $('#user-companyType').text('');
+            $('#user-companyRegNumber').text('');
+            $('#user-phoneNumber').val(''); // input 요소이므로 val() 사용
+            $('#user-email').val('');
+            $('#user-regDate').text('');
+
+            $('#termsInfo').empty();
+            $('#userChangeHistory').empty();
 
             const companyRegNumber = $('#CompanyRegNumber').val().trim();
             const id = $('#id').val().trim();
             const companyName = $('#companyName').val().trim();
+            const startDate = $('#startDate').val().trim();
+            const endDate = $('#endDate').val().trim();
+            const companyType = $('#companyType').val();
+            const phoneNumber = $('#phoneNumber').val().trim();
 
              // Constructing data object dynamically to omit empty values
             const queryData = {};
             if (companyRegNumber) queryData.companyRegNumber = companyRegNumber;
             if (id) queryData.id = id;
             if (companyName) queryData.companyName = companyName;
-            console.log("queryData :",companyRegNumber );
+            if (startDate) queryData.startDate = startDate;
+            if (endDate) queryData.endDate = endDate;
+            if (companyType) queryData.companyType = companyType;
+            if (phoneNumber) queryData.phoneNumber = phoneNumber;
+
+            console.log(queryData);
+
             // Send data only if there are values
             $.ajax({
                 url: '/user/search',
                 type: 'GET',
-                data: queryData,  // send only the fields that have values
+                data: queryData,
                 success: function(response) {
-                    if (response && response.users.length > 0) {
-                        // 기존 tbody 비우기
-                        const userList = $('tbody[name="userList"]');
-                        userList.empty();
+                    console.log('서버 응답:', response);
+                    // 성공 시 처리 (사용자 목록 표시)
+                    const userList = $('#userList');
+                    userList.empty();
 
-                        // 새 데이터를 동적으로 추가
-                        response.users.forEach(user => {
-                            const newRow = `
-                            <tr class="select">
-                                <td>${user.seq}</td>
-                                <td>00</td>
-                                <td>${user.id}</td>
-                                <td>${user.companyName}</td>
-                                <td>${user.companyType}</td>
-                                <td>${user.companyRegNumber}</td>
-                                <td>${user.phoneNumber}</td>
-                                <td>${user.email}</td>
-                                <td>${user.regDate}</td>
-                            </tr>`;
-
-                            userList.append(newRow);
-                        });
-                    } else {
-                        alert("일치하는 사용자 정보가 없습니다.");
-                    }
+                    response.forEach(user => {
+                        const newRow = `
+                        <tr class="select">
+                            <td>${user.seq}</td>
+                            <td>00${user.seq}</td>
+                            <td>${user.id}</td>
+                            <td>${user.companyName}</td>
+                            <td>${user.companyType}</td>
+                            <td>${user.companyRegNumber}</td>
+                            <td>${user.phoneNumber}</td>
+                            <td>${user.email}</td>
+                            <td>${user.regDate}</td>
+                        </tr>`;
+                        userList.append(newRow);
+                    });
                 },
                 error: function(xhr, status, error) {
-                    alert("조회 중 오류가 발생했습니다.");
+                    if (xhr.status === 404) {
+                        // 서버로부터 전달된 메시지 표시
+                        const response = JSON.parse(xhr.responseText);
+                        alert(response.message);
+                    } else {
+                        alert("조회 중 오류가 발생했습니다.");
+                    }
                 }
             });
+
         });
     });
 

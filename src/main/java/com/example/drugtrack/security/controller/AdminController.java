@@ -80,19 +80,24 @@ public class AdminController {
     public ResponseEntity<?> searchByCriteria(
             @RequestParam(required = false) String companyRegNumber,
             @RequestParam(required = false) String id,
-            @RequestParam(required = false) String companyName) {
+            @RequestParam(required = false) String companyName,
+            @RequestParam(required = false) String startDate,
+            @RequestParam(required = false) String endDate,
+            @RequestParam(required = false) String companyType,
+            @RequestParam(required = false) String phoneNumber) {
 
-        System.out.println("Search request received: companyRegNumber=" + companyRegNumber + ", id=" + id + ", companyName=" + companyName);
+        System.out.println("Search request received");
 
-        List<User> users = userListService.searchUsers(companyRegNumber, id, companyName);
+        List<User> users = userListService.searchUsers(companyRegNumber, id, companyName, startDate, endDate, companyType, phoneNumber);
 
         if (users.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(Collections.singletonMap("message", "사용자를 찾을 수 없습니다."));
         }
 
-        return ResponseEntity.ok(Collections.singletonMap("users", users));
+        return ResponseEntity.ok(users);
     }
+
 
 }
 

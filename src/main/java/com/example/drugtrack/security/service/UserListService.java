@@ -5,17 +5,12 @@ import com.example.drugtrack.security.entity.User;
 import com.example.drugtrack.security.repository.UserRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -94,27 +89,23 @@ public class UserListService {
         return userRepository.findAll(pageable);
     }
 
-    public List<User> searchUsers(String companyRegNumber, String id, String companyName) {
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<User> query = cb.createQuery(User.class);
-        Root<User> user = query.from(User.class);
-
-        List<Predicate> predicates = new ArrayList<>();
-
-        if (companyRegNumber != null && !companyRegNumber.isEmpty()) {
-            predicates.add(cb.equal(user.get("companyRegNumber"), companyRegNumber));
+    public List<User> searchUsers(String companyRegNumber, String id, String companyName,
+                                  String startDate, String endDate, String companyType, String phoneNumber) {
+        // 전화번호에서 하이픈 제거
+        String sanitizedPhoneNumber = null;
+        if (phoneNumber != null && !phoneNumber.isEmpty()) {
+            phoneNumber = phoneNumber.replaceAll("-", "");
         }
 
-        if (id != null && !id.isEmpty()) {
-            predicates.add(cb.equal(user.get("id"), id));
-        }
-
-        if (companyName != null && !companyName.isEmpty()) {
-            predicates.add(cb.like(user.get("companyName"), "%" + companyName + "%"));
-        }
-
-        query.where(predicates.toArray(new Predicate[0]));
-
-        return entityManager.createQuery(query).getResultList();
+        return userRepository.findByAdvancedCriteria(
+                companyRegNumber,
+                id,
+                companyName,
+                companyType,
+                phoneNumber,
+                startDate,
+                endDate);
     }
+
+
 }
