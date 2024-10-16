@@ -242,16 +242,19 @@
 
     let selectedEmail = '';  // Global variable to store selected email
     let id = '';
+    let regDate = '';
+    let regDateMMDD = '';
+    let regDateTime = '';
     function bindRowClickEvent() {
         // 동적으로 로드된 테이블의 행에 이벤트 위임 방식으로 클릭 이벤트 바인딩
         $('#userList').on('click', 'tr.select', function () {
-            console.log("회원 기본정보에 회원리스트 row 정보 보여주기");
+
 
             // 각 열에서 데이터를 추출
             const seq = $(this).find('td:nth-child(1)').text().trim();
 
             fetchUserChangeHistory(seq);  // Call the fetch function to load history
-
+            fetchTermsInfo();
             id = $(this).find('td:nth-child(3)').text().trim();
             const companyName = $(this).find('td:nth-child(4)').text().trim();
             const companyType = $(this).find('td:nth-child(5)').text().trim();
@@ -260,7 +263,7 @@
             const email = $(this).find('td:nth-child(8)').text().trim();
             selectedEmail = email;
             console.log("Captured Email: ", selectedEmail);
-            const regDate = $(this).find('td:nth-child(9)').text().trim();
+            regDate = $(this).find('td:nth-child(9)').text().trim();
 
             // 추출된 데이터를 디테일 영역에 업데이트
             $('#user-seq').text("00" + seq);
@@ -271,6 +274,12 @@
             $('#user-phoneNumber').val(phoneNumber);
             $('#user-email').val(email);
             $('#user-regDate').text(regDate);
+
+            const [datePart, timePart] = regDate.split(' ');
+            regDateMMDD = datePart; // '2024-10-08'
+            regDateTime = timePart.substring(0, 2) + ':' + timePart.substring(3); // '17:56:
+            console.log('regDateMMDD:', regDateMMDD); // Output: '2024-10-08'
+            console.log('regDateTime:', regDateTime); // Output: '17:56:40'
         });
 
 
@@ -309,6 +318,42 @@
             },
             error: function () {
                 alert('정보변경 이력을 불러오는 중 오류가 발생했습니다.');
+            }
+        });
+    }
+
+    function fetchTermsInfo() {
+        // Make an AJAX request to fetch the termsInfo from the backend
+        $.ajax({
+            url: `/user/terms-info`, // Backend endpoint to fetch termsInfo
+            type: 'GET',
+            success: function (data) {
+                const termsInfoTableBody = $('#termsInfo');
+                termsInfoTableBody.empty(); // Clear previous data
+
+                if (data.length > 0) {
+                    // Populate the termsInfo table with the fetched data
+                    data.forEach((termsInfo, index) => {
+                        const row = `
+                    <tr>
+                        <td>${termsInfo.termsNo}</td>  <!-- No: termsNo -->
+                        <td>${termsInfo.necessary}</td>  <!-- 필수여부: necessary -->
+                        <td>${termsInfo.termsType}</td>  <!-- 약관유형: termsType -->
+                        <td>${termsInfo.version}</td>  <!-- 버전: version -->
+                        <td>${regDateMMDD}</td>  <!-- 동의일자: row 데이터 가공 -->
+                        <td>${regDateTime}</td>  <!-- 동의시간: row 데이터 가공 -->
+                        <td>${termsInfo.agreeYn}</td>  <!-- 동의여부: agreeYn -->
+                        <td>${id}</td>  <!-- 등록/수정자(업체): row 데이터 id -->
+                        <td>${regDate}</td>  <!-- 등록/수정일시: row 데이터 가공 -->
+                    </tr>`;
+                        termsInfoTableBody.append(row);
+                    });
+                } else {
+                    termsInfoTableBody.append('<tr><td colspan="9">약관 정보가 없습니다.</td></tr>');
+                }
+            },
+            error: function () {
+                alert('약관 정보를 불러오는 중 오류가 발생했습니다.');
             }
         });
     }

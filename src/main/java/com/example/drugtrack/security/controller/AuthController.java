@@ -1,9 +1,14 @@
 package com.example.drugtrack.security.controller;
 
-import com.example.drugtrack.security.dto.*;
+import com.example.drugtrack.security.dto.DeactivateUserRequest;
+import com.example.drugtrack.security.dto.LoginRequest;
+import com.example.drugtrack.security.dto.PasswordResetRequest;
+import com.example.drugtrack.security.dto.UserChangeHistoryDto;
+import com.example.drugtrack.security.entity.TermsInfo;
 import com.example.drugtrack.security.entity.User;
 import com.example.drugtrack.security.entity.UserInfoHistory;
 import com.example.drugtrack.security.jwt.JWTUtil;
+import com.example.drugtrack.security.repository.TermsInfoRepository;
 import com.example.drugtrack.security.repository.UserInfoHistoryRepository;
 import com.example.drugtrack.security.service.EmailService;
 import com.example.drugtrack.security.service.UserService;
@@ -40,10 +45,10 @@ public class AuthController {
     private final EmailService emailService;  // EmailService 주입받기 위한 필드 추가
     private final PasswordEncoder passwordEncoder;
     private final UserInfoHistoryRepository userInfoHistoryRepository;
-
+    private final TermsInfoRepository termsInfoRepository;
 
     @Autowired
-    public AuthController(UserService userService, AuthenticationManager authenticationManager, EmailService emailService, PasswordEncoder passwordEncoder, JWTUtil jwtUtil, UserInfoHistoryRepository userInfoHistoryRepository) {
+    public AuthController(UserService userService, AuthenticationManager authenticationManager, EmailService emailService, PasswordEncoder passwordEncoder, JWTUtil jwtUtil, UserInfoHistoryRepository userInfoHistoryRepository, TermsInfoRepository termsInfoRepository) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
@@ -51,6 +56,7 @@ public class AuthController {
         this.passwordEncoder = passwordEncoder;
         this.userInfoHistoryRepository = userInfoHistoryRepository;
 
+        this.termsInfoRepository = termsInfoRepository;
     }
 
     @Operation(summary = "회원 가입 post요청", description = "데이터베이스에 회원정보를 저장합니다.")
@@ -187,6 +193,12 @@ public class AuthController {
         return ResponseEntity.ok(history);
     }
 
+    //약관동의이력 정보 조회하는 API
+    @GetMapping("/terms-info")
+    public ResponseEntity<List<TermsInfo>> getTermsInfo() {
+        List<TermsInfo> termsInfoList = termsInfoRepository.findAll();  // Fetch all terms info
+        return ResponseEntity.ok(termsInfoList);
+    }
 
 
 
