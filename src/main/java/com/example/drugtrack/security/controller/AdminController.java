@@ -27,11 +27,6 @@ public class AdminController {
         this.updateUserService = updateUserService;
     }
 
-    @GetMapping("/admin/dashboard")
-    public String dashBoard() {
-        return "admin/dashboard"; // resources/templates/admin/dashboard.html 파일로 이동
-    }
-
 
     @GetMapping("/user/get-user-list")
     @ResponseBody

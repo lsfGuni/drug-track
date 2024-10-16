@@ -26,10 +26,6 @@ public class ViewController {
         return "login"; // login.html 템플릿을 반환
     }
 
-    @GetMapping("/view/register")
-    public String showRegisterPage() {
-        return "register"; // register.html 템플릿을 반환
-    }
 
     @GetMapping("/view/main")
     public String showMainPage() {
@@ -62,12 +58,6 @@ public class ViewController {
         return "userList";  // Return the Thymeleaf template
     }
 
-
-
-    @GetMapping("/view/user-detail")
-    public String showUserDetailPage() {
-        return "userDetail";  // userDetail.html 템플릿을 반환
-    }
 }
 
 
