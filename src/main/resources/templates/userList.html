@@ -49,12 +49,12 @@
             <table class="tbl_Sch">
                 <caption>검색조건</caption>
                 <colgroup>
-                    <col width="16.5%"/>
-                    <col width="16.5%"/>
-                    <col width="16.5%"/>
-                    <col width="16.5%"/>
-                    <col width="16.5%"/>
-                    <col width="16.5%"/>
+                    <col width="13%"/>
+                    <col width="20%"/>
+                    <col width="13%"/>
+                    <col width="20%"/>
+                    <col width="10%"/>
+                    <col width="23%"/>
                 </colgroup>
                 <tr>
                     <th scope="row"><label  >회원 ID</label></th>
@@ -68,18 +68,29 @@
 
                     <th scope="row"><label>가입일</label></th>
                     <td colspan="3">
-                        <input id="startDate" name="startDate" type="text" class="date" value="" />
-                        <a href="#"><img src="../img/contents/ico_calendar.png" class="img_ic" align="absbottom" alt="달력제어" /></a>
+                        <!-- 시작일 입력 필드와 달력 아이콘을 감싸는 컨테이너 -->
+                        <div class="date-container">
+                            <input id="startDate" name="startDate" type="text" class="date" value="" />
+                            <a href="#" class="calendar-icon" data-target="#startDate">
+                                <img src="../img/contents/ico_calendar.png" class="img_ic" align="absbottom" alt="달력제어" />
+                            </a>
+                        </div>
                         ~
-                        <input id="endDate" name="endDate" type="text" class="date" value="" />
-                        <a href="#"><img src="../img/contents/ico_calendar.png" class="img_ic" align="absbottom" alt="달력제어" /></a>
+                        <!-- 종료일 입력 필드와 달력 아이콘을 감싸는 컨테이너 -->
+                        <div class="date-container" style="padding-left:15px;">
+                            <input id="endDate" name="endDate" type="text" class="date" value="" />
+                            <a href="#" class="calendar-icon" data-target="#endDate">
+                                <img src="../img/contents/ico_calendar.png" class="img_ic" align="absbottom" alt="달력제어" />
+                            </a>
+                        </div>
                     </td>
+
 
                 </tr>
                 <tr>
                     <th scope="row"><label  >사업자구분</label></th>
                     <td>
-                        <select id="companyType">
+                        <select id="companyType" style="width:130px;">
                             <option value="">전체</option>
                             <option>법인</option>
                             <option>개인</option>
@@ -100,6 +111,45 @@
             </table>
         </div>
     </div>
+<style>
+    .tbl_Sch input[type="text"] {
+        width: 76%;
+        height: 100%;
+        padding: 6px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+
+    .tbl_Sch select {
+        width: 120%;
+        height: 100%;
+        padding: 6px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+
+    /* 가입일 달력 아이콘 스타일 */
+    .date-container {
+        display: inline-block;
+        position: relative;
+    }
+
+    .date-container input {
+        width: 100px;
+        padding: 6px;
+        border-radius: 4px;
+    }
+
+    .date-container .calendar-icon {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+    }
+</style>
     <!-- section 종료 -->
 
     <!-- section 시작 -->
@@ -551,6 +601,14 @@ function setPng24(obj) {
             changeMonth: true,
             changeYear: true
         });
+
+        // 달력 아이콘 클릭 시 해당 입력 필드에 포커스
+        $('.calendar-icon').click(function(event) {
+            event.preventDefault(); // 기본 동작 막기
+            var target = $(this).data('target');
+            $(target).focus();
+        });
+
 
         $('.btn_sch a').click(function(event) {
             event.preventDefault(); // 기본 동작 막기
