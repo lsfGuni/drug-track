@@ -363,10 +363,6 @@ function setPng24(obj) {
             const userEmail = $('#user-email').val();  // 이메일 입력값 추출
             const userPhoneNumber = $('#user-phoneNumber').val();  // 연락처 입력값 추출
 
-            // Add console logs to see what values are being used
-            console.log("회원 ID: ", userId);
-            console.log("이메일: ", userEmail);
-            console.log("연락처: ", userPhoneNumber);
 
             // 값 검증
             if (!userId || !userEmail || !userPhoneNumber) {
@@ -485,8 +481,7 @@ function setPng24(obj) {
                 // 필요한 파라미터 값 추출
                 const email = $('#user-email').val();
 
-                // Add console logs to see what values are being used
-                console.log("Extracted Email: ", email);
+
 
                 if (!email) {
                     alert("사용자 email을 확인 하세요.");
@@ -545,12 +540,12 @@ function setPng24(obj) {
             const id = $('#id').val().trim();
             const companyName = $('#companyName').val().trim();
 
-            // Constructing data object dynamically to omit empty values
+             // Constructing data object dynamically to omit empty values
             const queryData = {};
             if (companyRegNumber) queryData.companyRegNumber = companyRegNumber;
             if (id) queryData.id = id;
             if (companyName) queryData.companyName = companyName;
-
+            console.log("queryData :",companyRegNumber );
             // Send data only if there are values
             $.ajax({
                 url: '/user/search',
@@ -566,15 +561,15 @@ function setPng24(obj) {
                         response.users.forEach(user => {
                             const newRow = `
                             <tr class="select">
+                                <td>${user.seq}</td>
+                                <td>00</td>
                                 <td>${user.id}</td>
-                                <td>${user.role}</td>
-                                <td>${user.companyType}</td>
                                 <td>${user.companyName}</td>
+                                <td>${user.companyType}</td>
                                 <td>${user.companyRegNumber}</td>
                                 <td>${user.phoneNumber}</td>
                                 <td>${user.email}</td>
-                                <td>${user.active}</td>
-                                <td style="display:none">${user.seq}</td>
+                                <td>${user.regDate}</td>
                             </tr>`;
 
                             userList.append(newRow);

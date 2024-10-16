@@ -254,7 +254,8 @@
             const seq = $(this).find('td:nth-child(1)').text().trim();
 
             fetchUserChangeHistory(seq);  // Call the fetch function to load history
-            fetchTermsInfo();
+            fetchTermsInfo();   //Call the fetch function to TermsInfo
+
             id = $(this).find('td:nth-child(3)').text().trim();
             const companyName = $(this).find('td:nth-child(4)').text().trim();
             const companyType = $(this).find('td:nth-child(5)').text().trim();
@@ -262,7 +263,7 @@
             const phoneNumber = $(this).find('td:nth-child(7)').text().trim();
             const email = $(this).find('td:nth-child(8)').text().trim();
             selectedEmail = email;
-            console.log("Captured Email: ", selectedEmail);
+
             regDate = $(this).find('td:nth-child(9)').text().trim();
 
             // 추출된 데이터를 디테일 영역에 업데이트
@@ -278,8 +279,7 @@
             const [datePart, timePart] = regDate.split(' ');
             regDateMMDD = datePart; // '2024-10-08'
             regDateTime = timePart.substring(0, 2) + ':' + timePart.substring(3); // '17:56:
-            console.log('regDateMMDD:', regDateMMDD); // Output: '2024-10-08'
-            console.log('regDateTime:', regDateTime); // Output: '17:56:40'
+
         });
 
 
