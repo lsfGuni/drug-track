@@ -4,7 +4,9 @@
 <li>24.08 관리자 페이지 추가</li>
 <li>24.08 swagger 구현</li>
 <li>24.09 github action 으로 리포지토리 push 시 배포자동화 파이프라인 구혐</li>
-<li>24.09 인증/인가 스프링 시큐리티 및 JWT 사용</li>
+<li>24.09 인증/인가 스프링 시큐리티 적용</li>
+<li>24.10 의약품 공공데이터 API에 spring batch 적용</li>
+<li>24.10 블록체인 API 호출 클래스추가</li>
 </ui>
 <hr>
 <ui>
