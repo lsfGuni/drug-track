@@ -41,6 +41,12 @@ public class FileUploadController {
         this.blockchainService = blockchainService;
     }
 
+    @Operation(summary = "api health check", description = "api health check")
+    @GetMapping("/health")
+    public ResponseEntity<String> healthCheck() {
+        return new ResponseEntity<>("API is running and communication is healthy", HttpStatus.OK);
+    }
+
     @Operation(summary = "CSV 파일 업로드 요청", description = "CSV 파일을 업로드하고 데이터를 저장합니다.")
     @PostMapping("/files-save")
     public ResponseEntity<Map<String, String>> uploadCSVFile(@RequestParam("file") MultipartFile file,
