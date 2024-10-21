@@ -10,7 +10,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -18,30 +17,45 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-
+/**
+ * DrugDetailService는 외부 API에서 의약품 데이터를 가져오고 이를 데이터베이스에 저장하는 서비스 클래스입니다.
+ * API 응답을 페이지 단위로 가져와 비동기적으로 처리하고, 데이터를 저장 또는 업데이트합니다.
+ */
 @Service
 public class DrugDetailService {
 
     private static final Logger logger = LoggerFactory.getLogger(DrugDetailService.class);
 
-    @Autowired
-    private DrugDetailResponseRepository drugDetailResponseRepository;
+    private final DrugDetailResponseRepository drugDetailResponseRepository;
 
     @Value("${api.url}")
-    private String apiUrl;
+    private String apiUrl;  // 의약품공공API 식품의약품안전처_의약품 제품 허가정보 URL
 
     @Value("${api.serviceKey}")
-    private String serviceKey;
+    private String serviceKey;  // API 인증 키
 
     @Value("${api.type}")
-    private String responseType;
+    private String responseType; // API 응답 타입
 
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate = new RestTemplate(); // RestTemplate 인스턴스 생성
 
-    private int cachedTotalCount = -1;
+    private int cachedTotalCount = -1;  // API에서 가져온 총 레코드 수를 캐시
 
+    /**
+    * 레포지토리 인터페이스 주입 생성자
+    *
+     */
+    public DrugDetailService(DrugDetailResponseRepository drugDetailResponseRepository) {
+        this.drugDetailResponseRepository = drugDetailResponseRepository;
+    }
+
+    /**
+     * API에서 전체 의약품 데이터의 총 개수를 가져옵니다.
+     * 캐시된 값이 있으면 캐시된 값을 반환하고, 없을 경우 API 호출을 통해 값을 가져옵니다.
+     *
+     * @return 총 의약품 데이터 개수
+     */
     public int getTotalCount() {
         if (cachedTotalCount != -1) {
             return cachedTotalCount;
@@ -60,7 +74,12 @@ public class DrugDetailService {
         }
     }
 
-
+    /**
+     * API 응답 필드 값을 새로운 엔티티에 설정합니다.
+     *
+     * @param apiResponse 새로운 엔티티
+     * @param item 기존 데이터에서 가져온 엔티티
+     */
     private void setApiResponseFields(DrugDetailResponse apiResponse, DrugDetailResponse item) {
         apiResponse.setItemSeq(item.getItemSeq());
         apiResponse.setItemName(item.getItemName());
@@ -106,7 +125,13 @@ public class DrugDetailService {
         apiResponse.setBizrno(item.getBizrno());
     }
 
-
+    /**
+     * 비동기로 특정 페이지에 해당하는 의약품 데이터를 API로부터 가져옵니다.
+     *
+     * @param pageNo 요청할 페이지 번호
+     * @param pageSize 페이지 당 레코드 수
+     * @return 의약품 데이터 목록을 포함한 CompletableFuture 객체
+     */
     @Async
     public CompletableFuture<List<DrugDetailResponse>> getDrugInfoPage(int pageNo, int pageSize) {
         String url = String.format("%s?serviceKey=%s&type=%s&pageNo=%d&numOfRows=%d", apiUrl, serviceKey, responseType, pageNo, pageSize);
@@ -174,74 +199,29 @@ public class DrugDetailService {
         return CompletableFuture.completedFuture(itemsList);
     }
 
-
-
-    public void fetchAndSaveApiResponse() {
-        long startTime = System.currentTimeMillis();
-        logger.info("Starting to fetch and save API response...");
-
-        int totalCount = getTotalCount();
-        int pageSize = 100;
-        int totalPages = (int) Math.ceil((double) totalCount / pageSize);
-
-        List<CompletableFuture<List<DrugDetailResponse>>> futures = new ArrayList<>();
-        for (int pageNo = 1; pageNo <= totalPages; pageNo++) {
-            logger.info("Fetching page {}/{}", pageNo, totalPages);
-            futures.add(getDrugInfoPage(pageNo, pageSize));
-        }
-
-        CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
-
-        List<DrugDetailResponse> allItems = new ArrayList<>();
-        for (CompletableFuture<List<DrugDetailResponse>> future : futures) {
-            try {
-                allItems.addAll(future.get());
-            } catch (Exception e) {
-                logger.error("Error retrieving data from future: {}", e.getMessage());
-            }
-        }
-
-        int batchSize = 500;
-        for (int i = 0; i < allItems.size(); i += batchSize) {
-            int end = Math.min(i + batchSize, allItems.size());
-            List<DrugDetailResponse> batchList = allItems.subList(i, end);
-            saveOrUpdateBatch(batchList);
-            logger.info("Saved batch from index {} to {}", i, end);
-        }
-
-        long endTime = System.currentTimeMillis();
-        long duration = (endTime - startTime) / 1000;
-        logger.info("Total records fetched and saved: {}", allItems.size());
-        logger.info("Time taken: {} seconds", duration);
-    }
-
-    private void saveOrUpdateBatch(List<DrugDetailResponse> batchList) {
-        for (DrugDetailResponse newItem : batchList) {
-            Optional<DrugDetailResponse> existingItemOptional = drugDetailResponseRepository.findByItemSeq(newItem.getItemSeq());
-            if (existingItemOptional.isPresent()) {
-                DrugDetailResponse existingItem = existingItemOptional.get();
-                updateExistingItem(existingItem, newItem);
-                drugDetailResponseRepository.save(existingItem);
-            } else {
-                drugDetailResponseRepository.save(newItem);
-            }
-        }
-    }
-    private void updateExistingItem(DrugDetailResponse existingItem, DrugDetailResponse newItem) {
-        setApiResponseFields(existingItem, newItem);
-    }
-
-
+    /**
+     * XML 태그를 제거하여 텍스트만 추출하는 메서드입니다.
+     *
+     * @param xml XML 형식의 문자열
+     * @return 태그가 제거된 텍스트
+     */
     private String removeXmlTags(String xml) {
         if (xml == null || xml.isEmpty()) {
             return xml;
         }
 
-        Document doc = Jsoup.parse(xml);
+        Document doc = Jsoup.parse(xml);  // Jsoup을 사용하여 XML을 파싱
         Element body = doc.body();
-        return body.text();
+        return body.text(); // 텍스트만 추출하여 반환
     }
 
+    /**
+     * 문자열이 지정된 바이트 수를 초과할 경우 자르는 메서드입니다.
+     *
+     * @param str 자를 문자열
+     * @param byteLimit 제한할 바이트 수
+     * @return 잘린 문자열
+     */
     private String truncateString(String str, int byteLimit) {
         if (str == null || str.isEmpty()) {
             return str;
@@ -249,20 +229,20 @@ public class DrugDetailService {
 
         byte[] strBytes = str.getBytes();
         if (strBytes.length <= byteLimit) {
-            return str;
+            return str;  // 문자열의 길이가 제한보다 짧으면 그대로 반환
         }
 
         int endIndex = 0;
         int byteCount = 0;
 
         for (int i = 0; i < str.length(); i++) {
-            byteCount += String.valueOf(str.charAt(i)).getBytes().length;
+            byteCount += String.valueOf(str.charAt(i)).getBytes().length; // 각 문자의 바이트 길이를 계산
             if (byteCount > byteLimit) {
-                break;
+                break; // 제한을 초과하면 루프 종료
             }
             endIndex = i + 1;
         }
 
-        return str.substring(0, endIndex);
+        return str.substring(0, endIndex); // 제한된 바이트 수 내에서 잘라서 반환
     }
 }
