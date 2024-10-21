@@ -17,7 +17,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -31,6 +30,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
+
+/**
+ * AuthController는 사용자 인증 및 정보 관리를 담당하는 컨트롤러입니다.
+ * 회원가입, 로그인, 비밀번호 찾기, 회원 정보 수정 등의 기능을 제공합니다.
+ */
 @Tag(name = "USER 관련 API", description = "USER정보를 관리하는 API")
 @Controller
 @ResponseBody
@@ -47,7 +51,17 @@ public class AuthController {
     private final UserInfoHistoryRepository userInfoHistoryRepository;
     private final TermsInfoRepository termsInfoRepository;
 
-    @Autowired
+    /**
+     * AuthController의 생성자. 서비스 및 유틸리티 클래스들을 주입받아 초기화합니다.
+     *
+     * @param userService 사용자 관련 서비스
+     * @param authenticationManager 인증 관리자
+     * @param emailService 이메일 서비스
+     * @param passwordEncoder 비밀번호 암호화기
+     * @param jwtUtil JWT 토큰 유틸리티
+     * @param userInfoHistoryRepository 사용자 정보 변경 이력 리포지토리
+     * @param termsInfoRepository 약관 동의 정보 리포지토리
+     */
     public AuthController(UserService userService, AuthenticationManager authenticationManager, EmailService emailService, PasswordEncoder passwordEncoder, JWTUtil jwtUtil, UserInfoHistoryRepository userInfoHistoryRepository, TermsInfoRepository termsInfoRepository) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
@@ -59,6 +73,13 @@ public class AuthController {
         this.termsInfoRepository = termsInfoRepository;
     }
 
+    /**
+     * 회원가입 요청을 처리하는 메서드.
+     * 중복된 아이디나 이메일이 있는 경우 오류를 반환하고, 성공 시 회원 정보를 저장합니다.
+     *
+     * @param user 등록할 사용자 정보
+     * @return 응답 메시지 및 회원 정보
+     */
     @Operation(summary = "회원 가입 post요청", description = "데이터베이스에 회원정보를 저장합니다.")
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody User user) {
@@ -98,18 +119,21 @@ public class AuthController {
     }
 
 
+    /**
+     * 로그인 요청을 처리하는 메서드.
+     * 입력된 사용자 정보를 바탕으로 인증을 수행하고 JWT 토큰을 반환합니다.
+     *
+     * @param loginRequest 로그인 요청 데이터
+     * @return JWT 토큰 및 사용자 정보
+     */
     @Operation(summary = "로그인 API", description = "DB에 저장된 회원정보를 이용하여 로그인합니다.")
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
 
-        // 요청 본문 출력
         log.info("Received login request with data: {}", loginRequest);
         Map<String, Object> response = new HashMap<>();
 
         try {
-            // 사용자 정보 조회
-
-
             User user = userService.findByIdAndActive(loginRequest.getId());
             if (user == null) {
                 response.put("result", "N");
@@ -119,7 +143,6 @@ public class AuthController {
                 data.put("id", loginRequest.getId());
                 response.put("data", data);
 
-                // 여기서는 200 OK를 반환하며, result 값으로 실패를 나타냅니다.
                 return ResponseEntity.ok(response);
             }
 
@@ -128,6 +151,7 @@ public class AuthController {
                     new UsernamePasswordAuthenticationToken(loginRequest.getId(), loginRequest.getPassword()));
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
+            // JWT 토큰 생성 및 반환
             String jwt = jwtUtil.createJwt(user.getId(), user.getRole(), 3600000L); // 1시간 유효한 토큰 생성
 
 
@@ -157,11 +181,17 @@ public class AuthController {
             data.put("id", loginRequest.getId());
             response.put("data", data);
 
-            // 여기서도 200 OK를 반환하며, result 값으로 실패를 나타냅니다.
+
             return ResponseEntity.ok(response);
         }
     }
 
+    /**
+     * 사용자의 이메일 및 대표 연락처 정보를 업데이트하는 메서드.
+     *
+     * @param userInfo 업데이트할 사용자 정보
+     * @return 업데이트 성공 여부
+     */
     @Operation(summary = "이메일, 대표연락처 변경사항 저장", description = "이메일, 대표연락처 변경사항을 저장한다.")
     @PostMapping("/update-info")
     public ResponseEntity<?> updateUserInfo(@RequestBody Map<String, String> userInfo) {
@@ -183,9 +213,12 @@ public class AuthController {
         }
     }
 
-
-
-    // 정보변경이력 정보 조회하는 API
+    /**
+     * 특정 사용자의 정보 변경 이력을 조회하는 메서드.
+     *
+     * @param seq 사용자 식별자
+     * @return 정보 변경 이력
+     */
     @GetMapping("/{seq}/history")
     public ResponseEntity<List<UserChangeHistoryDto>> getUserChangeHistory(@PathVariable Long seq) {
         // Use the updated method that fetches the joined data from the repository
@@ -193,7 +226,11 @@ public class AuthController {
         return ResponseEntity.ok(history);
     }
 
-    //약관동의이력 정보 조회하는 API
+    /**
+     * 모든 약관 동의 정보를 조회하는 메서드.
+     *
+     * @return 약관 동의 정보 리스트
+     */
     @GetMapping("/terms-info")
     public ResponseEntity<List<TermsInfo>> getTermsInfo() {
         List<TermsInfo> termsInfoList = termsInfoRepository.findAll();  // Fetch all terms info

@@ -12,9 +12,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.util.List;
 
 /*
- * cors 설정 클래스 (관리자페이지)
- *
- * */
+ * WebConfig는 Spring MVC 설정을 담당하는 클래스입니다.
+ * 정적 리소스 핸들링 및 Swagger 설정을 포함하고 있습니다.
+ */
+
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 

@@ -8,11 +8,22 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-//정보변경 이력 레포지토리
+/**
+ * UserInfoHistoryRepository 인터페이스는 UserInfoHistory 엔티티에 대한 데이터베이스 작업을 처리합니다.
+ * 사용자 정보 변경 이력과 관련된 데이터 검색을 지원하며 JpaRepository를 확장하여 기본 CRUD 작업을 제공합니다.
+ */
 @Repository
 public interface UserInfoHistoryRepository extends JpaRepository<UserInfoHistory, Long> {
 
-
+    /**
+     * 사용자 변경 이력을 조회하는 쿼리.
+     * 특정 사용자(seq)와 관련된 변경 이력을 DTO 형태로 반환하며,
+     * 변경된 필드가 phone_number 또는 email일 때 그 값을 반환하고,
+     * 비밀번호는 '****'로 마스킹하여 반환합니다.
+     *
+     * @param userSeq 변경 이력을 조회할 사용자의 seq 값
+     * @return 사용자 변경 이력 목록
+     */
     @Query("SELECT new com.example.drugtrack.security.dto.UserChangeHistoryDto( " +
             "u.companyName, u.companyType, u.companyRegNumber, " +
             "CASE WHEN h.changedField = 'phone_number' THEN COALESCE(h.newValue, '') ELSE '' END AS phoneNumber, " +
@@ -25,11 +36,12 @@ public interface UserInfoHistoryRepository extends JpaRepository<UserInfoHistory
     List<UserChangeHistoryDto> findUserChangeHistoryByUserSeq(@Param("userSeq") Long userSeq);
 
 
-
-
-
-
-    // Find the max change_count for a specific user
+    /**
+     * 특정 사용자의 변경 횟수 중 가장 큰 값(max change_count)을 조회하는 쿼리.
+     *
+     * @param userSeq 변경 횟수를 조회할 사용자의 seq 값
+     * @return 해당 사용자의 최대 change_count 값
+     */
     @Query("SELECT MAX(u.changeCount) FROM UserInfoHistory u WHERE u.userSeq = :userSeq")
     Integer findMaxChangeCountByUserSeq(@Param("userSeq") Long userSeq);
 }

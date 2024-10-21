@@ -1,16 +1,19 @@
 package com.example.drugtrack.security.dto;
 
 import lombok.Data;
-
+/**
+ * 사용자 정보 업데이트를 위한 DTO 클래스.
+ * 사용자의 회사 정보, 연락처, 이메일 등 여러 필드를 업데이트할 수 있습니다.
+ */
 @Data
 public class UpdateUserDTO {
-    private String companyType;
-    private String companyName;
-    private String companyRegNumber;
-    private String phoneNumber;
-    private String email;
-    private String active;
-    private String username;
+    private String companyType;  // 회사 유형
+    private String companyName;  // 회사 이름
+    private String companyRegNumber; // 사업자등록번호
+    private String phoneNumber;  // 대표 연락처
+    private String email;  // 이메일
+    private String active; // 활성화 여부
+    private String username;  // 사용자 이름
 
     public String getCompanyType() {
         return companyType;

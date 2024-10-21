@@ -4,7 +4,7 @@ import com.example.drugtrack.oauthclient.client.OAuth2Client;
 import com.example.drugtrack.oauthclient.config.OAuth2Config;
 import com.example.drugtrack.oauthclient.dto.TokenResponse;
 
-public class Main {
+public class OAuth2ClientMain {
     public static void main(String[] args) {
         // Initialize OAuth2Config with the provided credentials
         OAuth2Config config = new OAuth2Config(

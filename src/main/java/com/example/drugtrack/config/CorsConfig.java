@@ -8,9 +8,10 @@ import org.springframework.web.filter.CorsFilter;
 
 import java.util.Arrays;
 /*
-* cors 설정 클래스 (API 서버)
-*
-* */
+ * CorsConfig는 API 서버에서의 CORS 설정을 관리하는 클래스입니다.
+ * 특정 Origin에서의 요청을 허용하며, 허용된 메서드와 헤더를 정의하여 CORS 정책을 처리합니다.
+ * 이 설정은 전체 API 서버에 적용되며, 필터 레벨에서 CORS 요청을 처리합니다.
+ */
 @Configuration
 public class CorsConfig {
 

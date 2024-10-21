@@ -1,18 +1,35 @@
 package com.example.drugtrack.security.dto;
 
 import java.util.Date;
-//정보변경 이력 DTO
-public class UserChangeHistoryDto {
-    private String companyName;
-    private String companyType;
-    private String companyRegNumber;
-    private String phoneNumber;
-    private String email;
-    private String password;  // 추가: 마스킹된 비밀번호
-    private int changeCount;
-    private Date changeDate;
-    private String changedBy;
 
+/**
+ * 정보 변경 이력에 대한 데이터를 담는 DTO 클래스.
+ * 사용자의 회사 정보, 연락처, 이메일, 비밀번호 등의 변경 이력을 관리합니다.
+ */
+public class UserChangeHistoryDto {
+    private String companyName; // 회사 이름
+    private String companyType;  // 회사 유형
+    private String companyRegNumber; // 사업자 등록번호
+    private String phoneNumber; // 대표 연락처
+    private String email; // 이메일 주소
+    private String password;  // 비밀번호 (마스킹 처리된 값)
+    private int changeCount;  // 변경 횟수
+    private Date changeDate;   // 변경 일자
+    private String changedBy; // 변경을 수행한 사용자 ID
+
+    /**
+     * 생성자 - UserChangeHistoryDto 객체 생성.
+     *
+     * @param companyName 회사 이름
+     * @param companyType 회사 유형
+     * @param companyRegNumber 회사 등록번호
+     * @param phoneNumber 대표 연락처
+     * @param email 이메일 주소
+     * @param password 마스킹 처리된 비밀번호
+     * @param changeCount 변경 횟수
+     * @param changeDate 변경 일자
+     * @param changedBy 변경을 수행한 사용자 ID
+     */
     public UserChangeHistoryDto(String companyName, String companyType, String companyRegNumber,
                                 String phoneNumber, String email, String password,  // 추가: 비밀번호 필드
                                 int changeCount, Date changeDate, String changedBy) {
