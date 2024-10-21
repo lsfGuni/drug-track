@@ -22,31 +22,53 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * FileUploadController는 CSV 파일을 업로드하고 해당 데이터를 데이터베이스와 블록체인에 저장하는 기능을 제공합니다.
+ * API 요청을 처리하고, 파일 검증, CSV 파싱, 데이터 저장 및 블록체인 연동을 수행합니다.
+ */
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "*") // 모든 도메인 허용
+@CrossOrigin(origins = "*") // 모든 도메인에서 접근을 허용
 @Tag(name = "csv 출고데이터 저장 api", description = "csv 파일 출고데이터를 DB및 블록체인에 저장하는 API")
 public class FileUploadController {
 
-    private static final Logger logger = LoggerFactory.getLogger(FileUploadController.class);  // 로거 선언
+    private static final Logger logger = LoggerFactory.getLogger(FileUploadController.class);  // 로깅 설정
 
 
     private final FilesSaveService filesSaveService;
     private final BlockchainService blockchainService;
 
+    /**
+     * FilesSaveService 및 BlockchainService를 주입받아 컨트롤러를 초기화합니다.
+     *
+     * @param filesSaveService CSV 데이터를 처리하는 서비스
+     * @param blockchainService 블록체인에 데이터를 저장하는 서비스
+     */
     public FileUploadController(FilesSaveService filesSaveService, BlockchainService blockchainService) {
         this.filesSaveService = filesSaveService;
-
-
         this.blockchainService = blockchainService;
     }
 
+    /**
+     * API의 상태를 확인하는 health check 엔드포인트입니다.
+     * API가 정상적으로 동작하고 있는지 확인하는 용도로 사용됩니다.
+     *
+     * @return "API is running and communication is healthy" 메시지를 반환
+     */
     @Operation(summary = "api health check", description = "api health check")
     @GetMapping("/health")
     public ResponseEntity<String> healthCheck() {
         return new ResponseEntity<>("API is running and communication is healthy", HttpStatus.OK);
     }
 
+
+    /**
+     * CSV 파일을 업로드하고, 해당 데이터를 데이터베이스와 블록체인에 저장하는 엔드포인트입니다.
+     *
+     * @param file 업로드된 CSV 파일
+     * @param apiKey API 키 (요청 시 함께 전송)
+     * @return CSV 데이터의 저장 상태에 대한 결과 메시지를 반환
+     */
     @Operation(summary = "CSV 파일 업로드 요청", description = "CSV 파일을 업로드하고 데이터를 저장합니다.")
     @PostMapping("/files-save")
     public ResponseEntity<Map<String, String>> uploadCSVFile(@RequestParam("file") MultipartFile file,

@@ -9,60 +9,72 @@ version = '0.1.0'
 
 java {
 	toolchain {
-		languageVersion = JavaLanguageVersion.of(17)
+		languageVersion = JavaLanguageVersion.of(17)  // Using Java 17
 	}
 }
 
 bootJar {
-	archiveBaseName = 'app'  // JAR 파일의 이름을 'app.jar'로 설정
-	archiveVersion = ''      // 버전 정보를 제거하여 파일명이 'app.jar'이 되도록 설정
+	archiveBaseName = 'app'  // The final JAR file will be named 'app.jar'
+	archiveVersion = ''      // Version number removed to simplify the JAR name
 }
 
 jar {
-	enabled = false  // plain JAR 생성을 비활성화
+	enabled = false  // Disable the plain JAR creation
 }
 repositories {
-	mavenCentral()
+	mavenCentral()	// Use Maven Central for dependency resolution
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.projectlombok:lombok'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	runtimeOnly 'com.mysql:mysql-connector-j'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.4' //sawgger 의존성
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'org.springframework.boot:spring-boot-starter-mail'
-	// JWT 관련 의존성
-	implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
+	// Spring Boot Starters
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'	// JPA for database access
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'	// Thymeleaf for templating
+	implementation 'org.springframework.boot:spring-boot-starter-web'	// Web-related dependencies
+
+	// Security and Mail
+	implementation 'org.springframework.boot:spring-boot-starter-security'  // Spring Security
+	implementation 'org.springframework.boot:spring-boot-starter-mail'  // Mail support
+
+	// JWT Dependencies
+	implementation 'io.jsonwebtoken:jjwt-api:0.12.3'  // JWT API for token creation/validation
 	implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
 	implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
-	// Apache POI와 OpenCSV
-	implementation 'org.apache.poi:poi:5.2.3'
+
+	// Apache POI and OpenCSV for file handling
+	implementation 'org.apache.poi:poi:5.2.3'  // Apache POI for handling Excel files
 	implementation 'org.apache.poi:poi-ooxml:5.2.3'
-	implementation ('com.opencsv:opencsv:5.5.2'){
+	implementation ('com.opencsv:opencsv:5.5.2') {
 		exclude group: 'commons-logging', module: 'commons-logging'
 	}
-	// HTTP 클라이언트 및 CSV 라이브러리
-	implementation ('org.apache.httpcomponents:httpclient:4.5.13'){
+
+	// HTTP Client and CSV Libraries
+	implementation ('org.apache.httpcomponents:httpclient:4.5.13') {
 		exclude group: 'commons-logging', module: 'commons-logging'
 	}
-	implementation ('org.apache.httpcomponents:httpmime:4.5.13'){
+	implementation ('org.apache.httpcomponents:httpmime:4.5.13') {
 		exclude group: 'commons-logging', module: 'commons-logging'
 	}
 	implementation ('org.apache.commons:commons-csv:1.9.0') {
 		exclude group: 'commons-logging', module: 'commons-logging'
 	}
 
+	// Additional Libraries
+	implementation 'org.jsoup:jsoup:1.14.3'  // For HTML parsing
+	implementation 'org.json:json:20230227'  // JSON handling
+	implementation 'org.projectlombok:lombok'
 	implementation 'org.springframework.boot:spring-boot-starter-json'
-	implementation 'org.jsoup:jsoup:1.14.3'
-	implementation 'org.json:json:20230227'
 
-	implementation 'org.springframework.boot:spring-boot-starter-batch'
+	// Batch processing
+	implementation 'org.springframework.boot:spring-boot-starter-batch'  // Spring Batch for batch processing
+
+	// Swagger for API documentation
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.4'
+
+	// Development and testing
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'  // Dev tools for hot reloads
+	runtimeOnly 'com.mysql:mysql-connector-j'  // MySQL connector
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'  // Test dependencies
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 tasks.named('test') {

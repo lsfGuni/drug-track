@@ -8,65 +8,80 @@ import lombok.Data;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-
+/**
+ * FilesSave 엔티티는 의약품의 입출고 데이터를 관리하는 클래스입니다.
+ * 데이터베이스의 `drug_tracking_data` 테이블과 매핑됩니다.
+ */
 @Entity
 @Data
 @Table(name = "drug_tracking_data")
 public class FilesSave {
 
 
-    /*
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    */
     @Id
     @Schema(hidden = true)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "seq")
-    private Long seq;
+    private Long seq;   // 고유 식별자
+
     @Column(name = "start_company_name")
     private String startCompanyName;  // 출고업체명
+
     @Column(name = "start_company_reg_number")
     private String startCompanyRegNumber;  // 출고업체 사업장등록번호
+
     @Column(name = "end_company_reg_number")
-    private String endCompanyRegNumber;  // 대상업체 사업자등록번호 (엑셀에 없음, 다른 API에서 사용)
+    private String endCompanyRegNumber;  // 대상업체 사업자등록번호
+
     @Column(name = "end_company_name")
-    private String endCompanyName;  // 대상업체명 (엑셀에 없음, 다른 API에서 사용)
+    private String endCompanyName;  // 대상업체명
+
     @Column(name = "delivery_type")
     private String deliveryType;  // 입고, 출고 구분값
+
     @Column(name = "delivery_date")
     private String deliveryDate; // 입출고일자
+
     @Column(name = "product_name")
     private String productName;   // 제품명
+
     @Column(name = "gs1_code")
     private String gs1Code;   // GTIN14
+
     @Column(name = "mf_number")
     private String mfNumber;  // 제조번호
+
     @Column(name = "exp_date")
     private String expDate;  // 유효일자
+
     @Column(name = "barcode_data")
-    private String barcodeData;   // 바코드 데이터 추가
+    private String barcodeData;   // 의약품 바코드 데이터
+
     @Column(name = "agg_data")
     private String aggData;   // Aggregation 정보
+
     @Column(name = "serial_number")
     private String serialNumber;   // 시리얼 번호
+
     @Column(name = "api_key")
-    private String apiKey;
+    private String apiKey;  // API 키
 
     @Schema(hidden = true)
     @Column(name = "hash_code", nullable = false)
-    private String hashCode;
+    private String hashCode;    // 트랜잭션 해시 값
 
     @Schema(hidden = true)
     @Column(name = "tx", length = 500, nullable = false)
-    private String tx;
+    private String tx;  // 블록체인 트랜잭션 데이터
 
     @Schema(hidden = true)
     @Column(name = "auth", nullable = false)
-    private String auth;
+    private String auth;     // 데이터 생성자 (자동 설정)
 
-
+    /**
+     * 데이터가 새로 생성될 때 호출되는 메서드.
+     * auth 값을 'sys'로 설정합니다.
+     */
     @PrePersist
     protected void omCreate(){
         this.auth = "sys";
@@ -217,6 +232,11 @@ public class FilesSave {
         this.auth = auth;
     }
 
+
+    /**
+     * 트랜잭션 데이터를 기반으로 해시 값을 생성하는 메서드.
+     * SHA-256 알고리즘을 사용하여 트랜잭션 데이터를 해시화합니다.
+     */
     public void generateHashValue() {
         String combinedData = this.tx;
 
@@ -227,11 +247,13 @@ public class FilesSave {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] hashBytes = digest.digest(combinedData.getBytes(StandardCharsets.UTF_8));
+
+            // 해시 값을 16진수 문자열로 변환
             StringBuilder sb = new StringBuilder();
             for (byte b : hashBytes) {
                 sb.append(String.format("%02x", b));
             }
-            this.hashCode = sb.toString();
+            this.hashCode = sb.toString();  // 해시 값을 저장
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException("해시값 생성이 실패했습니다.", e);
         }

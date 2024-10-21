@@ -6,7 +6,6 @@ import com.example.drugtrack.tracking.repository.FilesSaveRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -14,12 +13,35 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * FilesSaveService는 CSV 데이터를 데이터베이스에 저장하는 로직을 담당하는 서비스 클래스입니다.
+ * 각 CSV 행을 FilesSave 엔티티로 변환하여 데이터베이스에 저장하고, 트랜잭션을 관리합니다.
+ */
 @Service
 public class FilesSaveService {
 
-    @Autowired
-    private FilesSaveRepository filesSaveRepository;
 
+    private final FilesSaveRepository filesSaveRepository;
+    private final ObjectMapper objectMapper;
+    /**
+     * filesSaveRepository 및 objectMapper 주입.
+     *
+     * @param filesSaveRepository 데이터베이스와 상호작용하는 레포지토리
+     * @param objectMapper JSON 처리에 사용되는 객체
+     */
+    public FilesSaveService(FilesSaveRepository filesSaveRepository, ObjectMapper objectMapper) {
+        this.filesSaveRepository = filesSaveRepository;
+        this.objectMapper = objectMapper;
+    }
+
+    /**
+     * CSV 데이터를 데이터베이스에 저장하는 메서드입니다.
+     * 각 CSV 행을 FilesSave 엔티티로 변환하여 저장하며, API 키와 트랜잭션 값을 설정합니다.
+     *
+     * @param csvData CSV 데이터 목록. 각 배열은 CSV의 한 행을 나타냅니다.
+     * @param apiKey API 요청에 사용된 키. 각 엔티티에 저장됩니다.
+     * @return 저장된 FilesSave 엔티티 목록
+     */
     @Transactional
     public List<FilesSave> saveCsvDataToDB(List<String[]> csvData, String apiKey) {
         List<FilesSave> savedEntities = new ArrayList<>();
@@ -45,10 +67,10 @@ public class FilesSaveService {
 
 
 
-            // 여기에서 apiKey를 설정
+            // API 키 설정
             filesSave.setApiKey(apiKey);
 
-            // Generate tx value and set it
+            // 트랜잭션 값을 생성하고 설정
             try {
                 String txValue = generateTxValue(filesSave);
                 filesSave.setTx(txValue);
@@ -56,12 +78,10 @@ public class FilesSaveService {
                 throw new RuntimeException("Failed to generate tx value", e);
             }
 
-            // Generate hash code
+            // 해시 값 생성
             filesSave.generateHashValue();
 
-            // 데이터베이스에 저장
-            filesSaveRepository.save(filesSave);
-
+            // 데이터베이스에 엔티티 저장
             FilesSave savedEntity = filesSaveRepository.save(filesSave);
             savedEntities.add(savedEntity);
 
@@ -72,11 +92,14 @@ public class FilesSaveService {
 
 
 
-    /*
-    * 해시값 생성 메소드
-    * */
-    @Autowired
-    private ObjectMapper objectMapper;
+    /**
+     * 트랜잭션 값을 생성하는 메서드입니다.
+     * FilesSave 엔티티의 데이터를 기반으로 JSON 형식의 트랜잭션 값을 생성합니다.
+     *
+     * @param filesSave 트랜잭션 값을 생성할 FilesSave 엔티티
+     * @return 트랜잭션 값 (JSON 형식)
+     * @throws JsonProcessingException JSON 처리 중 발생하는 예외
+     */
 
     private String generateTxValue(FilesSave filesSave) throws JsonProcessingException {
         Map<String, String> txValueMap = new HashMap<>();
@@ -93,6 +116,8 @@ public class FilesSaveService {
         txValueMap.put("expDate", filesSave.getExpDate());
         txValueMap.put("serialNumber", filesSave.getSerialNumber());
         txValueMap.put("aggData", filesSave.getAggData());
+
+        // JSON 형식으로 변환하여 반환
         return objectMapper.writeValueAsString(txValueMap);
     }
 

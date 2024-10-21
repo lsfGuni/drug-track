@@ -1,44 +1,45 @@
 server:
 
- port: 8080
+ port: 8080 # Application will run on port 8080
 
 spring:
 
   jackson:
-    time-zone: Asia/Seoul  # 애플리케이션의 기본 시간대 설정
+    time-zone: Asia/Seoul  # Set default time zone
   servlet:
     multipart:
       enabled: true
-      max-file-size: 60MB  # 파일당 최대 크기
-      max-request-size: 60MB  # 요청당 최대 크기 (여러 파일 포함)
+      max-file-size: 60MB  # Maximum file size allowed per upload
+      max-request-size: 60MB  # Maximum total request size (all files combined)
   batch:
     jdbc:
-      initialize-schema: never
+      initialize-schema: never  # Prevent batch job schema initialization
     job:
-      enabled: false
+      enabled: false  # Disable batch jobs from running automatically on startup
   jwt:
-    secret: vmfhaltmskdlstkfkdgodyroqkfwkdbalroqkfwkdbalaaaaaaaaaaaaaaaabbbbb  # JWT 서명에 사용할 비밀 키
+    secret: vmfhaltmskdlstkfkdgodyroqkfwkdbalroqkfwkdbalaaaaaaaaaaaaaaaabbbbb  # JWT signing secret (move to environment variable for security)
 
+# database setting
   datasource:
     url: jdbc:mysql://localhost:3306/api-batch?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=Asia/Seoul
     username: root
     password: ibiz1234!
     driver-class-name: com.mysql.cj.jdbc.Driver
+
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: update  # Automatically update the database schema
 
-      ddl-auto=none:show-sql: true
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQLDialect
-        format_sql: true
-        use_sql_comments: true
-        highlight_sql: true
+        dialect: org.hibernate.dialect.MySQLDialect # MySQL dialect for Hibernate
+        format_sql: true  # Pretty-print SQL
+        use_sql_comments: true   # Add comments to SQL
+        highlight_sql: true # Highlight SQL for easier debugging
         type:
           binder:
-            log: true
-
+            log: true # Enable SQL type binder logging
+# mail service setting - 관리자페이지의 비밀번호 초기화 기능 관련 설정
   mail:
     host: smtp.gmail.com
     port: 587
@@ -56,24 +57,20 @@ spring:
 
 logging:
   level:
-    org.springframework.security: DEBUG
+    org.springframework.security: DEBUG  # Enable detailed security logging
     org.springframework.security.web.access.ExceptionTranslationFilter: TRACE
     org.springframework.security.web.access.intercept.FilterSecurityInterceptor: TRACE
     org:
       hibernate:
-        SQL: debug
+        SQL: debug   # Enable SQL query logging
         type: trace
-    com.example.drugtrack.controller: INFO
-
-
-
-
+    com.example.drugtrack.controller: INFO   # Controller-level logging
 
 # 공공 API 관련 설정
 api:
   url: https://apis.data.go.kr/1471000/DrugPrdtPrmsnInfoService05/getDrugPrdtPrmsnDtlInq04
   serviceKey: 4/QsOE8OxyyVse/LVodjHXg5ScZuaCH6rgbU9Kx4dtIKpGY/xQe98tXhaiIGDIB9rSbtiC01IBVBI6LZSRmZ2A==
-  type: json
+  type: json  # The response type expected from the public API
 
 scheduling:
-  enabled: false
+  enabled: false  # Disable scheduling by default
