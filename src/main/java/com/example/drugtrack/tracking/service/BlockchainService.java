@@ -101,6 +101,7 @@ public class BlockchainService {
         while (retries > 0) {
             try {
                 // OAuth2 설정 구성, API OAuth 설정 클래스에서 정보 받아야 함
+                //TODO OAuth2 토큰 API
                 OAuth2Config config = new OAuth2Config(
                         "nipa.71a69b9e5dad0ddd",    // 클라이언트 ID
                         "4275869d11639e98dd983639f42f7cf0a22df52c", // 클라이언트 시크릿

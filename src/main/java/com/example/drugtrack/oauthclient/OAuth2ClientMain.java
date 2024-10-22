@@ -7,6 +7,7 @@ import com.example.drugtrack.oauthclient.dto.TokenResponse;
 public class OAuth2ClientMain {
     public static void main(String[] args) {
         // Initialize OAuth2Config with the provided credentials
+        //TODO OAuth2 토큰 API
         OAuth2Config config = new OAuth2Config(
                 "nipa.71a69b9e5dad0ddd",
                 "4275869d11639e98dd983639f42f7cf0a22df52c",
