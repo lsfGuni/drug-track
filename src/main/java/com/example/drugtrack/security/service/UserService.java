@@ -5,46 +5,72 @@ import com.example.drugtrack.security.entity.UserInfoHistory;
 import com.example.drugtrack.security.repository.UserInfoHistoryRepository;
 import com.example.drugtrack.security.repository.UserRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.Optional;
-
+/**
+ * UserService 클래스는 사용자 관리를 담당하는 서비스로, 사용자 등록, 정보 업데이트, 비밀번호 관리, 회원탈퇴 등을 처리합니다.
+ */
 @Service
 public class UserService {
 
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final UserInfoHistoryRepository userInfoHistoryRepository;
+    private final UserRepository userRepository;  // 사용자 정보를 처리하는 리포지토리
+    private final PasswordEncoder passwordEncoder;  // 비밀번호 암호화를 위한 PasswordEncoder
+    private final UserInfoHistoryRepository userInfoHistoryRepository; // 사용자 정보 변경 이력을 저장하는 리포지토리
 
-    @Autowired
+    /**
+     * UserService 생성자.
+     * @param userRepository 사용자 정보 리포지토리
+     * @param passwordEncoder 비밀번호 암호화 인코더
+     * @param userInfoHistoryRepository 사용자 정보 변경 이력 리포지토리
+     */
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserInfoHistoryRepository userInfoHistoryRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-
         this.userInfoHistoryRepository = userInfoHistoryRepository;
     }
 
+    /**
+     * 새로운 사용자를 등록하고 비밀번호를 암호화하여 저장.
+     * @param user 사용자 정보
+     * @return 저장된 사용자 정보
+     */
     public User registerUser(User user) {
         // 비밀번호 암호화
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setPassword(passwordEncoder.encode(user.getPassword())); // 비밀번호 암호화
         return userRepository.save(user);
     }
 
+    /**
+     * ID를 통해 사용자 조회.
+     * @param id 사용자 ID
+     * @return 조회된 사용자 또는 null
+     */
     public User findById(String id) {
         return userRepository.findById(id).orElse(null);
     }
 
 
-    // 로그인 시 활성화 상태 확인
+    /**
+     * 활성화된 사용자만 조회 (로그인 시).
+     * @param id 사용자 ID
+     * @return 활성화된 사용자 또는 null
+     */
     public User findByIdAndActive(String id) {
         return userRepository.findByIdAndActive(id, "Y").orElse(null);
     }
 
 
-    // 유저정보 변경 업데이트 메소드
+    /**
+     * 사용자 정보 업데이트 (이메일, 전화번호 변경 시).
+     * 변경된 정보는 이력으로 저장.
+     * @param userId 사용자 ID
+     * @param email 새 이메일
+     * @param phoneNumber 새 전화번호
+     * @return 업데이트 성공 여부
+     */
     @Transactional
     public boolean updateUserInfo(String userId, String email, String phoneNumber) {
         Optional<User> userOptional = userRepository.findById(userId);
@@ -52,28 +78,35 @@ public class UserService {
         if (userOptional.isPresent()) {
             User user = userOptional.get();
 
-            // Check if email has changed
+            // 이메일 변경 이력 저장
             if (!email.equals(user.getEmail())) {
                 saveChangeHistory(user.getSeq(), "email", user.getEmail(), email);
                 user.setEmail(email);
             }
 
-            // Check if phone number has changed
+            // 전화번호 변경 이력 저장
             if (!phoneNumber.equals(user.getPhoneNumber())) {
                 saveChangeHistory(user.getSeq(), "phone_number", user.getPhoneNumber(), phoneNumber);
                 user.setPhoneNumber(phoneNumber);
             }
 
-            // Save updated user information
+            // 사용자 정보 저장
             userRepository.save(user);
             return true;
         } else {
             return false;
         }
     }
-    // 정보변경이력 메소드
+
+    /**
+     * 사용자 정보 변경 이력을 저장.
+     * @param userSeq 사용자 시퀀스
+     * @param fieldName 변경된 필드 이름
+     * @param oldValue 이전 값
+     * @param newValue 새 값
+     */
     private void saveChangeHistory(Long userSeq, String fieldName, String oldValue, String newValue) {
-        // Find the number of changes for this field
+        // 변경 횟수 조회
         Integer maxChangeCount = userInfoHistoryRepository.findMaxChangeCountByUserSeq(userSeq);
         int changeCount = (maxChangeCount == null) ? 1 : maxChangeCount + 1;
 
@@ -83,34 +116,53 @@ public class UserService {
         history.setOldValue(oldValue);
         history.setNewValue(newValue);
         history.setChangeCount(changeCount);
-        history.setChangeDate(new Date());  // Current timestamp
+        history.setChangeDate(new Date()); // 변경된 시간 기록
 
-        userInfoHistoryRepository.save(history);
+        userInfoHistoryRepository.save(history); // 변경 이력 저장
     }
 
-
-
-    //대표연락처 중복검사
+    /**
+     * 전화번호로 사용자 조회 (중복 검사).
+     * @param phoneNumber 전화번호
+     * @return 조회된 사용자 또는 null
+     */
     public User findByPhoneNumber(String phoneNumber) { return userRepository.findByPhoneNumber(phoneNumber).orElse(null); }
 
-    //비밀번호 찾기
+    /**
+     * 이메일로 사용자 조회 (비밀번호 찾기).
+     * @param email 이메일
+     * @return 조회된 사용자 또는 null
+     */
     public User findByEmail(String email) {
         return userRepository.findByEmail(email).orElse(null);
     }
-    //비밀번호찾기-비밀번호 자동생성
+
+    /**
+     * 비밀번호 업데이트 (암호화 후 저장).
+     * @param user 사용자
+     * @param newPassword 새 비밀번호
+     */
     public void updatePassword(User user, String newPassword) {
-        user.setPassword(passwordEncoder.encode(newPassword));
+        user.setPassword(passwordEncoder.encode(newPassword));  // 새 비밀번호 암호화
         userRepository.save(user);
     }
 
-    //회원탈퇴
+    /**
+     * 사용자를 비활성화 (회원 탈퇴 처리).
+     * @param user 탈퇴할 사용자
+     */
     public void deactivateUser(User user) {
-        user.setActive("N");
-        user.setId(user.getId() + "_deleted");
+        user.setActive("N"); // 사용자 상태 비활성화
+        user.setId(user.getId() + "_deleted");  // 사용자 ID에 "_deleted" 추가
         userRepository.save(user);
     }
 
-    //회원탈퇴시 칼럼값 변경
+    /**
+     * 사업자등록번호와 활성화 상태로 사용자 조회.
+     * @param companyRegNumber 사업자등록번호
+     * @param active 활성화 상태
+     * @return 조회된 사용자 또는 null
+     */
     public User findByCompanyRegNumberAndActive(String companyRegNumber, String active) {
         return userRepository.findByCompanyRegNumberAndActive(companyRegNumber, active).orElse(null);
     }

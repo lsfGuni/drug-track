@@ -10,7 +10,22 @@
     <!--[if lte IE 7]>
     <link th:href="@{/css/ie.css}" rel="stylesheet" type="text/css" />
     <![endif]-->
+    <style>
+        .footer {
+            text-align: center;
+            padding: 10px 0;
+            background-color: #f1f1f1; /* Optional: add background color to footer */
+        }
 
+        .frametab-box, .tabpage-box {
+            display: none; /* Hide these elements */
+        }
+
+        .copyright-text {
+            font-size: 12px;
+            color: #333;
+        }
+    </style>
 </head>
 
 <body>
@@ -122,22 +137,7 @@
             <p class="copyright-text">Copyright © 2024 NIPA All Right Reserved.</p>
 
     </div>
-<style>
-.footer {
-    text-align: center;
-    padding: 10px 0;
-    background-color: #f1f1f1; /* Optional: add background color to footer */
-}
 
-.frametab-box, .tabpage-box {
-    display: none; /* Hide these elements */
-}
-
-.copyright-text {
-    font-size: 12px;
-    color: #333;
-}
-</style>
 
     <!-- Footer Section 탭 사용시
     <div class="footer">
