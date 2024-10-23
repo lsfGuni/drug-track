@@ -211,7 +211,7 @@ public class UserService {
 
             // 클라이언트에 반환할 값 설정
             Map<String, String> updatedUserInfo = new HashMap<>();
-            updatedUserInfo.put("userId", user.getId());
+            updatedUserInfo.put("id", user.getId());
             updatedUserInfo.put("password", afterPassword);  // 새 비밀번호 반환 (암호화하지 않은 상태로 반환해야 하는지 확인 필요)
             updatedUserInfo.put("email", user.getEmail());
             updatedUserInfo.put("phoneNumber", user.getPhoneNumber());

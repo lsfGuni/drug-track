@@ -415,8 +415,8 @@ public class AuthController {
     @PostMapping("/editInfo")
     public ResponseEntity<?> updateUserInfom(@RequestBody  Map<String, String> userInfo) {
         try {
-            String userId = userInfo.get("userId");
-            String beforePassword = userInfo.get("beforePassword");  // 기존 비밀번호
+            String userId = userInfo.get("id");
+            String beforePassword = userInfo.get("password");  // 기존 비밀번호
             String afterPassword = userInfo.get("afterPassword");    // 변경할 비밀번호
             String email = userInfo.get("email");
             String phoneNumber = userInfo.get("phoneNumber");
