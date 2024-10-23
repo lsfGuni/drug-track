@@ -405,4 +405,35 @@ public class AuthController {
     }
 
 
+
+    /**
+     * 사용자의 비밀번호, 이메일 및 대표 연락처 정보를 업데이트하는 메서드.
+     * @param userInfo 업데이트할 사용자 정보
+     * @return 업데이트된 사용자 정보 반환 (userId, password, email, phoneNumber)
+     */
+    @Operation(summary = "비밀번호, 이메일, 연락처 정보 업데이트", description = "비밀번호, 이메일, 연락처 정보를 업데이트합니다.")
+    @PostMapping("/editInfo")
+    public ResponseEntity<?> updateUserInfom(@RequestBody  Map<String, String> userInfo) {
+        try {
+            String userId = userInfo.get("userId");
+            String beforePassword = userInfo.get("beforePassword");  // 기존 비밀번호
+            String afterPassword = userInfo.get("afterPassword");    // 변경할 비밀번호
+            String email = userInfo.get("email");
+            String phoneNumber = userInfo.get("phoneNumber");
+
+            if (userId == null ) {
+                return ResponseEntity.badRequest().body("id가 없습니다.");
+            }
+
+            // 서비스에서 업데이트 처리
+            Map<String, String> updatedUserInfo = userService.updateUserInfom(userId, email, phoneNumber, beforePassword, afterPassword);
+
+            return ResponseEntity.ok(updatedUserInfo);  // 업데이트된 정보 반환
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("result", "N", "error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("result", "N", "error", "서버 오류 발생"));
+        }
+    }
+
 }

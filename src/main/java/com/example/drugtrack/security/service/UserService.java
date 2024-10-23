@@ -9,6 +9,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 /**
  * UserService 클래스는 사용자 관리를 담당하는 서비스로, 사용자 등록, 정보 업데이트, 비밀번호 관리, 회원탈퇴 등을 처리합니다.
@@ -168,6 +170,56 @@ public class UserService {
     }
 
 
+    /**
+     * 사용자 정보 업데이트 (비밀번호 변경 포함)
+     * @param userId 사용자 ID
+     * @param email 새 이메일
+     * @param phoneNumber 새 전화번호
+     * @param beforePassword 기존 비밀번호
+     * @param afterPassword 변경할 비밀번호
+     * @return 업데이트된 사용자 정보 (ID, 이메일, 전화번호, 새 비밀번호)
+     */
+    @Transactional
+    public Map<String, String> updateUserInfom(String userId, String email, String phoneNumber, String beforePassword, String afterPassword) {
+        Optional<User> userOptional = userRepository.findById(userId);
 
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+
+            // 기존 비밀번호 검증
+            if (!passwordEncoder.matches(beforePassword, user.getPassword())) {
+                throw new IllegalArgumentException("기존 비밀번호가 일치하지 않습니다.");
+            }
+
+            // 변경할 비밀번호 암호화 후 저장
+            user.setPassword(passwordEncoder.encode(afterPassword));
+
+            // 이메일 변경 이력 저장
+            if (!email.equals(user.getEmail())) {
+                saveChangeHistory(user.getSeq(), "email", user.getEmail(), email);
+                user.setEmail(email);
+            }
+
+            // 전화번호 변경 이력 저장
+            if (!phoneNumber.equals(user.getPhoneNumber())) {
+                saveChangeHistory(user.getSeq(), "phone_number", user.getPhoneNumber(), phoneNumber);
+                user.setPhoneNumber(phoneNumber);
+            }
+
+            // 사용자 정보 저장
+            userRepository.save(user);
+
+            // 클라이언트에 반환할 값 설정
+            Map<String, String> updatedUserInfo = new HashMap<>();
+            updatedUserInfo.put("userId", user.getId());
+            updatedUserInfo.put("password", afterPassword);  // 새 비밀번호 반환 (암호화하지 않은 상태로 반환해야 하는지 확인 필요)
+            updatedUserInfo.put("email", user.getEmail());
+            updatedUserInfo.put("phoneNumber", user.getPhoneNumber());
+
+            return updatedUserInfo;
+        } else {
+            throw new IllegalArgumentException("사용자 ID를 찾을 수 없습니다.");
+        }
+    }
 
 }
