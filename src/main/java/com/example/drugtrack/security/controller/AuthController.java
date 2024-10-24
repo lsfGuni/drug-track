@@ -421,8 +421,12 @@ public class AuthController {
             String email = userInfo.get("email");
             String phoneNumber = userInfo.get("phoneNumber");
 
-            if (userId == null ) {
-                return ResponseEntity.badRequest().body("id가 없습니다.");
+            if (userId == null) {
+                return ResponseEntity.badRequest().body(Map.of(
+                        "result", "N",
+                        "data", null,
+                        "error", "id가 없습니다."
+                ));
             }
 
             // 서비스에서 업데이트 처리
