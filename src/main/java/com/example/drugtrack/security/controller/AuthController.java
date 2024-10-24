@@ -1,9 +1,6 @@
 package com.example.drugtrack.security.controller;
 
-import com.example.drugtrack.security.dto.DeactivateUserRequest;
-import com.example.drugtrack.security.dto.LoginRequest;
-import com.example.drugtrack.security.dto.PasswordResetRequest;
-import com.example.drugtrack.security.dto.UserChangeHistoryDto;
+import com.example.drugtrack.security.dto.*;
 import com.example.drugtrack.security.entity.TermsInfo;
 import com.example.drugtrack.security.entity.User;
 import com.example.drugtrack.security.entity.UserInfoHistory;
@@ -408,35 +405,48 @@ public class AuthController {
 
     /**
      * 사용자의 비밀번호, 이메일 및 대표 연락처 정보를 업데이트하는 메서드.
-     * @param userInfo 업데이트할 사용자 정보
+     * @param editInfo 업데이트할 사용자 정보
      * @return 업데이트된 사용자 정보 반환 (userId, password, email, phoneNumber)
      */
     @Operation(summary = "비밀번호, 이메일, 연락처 정보 업데이트", description = "비밀번호, 이메일, 연락처 정보를 업데이트합니다.")
     @PostMapping("/editInfo")
-    public ResponseEntity<?> updateUserInfom(@RequestBody  Map<String, String> userInfo) {
+    public ResponseEntity<?> updateUserInfom(@RequestBody EditInfoRequest editInfo) {
+        Map<String, Object> response = new HashMap<>();
         try {
-            String userId = userInfo.get("id");
-            String beforePassword = userInfo.get("password");  // 기존 비밀번호
-            String afterPassword = userInfo.get("afterPassword");    // 변경할 비밀번호
-            String email = userInfo.get("email");
-            String phoneNumber = userInfo.get("phoneNumber");
+            String userId = editInfo.getId();
+            String beforePassword = editInfo.getPassword();
+            String afterPassword = editInfo.getAfterPassword();
+            String email = editInfo.getEmail();
+            String phoneNumber = editInfo.getPhoneNumber();
 
             if (userId == null) {
-                return ResponseEntity.badRequest().body(Map.of(
-                        "result", "N",
-                        "data", null,
-                        "error", "id가 없습니다."
-                ));
+                response.put("result", "N");
+                response.put("data", null);
+                response.put("error", "id값이 없습니다.");
+                return ResponseEntity.badRequest().body(response);
             }
 
-            // 서비스에서 업데이트 처리
+            // 서비스에서 업데이트 처리 후 받은 사용자 정보
             Map<String, String> updatedUserInfo = userService.updateUserInfom(userId, email, phoneNumber, beforePassword, afterPassword);
 
-            return ResponseEntity.ok(updatedUserInfo);  // 업데이트된 정보 반환
+            // 성공 응답 설정
+            response.put("result", "Y");
+            response.put("data", updatedUserInfo);  // 업데이트된 정보를 data에 넣음
+            response.put("error", "");
+
+            return ResponseEntity.ok(response);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("result", "N", "error", e.getMessage()));
+            // 잘못된 입력값 처리
+            response.put("result", "N");
+            response.put("data", null);
+            response.put("error", e.getMessage());
+            return ResponseEntity.status(400).body(response);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("result", "N", "error", "서버 오류 발생"));
+            // 서버 오류 처리
+            response.put("result", "N");
+            response.put("data", null);
+            response.put("error", "서버 오류 발생");
+            return ResponseEntity.status(500).body(response);
         }
     }
 
