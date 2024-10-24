@@ -186,35 +186,37 @@ public class UserService {
         if (userOptional.isPresent()) {
             User user = userOptional.get();
 
-            // 기존 비밀번호 검증
+            // Validate existing password
             if (!passwordEncoder.matches(beforePassword, user.getPassword())) {
                 throw new IllegalArgumentException("기존 비밀번호가 일치하지 않습니다.");
             }
 
-            // 변경할 비밀번호 암호화 후 저장
-            user.setPassword(passwordEncoder.encode(afterPassword));
+            // Update password if afterPassword is provided
+            if (afterPassword != null && !afterPassword.isEmpty()) {
+                user.setPassword(passwordEncoder.encode(afterPassword));
+            }
 
-            // 이메일 변경 이력 저장
-            if (!email.equals(user.getEmail())) {
+            // Update email if provided
+            if (email != null && !email.isEmpty() && !email.equals(user.getEmail())) {
                 saveChangeHistory(user.getSeq(), "email", user.getEmail(), email);
                 user.setEmail(email);
             }
 
-            // 전화번호 변경 이력 저장
-            if (!phoneNumber.equals(user.getPhoneNumber())) {
+            // Update phone number if provided
+            if (phoneNumber != null && !phoneNumber.isEmpty() && !phoneNumber.equals(user.getPhoneNumber())) {
                 saveChangeHistory(user.getSeq(), "phone_number", user.getPhoneNumber(), phoneNumber);
                 user.setPhoneNumber(phoneNumber);
             }
 
-            // 사용자 정보 저장
+            // Save updated user info
             userRepository.save(user);
 
-            // 클라이언트에 반환할 값 설정
+            // Prepare the response with updated values
             Map<String, String> updatedUserInfo = new HashMap<>();
             updatedUserInfo.put("id", user.getId());
-            updatedUserInfo.put("password", afterPassword);  // 새 비밀번호 반환 (암호화하지 않은 상태로 반환해야 하는지 확인 필요)
             updatedUserInfo.put("email", user.getEmail());
             updatedUserInfo.put("phoneNumber", user.getPhoneNumber());
+            updatedUserInfo.put("password", afterPassword != null ? afterPassword : ""); // Only return the new password
 
             return updatedUserInfo;
         } else {

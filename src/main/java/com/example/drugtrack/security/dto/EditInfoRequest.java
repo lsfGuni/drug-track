@@ -1,5 +1,6 @@
 package com.example.drugtrack.security.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 /**
@@ -7,10 +8,15 @@ import lombok.Data;
  */
 @Data
 public class EditInfoRequest {
+    @Schema(description = "사용자 ID", example = "id")
     private String id;         // 사용자 ID
+    @Schema(description = "기존 비밀번호", example = "password")
     private String password; // 기존 비밀번호
+    @Schema(description = "변경할 비밀번호", example = "afterPassword")
     private String afterPassword;  // 변경할 비밀번호
+    @Schema(description = "이메일", example = "newEmail@example.com")
     private String email;          // 이메일
+    @Schema(description = "전화번호", example = "010-9876-5432")
     private String phoneNumber;    // 전화번호
 
     public String getId() {
