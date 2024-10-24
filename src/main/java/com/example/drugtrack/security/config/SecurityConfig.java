@@ -86,6 +86,7 @@ public class SecurityConfig {
                         .requestMatchers("/batch/run").permitAll() // 배치 실행 엔드포인트는 모두 허용
                         .requestMatchers("/api/files-save").permitAll() // 파일 저장 API는 모두 허용
                         .requestMatchers("/upload-file").permitAll() // 파일 업로드 API는 모두 허용
+                        .requestMatchers("/user/editInfo").permitAll() // 파일 업로드 API는 모두 허용
                         .requestMatchers("/admin/**").hasRole("ADMIN") // 관리자 페이지는 ADMIN 역할만 허용
                         .requestMatchers("/user/forgot-password", "/api/files-upload", "/error").permitAll() // 특정 사용자 관련 API는 모두 허용
                         .requestMatchers("/user/details/**", "/user/update/**").permitAll() // 사용자 상세 정보 및 업데이트는 모두 허용
