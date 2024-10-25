@@ -64,7 +64,8 @@ public class BlockchainService {
             //TODO
             // 블록체인 API 요청을 준비 (서버 주소는 변경될 수 있음)
             RestTemplate restTemplate = new RestTemplate();
-            String blockchainApiUrl = "http://192.168.0.51:3000/info/insertBlockDrug";   // 블록체인 API URL
+            //String blockchainApiUrl = "http://192.168.0.51:3000/info/insertBlockDrug";   // 블록체인 API URL -로컬
+            String blockchainApiUrl = "http://192.168.103.11:3000/info/insertBlockDrug";   // 블록체인 API URL -개발
             HttpHeaders headers = new HttpHeaders();
             headers.set("Authorization", "Bearer " + token);     // OAuth2 토큰을 헤더에 추가
             headers.set("Content-Type", "application/json");     // 요청의 콘텐츠 유형 설정
@@ -102,6 +103,16 @@ public class BlockchainService {
             try {
                 // OAuth2 설정 구성, API OAuth 설정 클래스에서 정보 받아야 함
                 //TODO OAuth2 토큰 API
+                /*토큰발급벙보 --개발*/
+                OAuth2Config config = new OAuth2Config(
+                        "nipa.71a69b9e5dad0ddd",    // 클라이언트 ID
+                        "4275869d11639e98dd983639f42f7cf0a22df52c", // 클라이언트 시크릿
+                        "nipa_company01@nipa.co",    // 사용자 이메일
+                        "1234", // 비밀번호
+                        "http://192.168.103.11:3000/oauth/token", // 토큰 발급 URL
+                        "read write"    // 권한 범위
+                );
+                /* 토큰발급 정보 -- 로컬
                 OAuth2Config config = new OAuth2Config(
                         "nipa.71a69b9e5dad0ddd",    // 클라이언트 ID
                         "4275869d11639e98dd983639f42f7cf0a22df52c", // 클라이언트 시크릿
@@ -110,7 +121,7 @@ public class BlockchainService {
                         "http://192.168.0.51:3000/oauth/token", // 토큰 발급 URL
                         "read write"    // 권한 범위
                 );
-
+                */
                 // OAuth2 클라이언트를 생성하고 토큰 요청
                 OAuth2Client client = new OAuth2Client(config);
                 TokenResponse tokenResponse = client.getToken();
