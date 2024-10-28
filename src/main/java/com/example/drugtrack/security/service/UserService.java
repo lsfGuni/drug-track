@@ -214,9 +214,12 @@ public class UserService {
             // Prepare the response with updated values
             Map<String, String> updatedUserInfo = new HashMap<>();
             updatedUserInfo.put("id", user.getId());
+            updatedUserInfo.put("companyType", user.getCompanyType());
+            updatedUserInfo.put("companyName", user.getCompanyName());
+            updatedUserInfo.put("companyRegNumber", user.getCompanyRegNumber());
             updatedUserInfo.put("email", user.getEmail());
             updatedUserInfo.put("phoneNumber", user.getPhoneNumber());
-            updatedUserInfo.put("password", afterPassword != null ? afterPassword : ""); // Only return the new password
+
 
             return updatedUserInfo;
         } else {

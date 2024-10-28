@@ -33,7 +33,7 @@ public class User {
     private String role;  //"USER" (유저), "ADMIN" (관리자)
 
     @Column
-    private String companyType; //회사 유형 (예: 법인, 개인).
+    private String companyType; //회사 유형 (  '0': '도매', '1': '소매', '2': '약국' )
 
     @Column
     private String companyName; //회사 이름.
