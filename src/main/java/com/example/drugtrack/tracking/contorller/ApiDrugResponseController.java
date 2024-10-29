@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,15 +67,18 @@ public class ApiDrugResponseController {
         // 응답 객체 생성
         Map<String, String> responseMap = new HashMap<>();
         try {
-            // 서비스 단에서 데이터 저장 및 중복 검사
+            // Save the single response and extract its seq and hashCode
             ApiDrugResponse savedResponse = apiDrugResponseService.saveResponse(response, apiKey);
 
-            // 블록체인에 저장할 데이터를 추출 (seq, hashCode)
-            Long seq = savedResponse.getSeq();
-            String hashCode = savedResponse.getHashCode();
+            // Bundle seq and hashCode into a single map and add to the list for blockchain storage
+            List<Map<String, Object>> dataForBlockchain = new ArrayList<>();
+            Map<String, Object> entry = new HashMap<>();
+            entry.put("seq", savedResponse.getSeq());
+            entry.put("hashcode", savedResponse.getHashCode());
+            dataForBlockchain.add(entry);
 
-            // 블록체인에 데이터 저장
-            blockchainService.storeDataOnBlockchain(seq, hashCode);
+            // Send the bundled data to blockchain in a single API call
+            blockchainService.storeBulkDataOnBlockchain(dataForBlockchain);
 
             // 성공적인 저장
             responseMap.put("result", "Y");

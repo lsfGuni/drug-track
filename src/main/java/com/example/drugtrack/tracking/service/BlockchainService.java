@@ -15,6 +15,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.time.Instant;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -53,15 +54,13 @@ public class BlockchainService {
      * 블록체인 API를 호출하여 seq 및 hashCode를 블록체인에 업로드합니다.
      * 유효한 토큰을 사용하여 요청을 인증합니다.
      *
-     * @param seq 블록체인에 저장할 데이터의 고유 ID
-     * @param hashCode 블록체인에 저장할 데이터의 해시 값
+     * @param dataList 블록체인에 저장할 데이터의 seq, hashcode
      */
-    public synchronized void storeDataOnBlockchain(Long seq, String hashCode) {
+    public synchronized void storeBulkDataOnBlockchain(List<Map<String, Object>> dataList) {
         try {
             // 유효한 토큰이 있는지 확인하고 필요시 갱신
             ensureValidToken();
 
-            //TODO
             // 블록체인 API 요청을 준비 (서버 주소는 변경될 수 있음)
             RestTemplate restTemplate = new RestTemplate();
             //String blockchainApiUrl = "http://192.168.0.51:3000/info/insertBlockDrug";   // 블록체인 API URL -로컬
@@ -70,12 +69,18 @@ public class BlockchainService {
             headers.set("Authorization", "Bearer " + token);     // OAuth2 토큰을 헤더에 추가
             headers.set("Content-Type", "application/json");     // 요청의 콘텐츠 유형 설정
 
+            // 로그로 데이터 확인
+            log.info("블록체인에 실리는 데이터 : {}", dataList);
+
             // 요청 본문 생성
             Map<String, Object> requestBody = new HashMap<>();
-            requestBody.put("seq", seq);
-            requestBody.put("hashcode", hashCode);
+            requestBody.put("data", dataList);
 
-            HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
+
+            // dataList를 요청 본문으로 직접 전송
+            HttpEntity<List<Map<String, Object>>> requestEntity = new HttpEntity<>(dataList, headers);
+
+            //HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
 
             // 블록체인 API에 POST 요청을 보내고 응답을 받음
             ResponseEntity<String> response = restTemplate.exchange(

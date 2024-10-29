@@ -107,9 +107,17 @@ public class FileUploadController {
             List<FilesSave> savedEntities = filesSaveService.saveCsvDataToDB(csvData, apiKey);
 
             // 블록체인에 각 레코드의 seq와 hashCode 저장
+            List<Map<String, Object>> dataForBlockchain = new ArrayList<>();
             for (FilesSave savedEntity : savedEntities) {
-                blockchainService.storeDataOnBlockchain(savedEntity.getSeq(), savedEntity.getHashCode());
+                Map<String, Object> entry = new HashMap<>();
+                entry.put("seq", savedEntity.getSeq());
+                entry.put("hashcode", savedEntity.getHashCode());
+                dataForBlockchain.add(entry);
             }
+
+            // 하나의 API 호출로 데이터 전송
+            blockchainService.storeBulkDataOnBlockchain(dataForBlockchain);
+
             // 데이터 저장 완료 로그
             logger.info("CSV 데이터 저장 완료.");
 
