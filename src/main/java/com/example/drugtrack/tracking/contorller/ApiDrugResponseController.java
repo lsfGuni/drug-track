@@ -1,6 +1,7 @@
 package com.example.drugtrack.tracking.contorller;
 
 import com.example.drugtrack.search.dto.UpdateResponse;
+import com.example.drugtrack.search.service.BarcodeService;
 import com.example.drugtrack.tracking.dto.ApiDrugResponseWrapper;
 import com.example.drugtrack.tracking.entity.ApiDrugResponse;
 import com.example.drugtrack.tracking.service.ApiDrugResponseService;
@@ -31,13 +32,14 @@ public class ApiDrugResponseController {
     private final BlockchainService blockchainService;
     private final ApiDrugResponseService apiDrugResponseService;
 
+
     /**
      * 생성자에서 서비스 클래스를 주입받습니다.
      *
      * @param blockchainService 블록체인과 연동하는 서비스
      * @param apiDrugResponseService 의약품 데이터를 처리하는 서비스
      */
-    public ApiDrugResponseController(BlockchainService blockchainService, ApiDrugResponseService apiDrugResponseService) {
+    public ApiDrugResponseController(BlockchainService blockchainService, ApiDrugResponseService apiDrugResponseService, BarcodeService barcodeService) {
         this.blockchainService = blockchainService;
         this.apiDrugResponseService = apiDrugResponseService;
 
@@ -118,7 +120,36 @@ public class ApiDrugResponseController {
     @PostMapping("/updateDeliveryType")
     public UpdateResponse updateDeliveryType(@RequestParam String barcode) {
         boolean isUpdated = apiDrugResponseService.updateDeliveryType(barcode);
-        String result = isUpdated ? "Y" : "N";
-        return new UpdateResponse(result);
+
+        if (!isUpdated) {
+            return new UpdateResponse("N");
+        }
+
+        // Use BarcodeService to fetch ApiDrugResponse data by barcode
+        List<ApiDrugResponse> data = apiDrugResponseService.getDrugsByBarcodeData(barcode);
+
+        if (data.isEmpty()) {
+            return new UpdateResponse("N");  // If no records found, return failure response
+        }
+
+        // Prepare data for blockchain storage
+        List<Map<String, Object>> dataForBlockchain = new ArrayList<>();
+
+        // Loop through each ApiDrugResponse object and extract seq and hashcode
+        for (ApiDrugResponse drug : data) {
+            Map<String, Object> entry = new HashMap<>();
+            entry.put("seq", drug.getSeq());  // `drug` is an ApiDrugResponse object
+            entry.put("hashcode", drug.getHashCode());
+            dataForBlockchain.add(entry);
+        }
+
+        // Store the data on the blockchain
+        blockchainService.storeBulkDataOnBlockchain(dataForBlockchain);
+
+        return new UpdateResponse("Y");  // Success response
     }
+
+
+
+
 }

@@ -183,6 +183,14 @@ public class ApiDrugResponseService {
      * @return 업데이트 성공 여부
      */
     public boolean updateDeliveryType(String barcode) {
+
+        // Check if the latest entry for this barcode is already marked as '4' (sold)
+        Integer currentDeliveryType = apiDrugResponseRepository.findCurrentDeliveryTypeByBarcode(barcode);
+
+        if (currentDeliveryType != null && currentDeliveryType == 4) {
+            return false;  // 이미 판매 완료 상태인 경우
+        }
+
         int updatedRows = apiDrugResponseRepository.updateDeliveryTypeByBarcode(barcode);
         return updatedRows > 0; // 업데이트된 행의 수가 0보다 크면 성공으로 간주
     }

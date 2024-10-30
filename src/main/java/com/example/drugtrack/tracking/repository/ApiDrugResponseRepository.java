@@ -36,6 +36,15 @@ public interface ApiDrugResponseRepository extends JpaRepository<ApiDrugResponse
     List<ApiDrugResponse> findByBarcodeData(@Param("barcodeData") String barcodeData);
 
     /**
+     * 바코드의 가장 최신 delivery_type 값을 조회하는 메서드.
+     *
+     * @param barcode 조회할 바코드
+     * @return 가장 최신 delivery_type 값
+     */
+    @Query(value = "SELECT delivery_type FROM drug_tracking_data WHERE barcode_data = :barcode ORDER BY seq DESC LIMIT 1", nativeQuery = true)
+    Integer findCurrentDeliveryTypeByBarcode(@Param("barcode") String barcode);
+
+    /**
      * 바코드를 기준으로 의약품의 배송 상태(delivery_type)를 '4'(판매 완료)로 업데이트하는 메서드.
      * 최신 데이터를 기준으로 업데이트를 수행합니다.
      *
