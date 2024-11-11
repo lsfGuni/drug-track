@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.Instant;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -63,40 +62,39 @@ public class BlockchainService {
 
             // 블록체인 API 요청을 준비 (서버 주소는 변경될 수 있음)
             RestTemplate restTemplate = new RestTemplate();
-            //String blockchainApiUrl = "http://192.168.0.51:3000/info/insertBlockDrug";   // 블록체인 API URL -로컬
-            String blockchainApiUrl = "http://ec2-15-165-76-46.ap-northeast-2.compute.amazonaws.com:3000/info/insertBlockDrug";   // 블록체인 API URL -개발
+            String blockchainApiUrl = "http://ec2-15-165-76-46.ap-northeast-2.compute.amazonaws.com:3000/info/insertBlockDrug";
             HttpHeaders headers = new HttpHeaders();
-            headers.set("Authorization", "Bearer " + token);     // OAuth2 토큰을 헤더에 추가
-            headers.set("Content-Type", "application/json");     // 요청의 콘텐츠 유형 설정
+            headers.set("Authorization", "Bearer " + token); // OAuth2 토큰을 헤더에 추가
+            headers.set("Content-Type", "application/json"); // 요청의 콘텐츠 유형 설정
 
-            // 로그로 데이터 확인
-            log.info("블록체인에 실리는 데이터 : {}", dataList);
+            // 데이터를 500건씩 분할하여 요청
+            int batchSize = 500;
+            for (int i = 0; i < dataList.size(); i += batchSize) {
+                List<Map<String, Object>> batchData = dataList.subList(i, Math.min(i + batchSize, dataList.size()));
 
-            // 요청 본문 생성
-            Map<String, Object> requestBody = new HashMap<>();
-            requestBody.put("data", dataList);
+                // 로그로 데이터 확인
+                log.info("블록체인에 전송하는 데이터 ({} ~ {}): {}", i + 1, Math.min(i + batchSize, dataList.size()), batchData);
 
+                // 요청 본문 생성
+                HttpEntity<List<Map<String, Object>>> requestEntity = new HttpEntity<>(batchData, headers);
 
-            // dataList를 요청 본문으로 직접 전송
-            HttpEntity<List<Map<String, Object>>> requestEntity = new HttpEntity<>(dataList, headers);
+                // 블록체인 API에 POST 요청을 보내고 응답을 받음
+                ResponseEntity<String> response = restTemplate.exchange(
+                        blockchainApiUrl, HttpMethod.POST, requestEntity, String.class
+                );
 
-            //HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
-
-            // 블록체인 API에 POST 요청을 보내고 응답을 받음
-            ResponseEntity<String> response = restTemplate.exchange(
-                    blockchainApiUrl, HttpMethod.POST, requestEntity, String.class
-            );
-
-            // 요청 성공 여부를 확인하고 로그로 기록
-            if (response.getStatusCode().is2xxSuccessful()) {
-                log.info("Blockchain upload successful: " + response.getBody());
-            } else {
-                log.error("Blockchain upload failed - Status: " + response.getStatusCode() + ", Response: " + response.getBody());
+                // 요청 성공 여부를 확인하고 로그로 기록
+                if (response.getStatusCode().is2xxSuccessful()) {
+                    log.info("Blockchain upload successful for batch {} to {}: {}", i + 1, Math.min(i + batchSize, dataList.size()), response.getBody());
+                } else {
+                    log.error("Blockchain upload failed for batch {} to {} - Status: {}, Response: {}", i + 1, Math.min(i + batchSize, dataList.size()), response.getStatusCode(), response.getBody());
+                }
             }
         } catch (Exception e) {
             log.error("Error during blockchain API call: ", e);
         }
     }
+
 
     /**
      * OAuth2 토큰을 갱신하는 메서드입니다.
