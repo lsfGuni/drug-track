@@ -67,16 +67,12 @@ public class BlockchainService {
             headers.set("Authorization", "Bearer " + token); // OAuth2 토큰을 헤더에 추가
             headers.set("Content-Type", "application/json"); // 요청의 콘텐츠 유형 설정
 
-            // 데이터를 500건씩 분할하여 요청
             int batchSize = 500;
-            for (int i = 0; i < dataList.size(); i += batchSize) {
-                List<Map<String, Object>> batchData = dataList.subList(i, Math.min(i + batchSize, dataList.size()));
 
-                // 로그로 데이터 확인
-                log.info("블록체인에 전송하는 데이터 ({} ~ {}): {}", i + 1, Math.min(i + batchSize, dataList.size()), batchData);
-
-                // 요청 본문 생성
-                HttpEntity<List<Map<String, Object>>> requestEntity = new HttpEntity<>(batchData, headers);
+            if (dataList.size() <= batchSize) {
+                // 데이터가 500건 이하일 때, 한 번의 요청으로 전송
+                log.info("블록체인에 전송하는 데이터 (전체): {}", dataList);
+                HttpEntity<List<Map<String, Object>>> requestEntity = new HttpEntity<>(dataList, headers);
 
                 // 블록체인 API에 POST 요청을 보내고 응답을 받음
                 ResponseEntity<String> response = restTemplate.exchange(
@@ -85,15 +81,40 @@ public class BlockchainService {
 
                 // 요청 성공 여부를 확인하고 로그로 기록
                 if (response.getStatusCode().is2xxSuccessful()) {
-                    log.info("Blockchain upload successful for batch {} to {}: {}", i + 1, Math.min(i + batchSize, dataList.size()), response.getBody());
+                    log.info("Blockchain upload successful for full batch: {}", response.getBody());
                 } else {
-                    log.error("Blockchain upload failed for batch {} to {} - Status: {}, Response: {}", i + 1, Math.min(i + batchSize, dataList.size()), response.getStatusCode(), response.getBody());
+                    log.error("Blockchain upload failed for full batch - Status: {}, Response: {}", response.getStatusCode(), response.getBody());
+                }
+
+            } else {
+                // 데이터가 500건을 초과할 때, 500건씩 분할하여 요청
+                for (int i = 0; i < dataList.size(); i += batchSize) {
+                    List<Map<String, Object>> batchData = dataList.subList(i, Math.min(i + batchSize, dataList.size()));
+
+                    // 로그로 데이터 확인
+                    log.info("블록체인에 전송하는 데이터 ({} ~ {}): {}", i + 1, Math.min(i + batchSize, dataList.size()), batchData);
+
+                    // 요청 본문 생성
+                    HttpEntity<List<Map<String, Object>>> requestEntity = new HttpEntity<>(batchData, headers);
+
+                    // 블록체인 API에 POST 요청을 보내고 응답을 받음
+                    ResponseEntity<String> response = restTemplate.exchange(
+                            blockchainApiUrl, HttpMethod.POST, requestEntity, String.class
+                    );
+
+                    // 요청 성공 여부를 확인하고 로그로 기록
+                    if (response.getStatusCode().is2xxSuccessful()) {
+                        log.info("Blockchain upload successful for batch {} to {}: {}", i + 1, Math.min(i + batchSize, dataList.size()), response.getBody());
+                    } else {
+                        log.error("Blockchain upload failed for batch {} to {} - Status: {}, Response: {}", i + 1, Math.min(i + batchSize, dataList.size()), response.getStatusCode(), response.getBody());
+                    }
                 }
             }
         } catch (Exception e) {
             log.error("Error during blockchain API call: ", e);
         }
     }
+
 
 
     /**
