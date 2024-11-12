@@ -67,7 +67,7 @@ public class BlockchainService {
             headers.set("Authorization", "Bearer " + token); // OAuth2 토큰을 헤더에 추가
             headers.set("Content-Type", "application/json"); // 요청의 콘텐츠 유형 설정
 
-            int batchSize = 500;
+            int batchSize = 100;
 
             if (dataList.size() <= batchSize) {
                 // 데이터가 500건 이하일 때, 한 번의 요청으로 전송
