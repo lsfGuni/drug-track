@@ -115,7 +115,7 @@ public class FileUploadController {
                 dataForBlockchain.add(entry);
             }
 
-            // 하나의 API 호출로 데이터 전송
+            // 블록체인 서비스 호출
             blockchainService.storeBulkDataOnBlockchain(dataForBlockchain);
 
             // 데이터 저장 완료 로그
