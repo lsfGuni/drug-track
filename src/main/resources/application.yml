@@ -27,19 +27,18 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
+    show-sql: true  # Enable SQL logging
     hibernate:
       ddl-auto: update  # Automatically update the database schema
-
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQLDialect # MySQL dialect for Hibernate
+        dialect: org.hibernate.dialect.MySQLDialect  # MySQL dialect for Hibernate
         format_sql: true  # Pretty-print SQL
-        use_sql_comments: true   # Add comments to SQL
-        highlight_sql: true # Highlight SQL for easier debugging
-        type:
-          binder:
-            log: true # Enable SQL type binder logging
-# mail service setting - 관리자페이지의 비밀번호 초기화 기능 관련 설정
+        use_sql_comments: true  # Add comments to SQL
+        highlight_sql: true  # Highlight SQL for easier debugging
+        type: trace  # Log SQL parameter values
+        binder:
+          log: true  # En# mail service setting - 관리자페이지의 비밀번호 초기화 기능 관련 설정
   mail:
     host: smtp.gmail.com
     port: 587
