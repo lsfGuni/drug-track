@@ -116,7 +116,7 @@ public class FileUploadController {
             }
 
             // 블록체인 서비스 호출
-            blockchainService.storeBulkDataOnBlockchain(dataForBlockchain);
+            //blockchainService.storeBulkDataOnBlockchain(dataForBlockchain);
 
             // 데이터 저장 완료 로그
             logger.info("CSV 데이터 저장 완료.");
