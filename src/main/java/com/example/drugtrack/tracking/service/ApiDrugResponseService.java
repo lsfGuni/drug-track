@@ -19,15 +19,17 @@ public class ApiDrugResponseService {
 
     private final ApiDrugResponseRepository apiDrugResponseRepository;
     private final ObjectMapper objectMapper;
+
     /**
      * apiDrugResponseRepository 및 objectMapper 주입.
      *
      * @param apiDrugResponseRepository 데이터베이스와 상호작용하는 레포지토리
      * @param objectMapper JSON 처리에 사용되는 객체
      */
-    public ApiDrugResponseService(ApiDrugResponseRepository apiDrugResponseRepository, ObjectMapper objectMapper) {
+    public ApiDrugResponseService(ApiDrugResponseRepository apiDrugResponseRepository, ObjectMapper objectMapper ) {
         this.apiDrugResponseRepository = apiDrugResponseRepository;
         this.objectMapper = objectMapper;
+
     }
 
 
@@ -80,9 +82,14 @@ public class ApiDrugResponseService {
             // JSON 처리 중 에러 발생 시 예외 처리
             throw new RuntimeException("Error processing JSON for tx", e);
         }
+        // 데이터 저장 및 로그 출력
+        ApiDrugResponse savedResponse = apiDrugResponseRepository.save(response);
+        System.out.println("API서버에 저장된 데이터: " + savedResponse.toString()); // 또는 logger.info() 사용 가능
 
-        // 데이터 저장 후 반환
-        return apiDrugResponseRepository.save(response);
+        return savedResponse;
+
+
+
     }
 
     /**
@@ -171,7 +178,7 @@ public class ApiDrugResponseService {
      */
     public List<ApiDrugResponse> getDrugsByBarcodeData(String barcodeData) {
         List<ApiDrugResponse> results = apiDrugResponseRepository.findByBarcodeData(barcodeData);
-        System.out.println("Fetched results: " + results.size());  // 조회된 데이터의 수를 로그로 출력
+        System.out.println("추적정보 조회 데이터: " + results);  // 조회된 데이터의 수를 로그로 출력
         return results;
     }
 
@@ -192,6 +199,7 @@ public class ApiDrugResponseService {
         }
 
         int updatedRows = apiDrugResponseRepository.updateDeliveryTypeByBarcode(barcode);
+        System.out.println("의약품 판매완료 : " + updatedRows);
         return updatedRows > 0; // 업데이트된 행의 수가 0보다 크면 성공으로 간주
     }
 }

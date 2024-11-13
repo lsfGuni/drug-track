@@ -58,6 +58,10 @@ public class ApiDrugResponseController {
     @Operation(summary = "의약품 단건등록 post요청", description = "파라미터를 통해 의약품 정보를 등록합니다.")
     @PostMapping("/regDrugTracking")
     public ResponseEntity<Map<String, String>> createResponse(@RequestHeader("API_KEY") String apiKey, @RequestBody ApiDrugResponse response, HttpServletRequest request) {
+
+        // 받은 데이터의 구체적 필드 값을 로깅
+        logger.info("클라이언트 파라미터: {}", response.toString());
+
         // 클라이언트의 IP 주소, User-Agent, 요청 URI를 로그로 기록
         String clientIp = request.getRemoteAddr();
         String userAgent = request.getHeader("User-Agent");

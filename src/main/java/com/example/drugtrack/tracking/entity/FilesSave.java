@@ -258,4 +258,26 @@ public class FilesSave {
             throw new RuntimeException("해시값 생성이 실패했습니다.", e);
         }
     }
+
+    @Override
+    public String toString() {
+        return "FilesSave{" +
+                "barcodeData='" + barcodeData + '\'' +
+                ", startCompanyRegNumber='" + startCompanyRegNumber + '\'' +
+                ", startCompanyName='" + startCompanyName + '\'' +
+                ", endCompanyRegNumber='" + endCompanyRegNumber + '\'' +
+                ", endCompanyName='" + endCompanyName + '\'' +
+                ", deliveryType='" + deliveryType + '\'' +
+                ", deliveryDate='" + deliveryDate + '\'' +
+                ", productName='" + productName + '\'' +
+                ", gs1Code='" + gs1Code + '\'' +
+                ", mfNumber='" + mfNumber + '\'' +
+                ", expDate='" + expDate + '\'' +
+                ", serialNumber='" + serialNumber + '\'' +
+                ", aggData='" + aggData + '\'' +
+                ", apiKey='" + apiKey + '\'' +
+                ", tx='" + tx + '\'' +
+                ", hashCode='" + hashCode + '\'' +
+                '}';
+    }
 }

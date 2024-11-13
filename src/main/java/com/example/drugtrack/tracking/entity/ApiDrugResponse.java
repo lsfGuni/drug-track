@@ -258,4 +258,27 @@ public class ApiDrugResponse {
             throw new RuntimeException("해시값 생성이 실패했습니다.", e);
         }
     }
+
+
+    @Override
+    public String toString() {
+        return "{" +
+                "seq=" + seq +
+                ", aggData='" + aggData + '\'' +
+                ", apiKey='" + apiKey + '\'' +
+                ", barcodeData='" + barcodeData + '\'' +
+                ", startCompanyRegNumber='" + startCompanyRegNumber + '\'' +
+                ", startCompanyName='" + startCompanyName + '\'' +
+                ", endCompanyRegNumber='" + endCompanyRegNumber + '\'' +
+                ", endCompanyName='" + endCompanyName + '\'' +
+                ", deliveryType='" + deliveryType + '\'' +
+                ", deliveryDate='" + deliveryDate + '\'' +
+                ", productName='" + productName + '\'' +
+                ", gs1Code='" + gs1Code + '\'' +
+                ", mfNumber='" + mfNumber + '\'' +
+                ", expDate='" + expDate + '\'' +
+                ", serialNumber='" + serialNumber + '\'' +
+                ", hashCode='" + hashCode + '\'' +
+                '}';
+    }
 }

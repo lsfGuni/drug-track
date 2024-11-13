@@ -86,6 +86,8 @@ public class FilesSaveService {
             savedEntities.add(savedEntity);
 
         }
+        System.out.println("DB에 저장되는 데이터: " + savedEntities + " \n끝");
+
         return savedEntities;
 
     }
