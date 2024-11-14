@@ -14,7 +14,7 @@ public class OAuth2ClientMain {
                 "4275869d11639e98dd983639f42f7cf0a22df52c",
                 "nipa_company01@nipa.co",
                 "1234",
-                "http://nipabaas.berith.co:3000/oauth/token",
+                "http://nipabaas.berith.co/oauth/token",
                 "read write"
         );
         /*토큰클라이언트정보 -- 로컬

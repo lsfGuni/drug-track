@@ -62,7 +62,7 @@ public class BlockchainService {
 
             // 블록체인 API 요청을 준비 (서버 주소는 변경될 수 있음)
             RestTemplate restTemplate = new RestTemplate();
-            String blockchainApiUrl = "http://nipabaas.berith.co:3000/info/insertBlockDrug";
+            String blockchainApiUrl = "http://nipabaas.berith.co/info/insertBlockDrug";
             HttpHeaders headers = new HttpHeaders();
             headers.set("Authorization", "Bearer " + token); // OAuth2 토큰을 헤더에 추가
             headers.set("Content-Type", "application/json"); // 요청의 콘텐츠 유형 설정
@@ -133,7 +133,7 @@ public class BlockchainService {
                         "4275869d11639e98dd983639f42f7cf0a22df52c", // 클라이언트 시크릿
                         "nipa_company01@nipa.co",    // 사용자 이메일
                         "1234", // 비밀번호
-                        "http://nipabaas.berith.co:3000/oauth/token", // 토큰 발급 URL
+                        "http://nipabaas.berith.co/oauth/token", // 토큰 발급 URL
                         "read write"    // 권한 범위
                 );
                 /* 토큰발급 정보 -- 로컬
