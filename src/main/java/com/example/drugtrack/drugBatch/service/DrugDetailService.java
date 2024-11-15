@@ -63,6 +63,12 @@ public class DrugDetailService {
 
         String url = String.format("%s?serviceKey=%s&type=%s&pageNo=1&numOfRows=1", apiUrl, serviceKey, responseType);
         String response = restTemplate.getForObject(url, String.class);
+
+        if (response == null || response.trim().isEmpty()) {
+            logger.error("Received empty or null response from API for totalCount.");
+            return 0;  // Handle empty or null response
+        }
+
         try {
             JSONObject jsonResponse = new JSONObject(response);
             JSONObject body = jsonResponse.getJSONObject("body");
@@ -70,6 +76,7 @@ public class DrugDetailService {
             return cachedTotalCount;
         } catch (JSONException e) {
             logger.error("Error parsing JSON response for totalCount: {}", e.getMessage());
+            logger.error("Raw response: {}", response); // Log the raw response for debugging
             return 0;
         }
     }
@@ -137,6 +144,12 @@ public class DrugDetailService {
         String url = String.format("%s?serviceKey=%s&type=%s&pageNo=%d&numOfRows=%d", apiUrl, serviceKey, responseType, pageNo, pageSize);
         List<DrugDetailResponse> itemsList = new ArrayList<>();
         String response = restTemplate.getForObject(url, String.class);
+
+        if (response == null || response.trim().isEmpty()) {
+            logger.error("Received empty or null response from API for page {}", pageNo);
+            return CompletableFuture.completedFuture(itemsList);  // 빈 리스트 반환
+        }
+
         try {
             JSONObject jsonResponse = new JSONObject(response);
             JSONObject body = jsonResponse.getJSONObject("body");
@@ -195,9 +208,12 @@ public class DrugDetailService {
             }
         } catch (JSONException e) {
             logger.error("Error parsing JSON response for page {}: {}", pageNo, e.getMessage());
+            logger.error("Raw response: {}", response); // 디버깅을 위해 원본 응답을 로깅
         }
+
         return CompletableFuture.completedFuture(itemsList);
     }
+
 
     /**
      * XML 태그를 제거하여 텍스트만 추출하는 메서드입니다.
