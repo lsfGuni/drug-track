@@ -60,7 +60,7 @@ public class BlockchainService {
             // 유효한 토큰이 있는지 확인하고 필요시 갱신
             ensureValidToken();
 
-            // 블록체인 API 요청을 준비
+            // 블록체인 API 요청을 준비.
             RestTemplate restTemplate = new RestTemplate();
             String blockchainApiUrl = "http://nipabaas.berith.co/info/insertBlockDrug";
             HttpHeaders headers = new HttpHeaders();
