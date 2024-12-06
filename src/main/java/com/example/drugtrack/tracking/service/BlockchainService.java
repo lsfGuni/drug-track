@@ -131,7 +131,7 @@ public class BlockchainService {
                 OAuth2Config config = new OAuth2Config(
                         "nipa.71a69b9e5dad0ddd",    // 클라이언트 ID
                         "4275869d11639e98dd983639f42f7cf0a22df52c", // 클라이언트 시크릿
-                        "nipa_company01@nipa.co",    // 사용자 이메일
+                        "nipa_company02@nipa.co",    // 사용자 이메일
                         "1234", // 비밀번호
                         "http://nipabaas.berith.co/oauth/token", // 토큰 발급 URL
                         "read write"    // 권한 범위
@@ -140,7 +140,7 @@ public class BlockchainService {
                 OAuth2Config config = new OAuth2Config(
                         "nipa.71a69b9e5dad0ddd",    // 클라이언트 ID
                         "4275869d11639e98dd983639f42f7cf0a22df52c", // 클라이언트 시크릿
-                        "nipa_company01@nipa.co",    // 사용자 이메일
+                        "nipa_company02@nipa.co",    // 사용자 이메일
                         "1234", // 비밀번호
                         "http://192.168.0.51:3000/oauth/token", // 토큰 발급 URL
                         "read write"    // 권한 범위

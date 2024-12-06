@@ -12,7 +12,7 @@ public class OAuth2ClientMain {
         OAuth2Config config = new OAuth2Config(
                 "nipa.71a69b9e5dad0ddd",
                 "4275869d11639e98dd983639f42f7cf0a22df52c",
-                "nipa_company01@nipa.co",
+                "nipa_company02@nipa.co",
                 "1234",
                 "http://nipabaas.berith.co/oauth/token",
                 "read write"
@@ -21,7 +21,7 @@ public class OAuth2ClientMain {
         OAuth2Config config = new OAuth2Config(
                 "nipa.71a69b9e5dad0ddd",
                 "4275869d11639e98dd983639f42f7cf0a22df52c",
-                "nipa_company01@nipa.co",
+                "nipa_company02@nipa.co",
                 "1234",
                 "http://192.168.0.51:3000/oauth/token",
                 "read write"
