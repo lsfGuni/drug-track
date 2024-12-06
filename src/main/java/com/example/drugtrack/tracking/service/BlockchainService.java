@@ -136,7 +136,7 @@ public class BlockchainService {
                         "http://nipabaas.berith.co/oauth/token", // 토큰 발급 URL
                         "read write"    // 권한 범위
                 );
-                /* 토큰발급 정보 -- 로컬
+                /* 토큰발급 정보 -- local
                 OAuth2Config config = new OAuth2Config(
                         "nipa.71a69b9e5dad0ddd",    // 클라이언트 ID
                         "4275869d11639e98dd983639f42f7cf0a22df52c", // 클라이언트 시크릿
