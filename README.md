@@ -1,7 +1,7 @@
 # drug-track
 <ui>
 <h3>개발 목록</h3>
-<li>24.08 의약품 등록 api 서버구축(AWS-EC2, mysql이미지, java 이미지 사용)</li>
+<li>24.08 의약품 등록 api 서버구축(AWS-EC2, mysql이미지, JDK17 이미지 사용)</li>
 <li>24.08 swagger 의존성 추가</li>
 <li>24.08 관리자 페이지 추가</li>
 <li>24.09 CI/CD 구축(github action)</li>
